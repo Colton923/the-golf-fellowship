@@ -19,7 +19,7 @@ export default function Products() {
       setStripeData(data)
     }
     getStripeData()
-  }, [stripeData])
+  }, [])
 
   return (
     <div>
