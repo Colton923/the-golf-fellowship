@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+.main {
+  background-color: #080710;
+  position: absolute;
+  margin-top: 100px;
+  padding: 5px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.leftcontainer {
+  position: absolute;
+  top: 90px;
+  left: 10px;
+  width: 40%;
+  height: 100%;
+  background-color: #080710;
+  overflow: hidden;
+}
+
+.rightcontainer {
+  top: 90px;
+  right: 10px;
+  width: 40%;
+  height: 100%;
+  margin-left: 55%;
+  margin-top: 200px;
+}
+
+.cardwrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rightcard {
+  height: 200px;
+  width: 140px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+  padding: 50px 35px;
+  z-index: 2;
+  margin: 12px;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  transition: 0.5s;
+  align-items: center;
+}
+
+@media (max-width: 400px) {
+  .rightcard {
+    display: block;
+  }
+}
