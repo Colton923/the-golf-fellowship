@@ -90,6 +90,11 @@ export default function Page() {
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error...</div>
+  if (user) {
+    router.push('/dashboard')
+    return <div>Redirecting...</div>
+  }
+
   return (
     <>
       <div className={styles.main}>

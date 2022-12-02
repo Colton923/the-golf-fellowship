@@ -1,7 +1,9 @@
 import styles from '../../styles/App.module.css'
 import DashboardNavbar from './DashboardNavbar'
-import Products from './Products'
-export default async function Layout({ children }: any) {
+import { StripeProducts } from './StripeProducts'
+import auth from '../../firebase/firebaseClient'
+
+export default function Layout({ children }: any) {
   return (
     <div>
       <div className={styles.main}>
@@ -19,7 +21,7 @@ export default async function Layout({ children }: any) {
         </div>
         <div className={styles.rightcontainer}>
           <div className={styles.cardwrapper}>
-            <Products />
+            <StripeProducts />
           </div>
         </div>
       </div>
