@@ -31,7 +31,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/pages/api/[...nextauth].js"
-  ],
+, "app/checkout/CheckoutForm.jsx", "api/stripe_intent.js"  ],
   "exclude": [
     "node_modules"
   ]

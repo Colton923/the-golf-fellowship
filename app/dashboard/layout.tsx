@@ -1,28 +1,29 @@
-import styles from '../../styles/App.module.css'
+'use client'
+
+import styles from '../../styles/Dashboard.module.css'
 import DashboardNavbar from './DashboardNavbar'
 import { StripeProducts } from './StripeProducts'
 import auth from '../../firebase/firebaseClient'
+import { stripeData } from './StripeProducts'
 
 export default function Layout({ children }: any) {
   return (
     <div>
+      <DashboardNavbar />
       <div className={styles.main}>
-        <DashboardNavbar />
-        <div className={styles.leftcontainer}>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-          <h1>Boring</h1>
-        </div>
-        <div className={styles.rightcontainer}>
-          <div className={styles.cardwrapper}>
-            <StripeProducts />
+        <div className={styles.container}>
+          <div className={styles.leftcontainer}>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
+            <h1>Boring</h1>
           </div>
+          <StripeProducts />
         </div>
       </div>
       <div>{children}</div>
