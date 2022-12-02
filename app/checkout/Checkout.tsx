@@ -12,7 +12,6 @@ export default function Checkout() {
   const [paymentIntent, setPaymentIntent] = useState('')
 
   useEffect(() => {
-    // Create PaymentIntent as soon as the page loads using our local API
     fetch('../../pages/api/stripe_intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
