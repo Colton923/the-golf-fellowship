@@ -1,16 +1,16 @@
 import initializeStripe from './initializeStripe'
-import app from '../firebase/firebaseClient'
 import { collection, doc, addDoc } from 'firebase/firestore'
 import { db } from '../firebase/firebaseClient'
 import { onSnapshot } from 'firebase/firestore'
 
-export async function checkoutSession(uid: string, prices: string[]) {
+export async function checkoutSession(uid: string, prices: string[], names: string[]) {
   const lineItems = prices.map((price) => {
     return {
       price,
       quantity: 1,
     }
   })
+  const itemNames = names.join(', ')
 
   const params: any = {
     success_url: window.location.origin,
@@ -18,6 +18,7 @@ export async function checkoutSession(uid: string, prices: string[]) {
     line_items: lineItems,
     metadata: {
       firebaseUID: uid,
+      itemNames: itemNames,
     },
   }
   const userRef = collection(db, 'users')

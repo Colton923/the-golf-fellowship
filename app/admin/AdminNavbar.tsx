@@ -23,7 +23,7 @@ export default function DashboardNavbar() {
         <Link href="/" className={styles.navbarlink} onInput={signOut}>
           Logout
         </Link>
-        <Link href="/admin" className={styles.navbarlink}>
+        <Link href="admin" className={styles.navbarlink}>
           Admin
         </Link>
       </nav>

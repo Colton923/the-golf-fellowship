@@ -33,6 +33,8 @@ const validEmail = RegExp(
 export default function Page() {
   const router = useRouter()
   const [user, loading, error] = useAuthState(auth)
+  const [loggedIn, setLoggedIn] = useState(false)
+
   const {
     register,
     setValue,
@@ -40,6 +42,15 @@ export default function Page() {
     formState: { errors },
   } = useForm<FormData>()
   const db = getFirestore()
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      setLoggedIn(true)
+      router.push('/dashboard')
+    } else {
+      setLoggedIn(false)
+    }
+  }, [])
 
   const signInWithGoogle = async (data: FormData) => {
     try {
@@ -90,10 +101,8 @@ export default function Page() {
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error...</div>
-  if (user) {
-    router.push('/dashboard')
-    return <div>Redirecting...</div>
-  }
+
+  if (loggedIn) return <div>Redirecting...</div>
 
   return (
     <>

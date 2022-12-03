@@ -56,12 +56,10 @@ export const StripeProducts = () => {
             <div className={styles.cart}>
               <h1 className={styles.cartTitle}>Cart</h1>
               {cart.map((item, index) => (
-                <>
-                  <div key={index} className={styles.cartContainer}>
-                    <h1 className={styles.cartItemName}>{item.name}</h1>
-                    <h1 className={styles.cartItemPrice}>${item.price}.00</h1>
-                  </div>
-                </>
+                <div key={index} className={styles.cartContainer}>
+                  <h1 className={styles.cartItemName}>{item.name}</h1>
+                  <h1 className={styles.cartItemPrice}>${item.price}.00</h1>
+                </div>
               ))}
               <div className={styles.cartTotal}>
                 <h1 className={styles.cartTotalTitle}>Total: </h1>
@@ -78,7 +76,8 @@ export const StripeProducts = () => {
                     user
                       ? checkoutSession(
                           user?.uid,
-                          cart.map((item) => item.productId)
+                          cart.map((item) => item.productId),
+                          cart.map((item) => item.name)
                         )
                       : alert('Authentication Error')
                   }}
