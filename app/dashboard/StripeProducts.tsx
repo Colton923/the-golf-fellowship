@@ -4,13 +4,18 @@ import { db } from '../../firebase/firebaseClient'
 import { collection, getDocs } from 'firebase/firestore'
 import React, { useState, useEffect } from 'react'
 import styles from '../../styles/Dashboard.module.css'
+import checkoutSession from '../../stripe/checkoutSession'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../firebase/firebaseClient'
 
 export type stripeData = {
   name: string
   price: number
+  productId: string
 }
 
 export const StripeProducts = () => {
+  const [user] = useAuthState(auth)
   const [data, setData] = useState<stripeData[]>([])
   const [loading, setLoading] = useState(true)
   const [cart, setCart] = useState<stripeData[]>([])
@@ -23,13 +28,16 @@ export const StripeProducts = () => {
         const priceRef = collection(db, 'products', doc.id, 'prices')
         const subDocs = await getDocs(priceRef)
         const prices = subDocs.docs.map((doc) => doc.data())
+        const ids = subDocs.docs.map((doc) => doc.id)
         const price = prices[0].unit_amount / 100
         const name = doc.data().name
+        const productId = ids[0]
         setData((prev) => [
           ...prev,
           {
             name: name,
             price: price,
+            productId: productId,
           },
         ])
       })
@@ -64,7 +72,19 @@ export const StripeProducts = () => {
                   }, 0)}
                   .00
                 </h1>
-                <button className={styles.cartCheckout}>Checkout</button>
+                <button
+                  className={styles.cartCheckout}
+                  onClick={() => {
+                    user
+                      ? checkoutSession(
+                          user?.uid,
+                          cart.map((item) => item.productId)
+                        )
+                      : alert('Authentication Error')
+                  }}
+                >
+                  Checkout
+                </button>
               </div>
             </div>
             <div className={styles.rightcontainer}>

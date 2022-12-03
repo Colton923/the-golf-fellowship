@@ -10,6 +10,7 @@
     "src/**/*.{js,jsx,ts,tsx}": "eslint --cache --fix"
   },
   "dependencies": {
+    "@stripe/firestore-stripe-payments": "^0.0.6",
     "@stripe/react-stripe-js": "^1.15.0",
     "@stripe/stripe-js": "^1.46.0",
     "@types/node": "^18.11.9",
