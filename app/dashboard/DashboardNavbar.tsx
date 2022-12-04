@@ -26,6 +26,9 @@ export default function DashboardNavbar() {
         <Link href="/admin" className={styles.navbarlink}>
           Admin
         </Link>
+        <Link href="/proshop" className={styles.navbarlink}>
+          Admin
+        </Link>
       </nav>
     </div>
   )

@@ -16,6 +16,9 @@ export default function HomeNavbar() {
         <Link href="/login" className={styles.navbarlink}>
           Login
         </Link>
+        <Link href="/proshop" className={styles.navbarlink}>
+          Pro Shop
+        </Link>
       </nav>
     </div>
   )
