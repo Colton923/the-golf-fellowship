@@ -270,15 +270,15 @@ export default function Page() {
           <div className={styles.processItemOne}>
             {stage >= 0 ? (
               <div className={styles.borderCircle}>
-                <div className={styles.processNumber}>
-                  <h2>1</h2>
+                <div>
+                  <h2 className={styles.processNumber}>1</h2>
                 </div>
                 <h1 className={styles.processTitle}>Membership Type</h1>
               </div>
             ) : (
               <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
-                <div className={styles.processNumber}>
-                  <h2>1</h2>
+                <div>
+                  <h2 className={styles.processNumber}>1</h2>
                 </div>
                 <h1 className={styles.processTitle}>Membership Type</h1>
               </div>
@@ -288,15 +288,15 @@ export default function Page() {
           <div className={styles.processItemTwo}>
             {stage > 0 ? (
               <div className={styles.borderCircle}>
-                <div className={styles.processNumber}>
-                  <h2>2</h2>
+                <div>
+                  <h2 className={styles.processNumber}>2</h2>
                 </div>
                 <h1 className={styles.processTitle}>Customer Info.</h1>
               </div>
             ) : (
               <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
-                <div className={styles.processNumber}>
-                  <h2>2</h2>
+                <div>
+                  <h2 className={styles.processNumber}>2</h2>
                 </div>
                 <h1 className={styles.processTitle}>Customer Info.</h1>
               </div>
@@ -306,15 +306,15 @@ export default function Page() {
           <div className={styles.processItemThree}>
             {stage > 1 ? (
               <div className={styles.borderCircle}>
-                <div className={styles.processNumber}>
-                  <h2>3</h2>
+                <div>
+                  <h2 className={styles.processNumber}>3</h2>
                 </div>
                 <h1 className={styles.processTitle}>Checkout</h1>
               </div>
             ) : (
               <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
-                <div className={styles.processNumber}>
-                  <h2>3</h2>
+                <div>
+                  <h2 className={styles.processNumber}>3</h2>
                 </div>
                 <h1 className={styles.processTitle}>Checkout</h1>
               </div>
@@ -352,104 +352,147 @@ export default function Page() {
                   </button>
                 </div>
               </div>
+            </div>
+            <div className={styles.typeFormItem}>
               <div className={styles.typeFormItemGroup}>
                 <div className={styles.cartGroup}>
                   <h1 className={styles.cartItemTitle}>CITY</h1>
                   <h1 className={styles.cartItemSubTitle}>{checkoutData.city}</h1>
                   <h1 className={styles.cartItemTitle}>PLAN</h1>
-                  <h1 className={styles.cartItemSubTitle}> {checkoutData.plan}</h1>
+                  <h1 className={styles.cartItemSubTitle}> {checkoutData.plan.toUpperCase()}</h1>
                   <h1 className={styles.cartItemTitle}>TERM</h1>
-                  <h1 className={styles.cartItemSubTitle}>{checkoutData.term}</h1>
+                  <h1 className={styles.cartItemSubTitle}>{checkoutData.term.toUpperCase()}</h1>
                   {checkoutData.subTerm && (
                     <>
                       <h1 className={styles.cartItemTitle}>SUB TERM</h1>
-                      <h1 className={styles.cartItemSubTitle}>{checkoutData.subTerm}</h1>
+                      <h1 className={styles.cartItemSubTitle}>
+                        {checkoutData.subTerm.toUpperCase()}
+                      </h1>
                     </>
                   )}
                   <h1 className={styles.cartItemTitle}>STATUS</h1>
-                  <h1 className={styles.cartItemSubTitle}>{checkoutData.status}</h1>
+                  <h1 className={styles.cartItemSubTitle}>{checkoutData.status.toUpperCase()}</h1>
                   <h1 className={styles.cartItemTitle}>QUANTITY</h1>
                   <h1 className={styles.cartItemSubTitle}>{checkoutData.quantity}</h1>
-                  <h1 className={styles.cartItemTitle}>TOTAL PRICE</h1>
+                  <h1 className={styles.cartItemTitle}>TOTAL</h1>
                   <h1 className={styles.cartItemSubTitle}>${totalPrice}</h1>
                 </div>
               </div>
             </div>
-            <div className={styles.typeFormItem}>
-              <form onSubmit={customerHandleSubmit(submitCustomerForm)}>
-                <div>
-                  <h1>CUSTOMER INFORMATION</h1>
-                  <input
-                    type="text"
-                    placeholder="Email Address"
-                    {...customerRegister('email', { required: true })}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Phone"
-                    {...customerRegister('phone', { required: true })}
-                  />
+            <form onSubmit={customerHandleSubmit(submitCustomerForm)}>
+              <div className={styles.typeFormItem}>
+                <div className={styles.typeFormItemGroup}>
+                  <h1 className={styles.typeFormItemLabel}>CUSTOMER INFORMATION</h1>
+                  <div className={styles.optionWrap}>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="Email Address"
+                        {...customerRegister('email', { required: true })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="Phone"
+                        {...customerRegister('phone', { required: true })}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h1>SHIPPING ADDRESS</h1>
-                  <input
-                    type="text"
-                    placeholder="First Name"
-                    {...customerRegister('firstName', { required: true })}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Last Name"
-                    {...customerRegister('lastName', { required: true })}
-                  />
-                  <input
-                    type="text"
-                    placeholder="United States"
-                    defaultValue={'United States'}
-                    {...customerRegister('address.country', { required: true })}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Street Address"
-                    {...customerRegister('address.street', { required: true })}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Apt, Unit, Suite, etc (optional)"
-                    {...customerRegister('address.opt', { required: false })}
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="Postal / Zip"
-                    {...customerRegister('address.postalCode', { required: true })}
-                  />
-                  <input
-                    type="text"
-                    placeholder="City"
-                    {...customerRegister('address.city', { required: true })}
-                  />
-                  <input
-                    type="text"
-                    placeholder="State"
-                    {...customerRegister('address.state', { required: true })}
-                  />
+              </div>
+              <div className={styles.typeFormItem}>
+                <div className={styles.typeFormItemGroup}>
+                  <h1 className={styles.typeFormItemLabel}>SHIPPING ADDRESS (FREE SHIPPING)</h1>
+                  <div className={styles.optionWrap}>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="First Name"
+                        {...customerRegister('firstName', { required: true })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="Last Name"
+                        {...customerRegister('lastName', { required: true })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="United States"
+                        defaultValue={'United States'}
+                        {...customerRegister('address.country', { required: true })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="Street Address"
+                        {...customerRegister('address.street', { required: true })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="Apt, Unit, Suite, etc (optional)"
+                        {...customerRegister('address.opt', { required: false })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="Postal / Zip"
+                        {...customerRegister('address.postalCode', { required: true })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="City"
+                        {...customerRegister('address.city', { required: true })}
+                      />
+                    </div>
+                    <div className={styles.checkoutOption}>
+                      <input
+                        className={styles.typeFormItemInputShipping}
+                        type="text"
+                        placeholder="State"
+                        {...customerRegister('address.state', { required: true })}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h1>SHIPPING</h1>
-                  <h2>FREE</h2>
+              </div>
+              <div className={styles.typeFormItem}>
+                <div className={styles.typeFormItemGroup}>
+                  <h1 className={styles.typeFormItemLabel}>SPECIAL INSTRUCTIONS</h1>
+                  <div className={styles.optionWrap}>
+                    <textarea
+                      className={styles.specialTextInput}
+                      placeholder="Special Instructions"
+                      {...customerRegister('address.special', { required: false })}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <h1>SPECIAL INSTRUCTIONS</h1>
-                  <input
-                    type="text"
-                    placeholder="Special Instructions"
-                    {...customerRegister('address.special', { required: false })}
-                  />
-                </div>
-                <button type="submit">SUBMIT</button>
-              </form>
-            </div>
+              </div>
+              <div className={styles.optionWrap}>
+                <button className={styles.stripeButton} type="submit">
+                  SUBMIT
+                </button>
+              </div>
+            </form>
           </div>
         )}
 
@@ -626,7 +669,15 @@ export default function Page() {
                 <label className={styles.typeFormItemLabel}>STATUS</label>
                 <div className={styles.typeFormItemGroup}>
                   {Object.keys(status).map((statusKey) => (
-                    <div key={statusKey} className={styles.optionWrap}>
+                    <div
+                      key={statusKey}
+                      className={
+                        statusKey === selectedStatus ? styles.optionWrapSelect : styles.optionWrap
+                      }
+                      onClick={() => {
+                        setSelectedStatus(statusKey)
+                      }}
+                    >
                       <div className={styles.option}>
                         <input
                           className={styles.typeFormItemInput}
