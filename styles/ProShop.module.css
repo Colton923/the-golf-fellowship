@@ -1,1 +1,366 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+.pageWrap {
+  font-family: 'Open Sans', sans-serif;
+  display: inline-block;
+}
+
+.twoColumns {
+  display: grid;
+  vertical-aign: top;
+  width: 100%;
+  margin-top: 60px;
+  padding: 1rem;
+}
+
+.leftColumn {
+  grid-column: 1;
+  margin-top: 100px;
+  margin-left: 100px;
+}
+
+.contentWrap {
+  display: inline-block;
+  width: 100vw;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.processWrap {
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.processFlow {
+  display: grid;
+  width: 100%;
+  height: 50px;
+  margin-top: 100px;
+  top: 0;
+  grid-template-columns: 75px 1fr 75px 1fr 75px;
+  grid-template-rows: 1fr;
+  grid-gap: 0px;
+  jusitfy-content: center;
+  align-items: center;
+}
+
+.lineBetweenDiv12 {
+  grid-column: 2;
+  grid-row: 1;
+  width: 97%;
+  height: 2px;
+  background-color: #000;
+  opacity: 0.2;
+}
+
+.lineBetweenDiv23 {
+  grid-column: 4;
+  grid-row: 1;
+  width: 97%;
+  height: 2px;
+  background-color: #000;
+  opacity: 0.2;
+}
+
+.processItemOne {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.processItemTwo {
+  grid-column: 3;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.processItemThree {
+  grid-column: 5;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  padding: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+.borderCircle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  display: grid;
+  grid-columns: 1fr;
+  grid-rows: 1fr 1fr;
+  margin-bottom: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.processNumber {
+  font-size: 0.8rem;
+  font-weight: 700;
+  grid-column: 1;
+  grid-row: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.processTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 10px;
+  grid-column: 1;
+  grid-row: 2;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+  padding: 50px;
+  z-index: 2;
+  margin-top: 200px;
+  transition: 0.5s;
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+.logoWrap {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  grid-template-rows: 1fr;
+
+  grid-gap: 0px;
+  justify-content: center;
+  align-items: center;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  grid-column: 1;
+  grid-row: 1;
+}
+.itemTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.typeForm {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.typeFormItemGroup {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.typeFormItem {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: left;
+  border: 1px solid #000;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  box-shadow: 0 0 5px rgba(8, 7, 16, 0.6);
+}
+
+.typeFormItemLabel {
+  font-size: 1rem;
+  font-weight: 900;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.optionWrap {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: left;
+  margin-left: 25px;
+}
+.optionWrapSelect {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: left;
+  margin-left: 15px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 5px;
+  opacity: 0.5;
+  transform: scale(0.9);
+}
+
+.option {
+  position: relative;
+  width: 180px;
+  height: 30px;
+  z-index: 1;
+  margin: 0;
+  border: 1px solid #000;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.numberOption {
+  position: relative;
+  width: 100px;
+  height: 30px;
+  z-index: 1;
+  margin: 0;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.option:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.option:active {
+  background-color: #000;
+  color: #fff;
+  opacity: 0.5;
+}
+
+.typeFormItemInput {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+}
+
+.typeFormItemInputNumber {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.typeFormItemInputNumber::-webkit-inner-spin-button,
+.typeFormItemInputNumber::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.checkoutButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+}
+
+.checkoutButton:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.checkoutButton:active {
+  background-color: #000;
+  color: #fff;
+  opacity: 0.5;
+}
+
+.backButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+}
+
+.cartGroup {
+  position: relative;
+  right: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.cartItemTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  grid-row: 1;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.cartItemSubTitle {
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin: 0;
+  grid-row: 2;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
