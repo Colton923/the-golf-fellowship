@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 });
+
 const handler = async (req: any, res: any) => {
   const { amount, payment_intent_id } = req.body;
   if (payment_intent_id) {
@@ -17,7 +18,7 @@ const handler = async (req: any, res: any) => {
         const updated_intent = await stripe.paymentIntents.update(
           payment_intent_id,
           {
-            amount: 3000,
+            amount: amount,
           }
         );
         res.status(200).json(updated_intent);

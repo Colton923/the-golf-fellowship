@@ -216,7 +216,6 @@ export default function Page() {
   }, []);
 
   const options = {
-    // passing the client secret obtained in step 3
     clientSecret: clientSecret,
     // Fully customizable with appearance API.
     appearance: {/*...*/},
