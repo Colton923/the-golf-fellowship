@@ -366,7 +366,7 @@ export default function Page() {
           <h1 className={styles.itemTitle}>TGF MEMBERSHIP</h1>
         </div>
 
-        {showStripeElement && (
+        {showStripeElement && clientSecret && (
         <Elements stripe={stripe} options={options}>
           <CheckoutForm paymentIntent={paymentIntent}/>
         </Elements>
