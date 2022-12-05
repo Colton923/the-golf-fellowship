@@ -184,7 +184,7 @@ export default function Page() {
   const [showPrice, setShowPrice] = useState(false)
   const [showCheckout, setShowCheckout] = useState(false)
   const [checkoutData, setCheckoutData] = useState({} as FormData)
-  const [totalPrice, setTotalPrice] = useState(0)
+  const [totalPrice, setTotalPrice] = useState(1)
   const [stage, setStage] = useState(0)
   const [city, setCity] = useState('')
 

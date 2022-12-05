@@ -74,7 +74,7 @@ export default function Form(paymentIntent:any) {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:3000/',
+        return_url: 'http://kerryniester.com/success',
         receipt_email: email,
         shipping: {
           name: 'Jenny Rosen',
@@ -101,30 +101,22 @@ export default function Form(paymentIntent:any) {
 
   return (
     <>
-      <form id="payment-form" onSubmit={handleSubmit} className="m-auto">
-        <div className="mb-3">
+      <form id="payment-form" onSubmit={handleSubmit} className="">
+        <div className="">
           Cart Total:
           <input
             id="amount"
             type="text"
             value={locAmount}
-            className="block
-            w-full
-            rounded-md
-            border-gray-300
-            shadow-sm h-16"
+            className=""
             onChange={(e) => handleAmount(e.target.value)}
             placeholder="Enter email address"
           />
         </div>
-        <div className="mb-6">
+        <div className="">
           Email address:
           <input
-            className="block
-            w-full
-            rounded-md
-            border-gray-300
-            shadow-sm h-16"
+            className=""
             id="email"
             type="text"
             value={email}
@@ -134,13 +126,13 @@ export default function Form(paymentIntent:any) {
         </div>
         <PaymentElement id="payment-element" />
         <button
-          className="elements-style-background"
+          className=""
           disabled={isLoading || !stripe || !elements}
           id="submit"
         >
           <span id="button-text">
             {isLoading ? (
-              <div className="spinner" id="spinner"></div>
+              <div className="" id="spinner"></div>
             ) : (
               'Pay now'
             )}
