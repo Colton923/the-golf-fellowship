@@ -115,7 +115,6 @@ export default function Form(paymentIntent: any, shopper: shopper) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter Email for Payment Receipt"
           />
-          <h1>Thanks for your purchase, {shopper.shipping.name}</h1>
         </div>
         <PaymentElement id="payment-element" />
         <button

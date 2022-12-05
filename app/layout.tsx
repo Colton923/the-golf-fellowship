@@ -4,7 +4,11 @@ interface Props {
 export default async function RootLayout({ children }: Props) {
   return (
     <html>
-      <head />
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="The Golf Fellowship" />
+      </head>
       <body>
         <div>
           <div>

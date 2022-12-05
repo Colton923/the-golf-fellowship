@@ -292,7 +292,6 @@ export default function Page() {
   }
 
   const submitData = async (data: FormData) => {
-    console.log(data)
     setCheckoutData(data)
     setShowForm(false)
     setShowCheckout(true)
