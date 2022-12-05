@@ -1,12 +1,14 @@
 'use client'
 
 import styles from '../../styles/Admin.module.css'
-import DashboardNavbar from './AdminNavbar'
+import AdminNavbar from '../../components/AdminNavbar'
 
 export default function Layout({ children }: any) {
   return (
     <div>
-      <DashboardNavbar />
+      <div>
+        <AdminNavbar />
+      </div>
       <div>{children}</div>
     </div>
   )

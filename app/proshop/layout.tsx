@@ -1,5 +1,5 @@
 'use client'
-import DashboardNavbar from '../dashboard/DashboardNavbar'
+import DashboardNavbar from '../../components/DashboardNavbar'
 import styles from '../../styles/ProShop.module.css'
 
 interface ProShopLayoutProps {

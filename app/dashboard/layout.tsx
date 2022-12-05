@@ -1,7 +1,7 @@
 'use client'
 
 import styles from '../../styles/Dashboard.module.css'
-import DashboardNavbar from '../admin/AdminNavbar'
+import DashboardNavbar from '../../components/AdminNavbar'
 import { StripeProducts } from './StripeProducts'
 import { MySubscriptions } from './MySubscriptions'
 import { auth } from '../../firebase/firebaseClient'

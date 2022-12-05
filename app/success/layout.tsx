@@ -1,8 +1,6 @@
-import PaymentStatus from "../../components/PaymentStatus"
+import PaymentStatus from '../../components/stripe/PaymentStatus'
 
-
-export default function SuccessLayout({ children }: any){
-
+export default function SuccessLayout({ children }: any) {
   console.log(PaymentStatus)
   return (
     <div>

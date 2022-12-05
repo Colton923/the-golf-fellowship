@@ -1,10 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import styles from '../../styles/Navbar.module.css'
+import styles from '../styles/Navbar.module.css'
 import Image from 'next/image'
-import logo from '../../public/static/images/tgf_logo.jpg'
-import { auth } from '../../firebase/firebaseClient'
+import logo from '../public/static/images/tgf_logo.jpg'
+import { auth } from '../firebase/firebaseClient'
 
 export default function DashboardNavbar() {
   const signOut = () => {
@@ -23,8 +23,11 @@ export default function DashboardNavbar() {
         <Link href="/" className={styles.navbarlink} onInput={signOut}>
           Logout
         </Link>
-        <Link href="admin" className={styles.navbarlink}>
+        <Link href="/admin" className={styles.navbarlink}>
           Admin
+        </Link>
+        <Link href="/proshop" className={styles.navbarlink}>
+          Pro Shop
         </Link>
       </nav>
     </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
-import styles from '../styles/ProShop.module.css'
+import styles from '../../styles/ProShop.module.css'
 
 interface CheckoutFormProps {
   paymentIntent: any
@@ -34,7 +34,6 @@ export default function CheckoutForm({
   const stripe = useStripe()
   const elements = useElements()
 
-  console.log('amount', amount)
   useEffect(() => {
     if (!stripe) {
       return
