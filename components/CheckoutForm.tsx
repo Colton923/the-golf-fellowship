@@ -5,6 +5,7 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
+import styles from '../../styles/ProShop.module.css';
 
 export default function Form(paymentIntent:any) {
   const [email, setEmail] = useState('');
@@ -101,40 +102,35 @@ export default function Form(paymentIntent:any) {
 
   return (
     <>
-      <form id="payment-form" onSubmit={handleSubmit} className="">
-        <div className="">
-          Cart Total:
-          <input
-            id="amount"
-            type="text"
-            value={locAmount}
-            className=""
-            onChange={(e) => handleAmount(e.target.value)}
-            placeholder="Enter email address"
-          />
+      <form id="payment-form" onSubmit={handleSubmit} className={styles.stripeForm}>
+        <div>
+          <h1 className={styles.stripeFormCart}>Cart Total:</h1>
+          <h1 className={styles.stripeFormCart} >
+          {'$'+locAmount + '.00'}
+          </h1>
         </div>
-        <div className="">
+        <div className={styles.stripeFormCart}>
           Email address:
           <input
-            className=""
+            className={styles.stripeFormCartTextInput}
             id="email"
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter email address"
+            placeholder="Enter Email for Payment Receipt"
           />
         </div>
         <PaymentElement id="payment-element" />
         <button
-          className=""
+          className={styles.stripeFormButton}
           disabled={isLoading || !stripe || !elements}
           id="submit"
         >
           <span id="button-text">
             {isLoading ? (
-              <div className="" id="spinner"></div>
+              <div className={styles.stripeFormButton} id="spinner"></div>
             ) : (
-              'Pay now'
+              'Pay'
             )}
           </span>
         </button>
