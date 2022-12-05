@@ -1,53 +1,154 @@
-import React, {useState} from 'react';
-import {useStripe, useElements, PaymentElement} from '@stripe/react-stripe-js';
 
-const CheckoutForm = () => {
+import React, { useEffect, useState } from 'react';
+import {
+  PaymentElement,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js';
+
+export default function Form(paymentIntent:any) {
+  const [email, setEmail] = useState('');
+  const [locAmount, setLocAmount] = useState('300');
+  const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
 
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleSubmit = async (event:any) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
-    event.preventDefault();
-
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
+  useEffect(() => {
+    if (!stripe) {
       return;
     }
 
-    const {error} = await stripe.confirmPayment({
-      //`Elements` instance that was used to create the Payment Element
+    //Grab the client secret from url params
+    const clientSecret = new URLSearchParams(window.location.search).get(
+      'payment_intent_client_secret'
+    );
+
+    if (!clientSecret) {
+      return;
+    }
+
+    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+      //@ts-ignore
+      switch (paymentIntent.status) {
+        case 'succeeded':
+          setMessage('Payment succeeded!');
+          break;
+        case 'processing':
+          setMessage('Your payment is processing.');
+          break;
+        case 'requires_payment_method':
+          setMessage('Your payment was not successful, please try again.');
+          break;
+        default:
+          setMessage('Something went wrong.');
+          break;
+      }
+    });
+  }, [stripe]);
+
+
+  const handleAmount = async (val:any) => {
+    setLocAmount(val);
+    fetch('api/stripe_intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: val * 100,
+        payment_intent_id: paymentIntent.paymentIntent,
+      }),
+    });
+  };
+
+  const handleSubmit = async (e:any) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      console.log('not loaded');
+      // Stripe.js has not yet loaded.
+      return;
+    }
+
+    setIsLoading(true);
+
+    const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'https://kerryniester.com/success',
+        return_url: 'http://localhost:3000/',
+        receipt_email: email,
+        shipping: {
+          name: 'Jenny Rosen',
+          address: {
+            line1: '510 Townsend St',
+            postal_code: '98140',
+            city: 'San Francisco',
+            state: 'CA',
+            country: 'US',
+        },
       },
+    },
     });
 
 
-    if (error) {
-      // This point will only be reached if there is an immediate error when
-      // confirming the payment. Show error to your customer (for example, payment
-      // details incomplete)
+    if (error.type === 'card_error' || error.type === 'validation_error') {
       console.log(error.message);
-      setErrorMessage(error.message?error.message:'bad error message?');
     } else {
-      // Your customer will be redirected to your `return_url`. For some payment
-      // methods like iDEAL, your customer will be redirected to an intermediate
-      // site first to authorize the payment, then redirected to the `return_url`.
+      setMessage('An unexpected error occured.');
     }
+
+    setIsLoading(false);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <PaymentElement />
-      <button disabled={!stripe}>Submit</button>
-      {/* Show error message to your customers */}
-      {errorMessage && <div>{errorMessage}</div>}
-    </form>
-  )
-};
-
-export default CheckoutForm;
+    <>
+      <form id="payment-form" onSubmit={handleSubmit} className="m-auto">
+        <div className="mb-3">
+          Cart Total:
+          <input
+            id="amount"
+            type="text"
+            value={locAmount}
+            className="block
+            w-full
+            rounded-md
+            border-gray-300
+            shadow-sm h-16"
+            onChange={(e) => handleAmount(e.target.value)}
+            placeholder="Enter email address"
+          />
+        </div>
+        <div className="mb-6">
+          Email address:
+          <input
+            className="block
+            w-full
+            rounded-md
+            border-gray-300
+            shadow-sm h-16"
+            id="email"
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email address"
+          />
+        </div>
+        <PaymentElement id="payment-element" />
+        <button
+          className="elements-style-background"
+          disabled={isLoading || !stripe || !elements}
+          id="submit"
+        >
+          <span id="button-text">
+            {isLoading ? (
+              <div className="spinner" id="spinner"></div>
+            ) : (
+              'Pay now'
+            )}
+          </span>
+        </button>
+        {/* Show any error or success messages */}
+        {message && <div id="payment-message">{message}</div>}
+      </form>
+    </>
+  );
+}

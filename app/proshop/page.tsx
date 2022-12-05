@@ -369,7 +369,7 @@ export default function Page() {
 
         {showStripeElement && (
         <Elements stripe={stripe} options={options}>
-          <CheckoutForm />
+          <CheckoutForm paymentIntent={paymentIntent}/>
         </Elements>
         )}
 

@@ -38,7 +38,7 @@ const handler = async (req: any, res: any) => {
     // Create PaymentIntent
     const params = {
       amount: amount,
-      currency: 'eur',
+      currency: 'usd',
       description: 'Payment description',
       automatic_payment_methods: {
         enabled: true,
