@@ -7,6 +7,9 @@ import { collection, getDocs, doc } from 'firebase/firestore'
 import styles from '../../styles/ProShop.module.css'
 import productImage from '../../public/static/images/membershipImage.jpg'
 import Image from 'next/image'
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import CheckoutForm from '../../components/CheckoutForm'
 
 export type defaultMembership = {
   plans: {
@@ -166,6 +169,9 @@ type CustomerData = {
   }
 }
 
+//@ts-ignore
+const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 export default function Page() {
   const [membershipOptions, setMembershipOptions] = useState({} as defaultMembership)
   const [showForm, setShowForm] = useState(false)
@@ -188,6 +194,35 @@ export default function Page() {
   const [selectedSubTerm, setSelectedSubTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('')
   const [selectedQuantity, setSelectedQuantity] = useState(0)
+
+  const [showStripeElement, setShowStripeElement] = useState(false)
+  const [clientSecret, setClientSecret] = useState('');
+  const [paymentIntent, setPaymentIntent] = useState('');
+
+  useEffect(() => {
+    // Create PaymentIntent as soon as the page loads using our local API
+    fetch('api/stripe_intent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: totalPrice * 100,
+        payment_intent_id: '',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setClientSecret(data.client_secret), setPaymentIntent(data.id);
+      });
+  }, []);
+
+  const appearance = {
+    theme: 'stripe',
+    labels: 'floating',
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
 
   const membershipRef = collection(db, 'membership')
   const cities = ['San Antonio', 'Austin', 'DFW', 'Houston', 'Hill Country']
@@ -237,7 +272,10 @@ export default function Page() {
   const submitCustomerForm = (data: CustomerData) => {
     setStage(2)
     console.log(data)
-    console.log(totalPrice)
+    console.log(totalPrice * 100)
+    setShowCheckout(false)
+    setShowForm(false)
+    setShowStripeElement(true)
   }
 
   const submitData = async (data: FormData) => {
@@ -330,6 +368,12 @@ export default function Page() {
           </div>
           <h1 className={styles.itemTitle}>TGF MEMBERSHIP</h1>
         </div>
+
+        {showStripeElement && (
+        <Elements options={options} stripe={stripe}>
+          <CheckoutForm paymentIntent={paymentIntent} />
+        </Elements>
+        )}
 
         {showCheckout && (
           <div className={styles.typeForm}>
