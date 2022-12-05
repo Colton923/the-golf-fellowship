@@ -7,9 +7,10 @@ import { collection, getDocs, doc } from 'firebase/firestore'
 import styles from '../../styles/ProShop.module.css'
 import productImage from '../../public/static/images/membershipImage.jpg'
 import Image from 'next/image'
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 import CheckoutForm from '../../components/CheckoutForm'
+import { shopper } from '../../components/CheckoutForm'
 
 export type defaultMembership = {
   plans: {
@@ -170,7 +171,7 @@ type CustomerData = {
 }
 
 //@ts-ignore
-const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 export default function Page() {
   const [membershipOptions, setMembershipOptions] = useState({} as defaultMembership)
@@ -196,8 +197,9 @@ export default function Page() {
   const [selectedQuantity, setSelectedQuantity] = useState(0)
 
   const [showStripeElement, setShowStripeElement] = useState(false)
-  const [clientSecret, setClientSecret] = useState('');
-  const [paymentIntent, setPaymentIntent] = useState('');
+  const [clientSecret, setClientSecret] = useState('')
+  const [paymentIntent, setPaymentIntent] = useState('')
+  const [shopper, setShopper] = useState({} as shopper)
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads using our local API
@@ -211,15 +213,17 @@ export default function Page() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setClientSecret(data.client_secret), setPaymentIntent(data.id);
-      });
-  }, []);
+        setClientSecret(data.client_secret), setPaymentIntent(data.id)
+      })
+  }, [])
 
   const options = {
     clientSecret: clientSecret,
     // Fully customizable with appearance API.
-    appearance: {/*...*/},
-  };
+    appearance: {
+      /*...*/
+    },
+  }
 
   const membershipRef = collection(db, 'membership')
   const cities = ['San Antonio', 'Austin', 'DFW', 'Houston', 'Hill Country']
@@ -268,8 +272,20 @@ export default function Page() {
 
   const submitCustomerForm = (data: CustomerData) => {
     setStage(2)
-    console.log(data)
-    console.log(totalPrice * 100)
+    const thisShopper: shopper = {
+      shipping: {
+        name: data.firstName + ' ' + data.lastName,
+        address: {
+          line1: data.address.street,
+          postal_code: data.address.postalCode,
+          city: data.address.city,
+          state: data.address.state,
+          country: data.address.country,
+        },
+      },
+      amount: totalPrice * 100,
+    }
+    setShopper(thisShopper)
     setShowCheckout(false)
     setShowForm(false)
     setShowStripeElement(true)
@@ -367,9 +383,9 @@ export default function Page() {
         </div>
 
         {showStripeElement && clientSecret && (
-        <Elements stripe={stripe} options={options}>
-          <CheckoutForm paymentIntent={paymentIntent}/>
-        </Elements>
+          <Elements stripe={stripe} options={options}>
+            <CheckoutForm paymentIntent={paymentIntent} shopper={shopper} />
+          </Elements>
         )}
 
         {showCheckout && (
