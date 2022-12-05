@@ -12,19 +12,22 @@ export const config = {
     bodyParser: false,
   },
 };
-const handler = async (req, res) => {
+const handler = async (req: any, res: any) => {
   const buf = await buffer(req);
   const sig = req.headers['stripe-signature'];
 
   let event;
 
   try {
-    event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
+    event = stripe.webhooks.constructEvent(buf, sig, webhookSecret? webhookSecret : '');
   } catch (err) {
-    res.status(400).send(`Webhook Error: ${err.message}`);
+    //@ts-ignore
+    res.status(400).send(`Webhook Error: ${err.message }`);
+    //@ts-ignore
     console.log(`Webhook Error: ${err.message}`);
     return;
   }
+  //@ts-ignore
   const data = JSON.parse(buf);
 
   switch (event.type) {

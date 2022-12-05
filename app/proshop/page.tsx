@@ -215,13 +215,11 @@ export default function Page() {
       });
   }, []);
 
-  const appearance = {
-    theme: 'stripe',
-    labels: 'floating',
-  };
   const options = {
-    clientSecret,
-    appearance,
+    // passing the client secret obtained in step 3
+    clientSecret: clientSecret,
+    // Fully customizable with appearance API.
+    appearance: {/*...*/},
   };
 
   const membershipRef = collection(db, 'membership')
@@ -370,8 +368,8 @@ export default function Page() {
         </div>
 
         {showStripeElement && (
-        <Elements options={options} stripe={stripe}>
-          <CheckoutForm paymentIntent={paymentIntent} />
+        <Elements stripe={stripe} options={options}>
+          <CheckoutForm />
         </Elements>
         )}
 

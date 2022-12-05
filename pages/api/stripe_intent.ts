@@ -25,6 +25,7 @@ const handler = async (req: any, res: any) => {
       }
     } catch (e) {
       //Catch any error and return a status 500
+      //@ts-ignore
       if (e.code !== 'resource_missing') {
         const errorMessage =
           e instanceof Error ? e.message : 'Internal server error';
