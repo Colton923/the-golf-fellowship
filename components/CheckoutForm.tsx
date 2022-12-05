@@ -74,10 +74,10 @@ export default function CheckoutForm({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount: amount,
-        payment_intent_id: paymentIntent.paymentIntent,
+        payment_intent_id: paymentIntent,
       }),
     })
-  }, [amount])
+  }, [amount, email, phone, firstName, lastName, address, paymentIntent])
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()

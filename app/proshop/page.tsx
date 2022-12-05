@@ -215,7 +215,7 @@ export default function Page() {
       .then((data) => {
         setClientSecret(data.client_secret), setPaymentIntent(data.id)
       })
-  }, [])
+  }, [totalPrice])
 
   const options = {
     clientSecret: clientSecret,
