@@ -271,7 +271,7 @@ export default function Page() {
   } = useForm<CustomerData>()
 
   const submitCustomerForm = (data: CustomerData) => {
-    data.amount = totalPrice
+    data.amount = totalPrice * 100
     setCustomerData(data)
     setStage(2)
     setShowForm(false)
