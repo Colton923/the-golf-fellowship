@@ -2,28 +2,39 @@ import React, { useEffect, useState } from 'react'
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import styles from '../styles/ProShop.module.css'
 
-export type shopper = {
-  shipping: {
-    name: string
-    address: {
-      line1: string
-      postal_code: string
-      city: string
-      state: string
-      country: string
-    }
+interface CheckoutFormProps {
+  paymentIntent: any
+  email: string
+  phone: string
+  firstName: string
+  lastName: string
+  address: {
+    country: string
+    street: string
+    opt?: string
+    postalCode: string
+    city: string
+    state: string
+    special?: string
   }
   amount: number
 }
 
-export default function Form(paymentIntent: any, shopper: shopper) {
-  const [email, setEmail] = useState('')
-  const [locAmount, setLocAmount] = useState(shopper.amount)
+export default function CheckoutForm({
+  paymentIntent,
+  email,
+  phone,
+  firstName,
+  lastName,
+  address,
+  amount,
+}: CheckoutFormProps) {
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const stripe = useStripe()
   const elements = useElements()
 
+  console.log('amount', amount)
   useEffect(() => {
     if (!stripe) {
       return
@@ -58,16 +69,15 @@ export default function Form(paymentIntent: any, shopper: shopper) {
   }, [stripe])
 
   useEffect(() => {
-    setLocAmount(shopper.amount)
     fetch('api/stripe_intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        amount: shopper.amount * 100,
+        amount: amount,
         payment_intent_id: paymentIntent.paymentIntent,
       }),
     })
-  }, [locAmount])
+  }, [amount])
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -85,7 +95,6 @@ export default function Form(paymentIntent: any, shopper: shopper) {
       confirmParams: {
         return_url: 'http://kerryniester.com/success',
         receipt_email: email,
-        shipping: shopper.shipping,
       },
     })
 
@@ -102,8 +111,7 @@ export default function Form(paymentIntent: any, shopper: shopper) {
     <>
       <form id="payment-form" onSubmit={handleSubmit} className={styles.stripeForm}>
         <div>
-          <h1 className={styles.stripeFormCart}>Cart Total:</h1>
-          <h1 className={styles.stripeFormCart}>{'$' + locAmount + '.00'}</h1>
+          <h1 className={styles.stripeFormCart}>Cart Total:{'$' + amount + '.00'}</h1>
         </div>
         <div className={styles.stripeFormCart}>
           Email address:
@@ -112,7 +120,9 @@ export default function Form(paymentIntent: any, shopper: shopper) {
             id="email"
             type="text"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              email = e.target.value
+            }}
             placeholder="Enter Email for Payment Receipt"
           />
         </div>

@@ -10,7 +10,6 @@ import Image from 'next/image'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import CheckoutForm from '../../components/CheckoutForm'
-import { shopper } from '../../components/CheckoutForm'
 
 export type defaultMembership = {
   plans: {
@@ -168,6 +167,7 @@ type CustomerData = {
     state: string
     special?: string
   }
+  amount: number
 }
 
 //@ts-ignore
@@ -188,6 +188,7 @@ export default function Page() {
   const [totalPrice, setTotalPrice] = useState(1)
   const [stage, setStage] = useState(0)
   const [city, setCity] = useState('')
+  const [customerData, setCustomerData] = useState({} as CustomerData)
 
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedPlan, setSelectedPlan] = useState('')
@@ -199,7 +200,6 @@ export default function Page() {
   const [showStripeElement, setShowStripeElement] = useState(false)
   const [clientSecret, setClientSecret] = useState('')
   const [paymentIntent, setPaymentIntent] = useState('')
-  const [shopper, setShopper] = useState({} as shopper)
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads using our local API
@@ -271,23 +271,11 @@ export default function Page() {
   } = useForm<CustomerData>()
 
   const submitCustomerForm = (data: CustomerData) => {
+    data.amount = totalPrice
+    setCustomerData(data)
     setStage(2)
-    const thisShopper: shopper = {
-      shipping: {
-        name: data.firstName + ' ' + data.lastName,
-        address: {
-          line1: data.address.street,
-          postal_code: data.address.postalCode,
-          city: data.address.city,
-          state: data.address.state,
-          country: data.address.country,
-        },
-      },
-      amount: totalPrice * 100,
-    }
-    setShopper(thisShopper)
-    setShowCheckout(false)
     setShowForm(false)
+    setShowCheckout(false)
     setShowStripeElement(true)
   }
 
@@ -383,7 +371,7 @@ export default function Page() {
 
         {showStripeElement && clientSecret && (
           <Elements stripe={stripe} options={options}>
-            <CheckoutForm paymentIntent={paymentIntent} shopper={shopper} />
+            <CheckoutForm paymentIntent={paymentIntent} {...customerData} />
           </Elements>
         )}
 
@@ -399,7 +387,6 @@ export default function Page() {
                       setShowCheckout(false),
                       setShowForm(true),
                       setCheckoutData({} as FormData),
-                      setTotalPrice(0),
                       setCity(''),
                       setStage(0)
                     )}
