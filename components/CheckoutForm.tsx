@@ -5,7 +5,7 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
-import styles from '../../styles/ProShop.module.css';
+import styles from '../styles/ProShop.module.css'
 
 export default function Form(paymentIntent:any) {
   const [email, setEmail] = useState('');
