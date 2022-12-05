@@ -111,7 +111,7 @@ export default function CheckoutForm({
     <>
       <form id="payment-form" onSubmit={handleSubmit} className={styles.stripeForm}>
         <div>
-          <h1 className={styles.stripeFormCart}>Cart Total:{'$' + amount + '.00'}</h1>
+          <h1 className={styles.stripeFormCart}>Cart Total:{'$' + amount / 100 + '.00'}</h1>
         </div>
         <div className={styles.stripeFormCart}>
           Email address:
