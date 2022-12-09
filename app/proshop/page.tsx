@@ -10,7 +10,7 @@ import {
 import styles from '../../styles/ProShop.module.css'
 import productImage from '../../public/static/images/membershipImage.jpg'
 import Image from 'next/image'
-import { Elements } from '@stripe/react-stripe-js'
+import { Elements, PaymentElement } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import CheckoutForm from '../../components/stripe/CheckoutForm'
 import { auth } from '../../firebase/firebaseClient'
@@ -232,6 +232,11 @@ export default function Page() {
   const [lineItemPrice, setLineItemPrice] = useState(0)
   const [intervalPurchase, setIntervalPurchase] = useState('')
   const [subStatusMessage, setSubStatusMessage] = useState('')
+
+  useEffect(() => {
+    console.log('paymentIntent', paymentIntent)
+
+  }, [paymentIntent])
 
   useEffect(() => {
     fetch('api/stripe/stripe_intent', {
@@ -538,6 +543,7 @@ export default function Page() {
           </h1>
         </div>
 
+{/* CARD THREE */}
         {showStripeElement && clientSecret && (
           <Elements stripe={stripe} options={options}>
             <CheckoutForm
@@ -547,13 +553,14 @@ export default function Page() {
           </Elements>
         )}
 
+{/* CARD TWO */}
         {showCheckout && (
-          <div className={styles.typeForm}>
-            <div className={styles.typeFormItemSummary}>
-              <h1 className={styles.typeFormItemLabel}>
+          <div className={styles.cardForm}>
+            <div className={styles.cardFormItemSummary}>
+              <h1 className={styles.cardFormItemLabel}>
                 TGF MEMBERSHIP SUMMARY
               </h1>
-              <div className={styles.optionWrap}>
+              <div className={styles.cardFormOptionWrap}>
                 <div className={styles.option}>
                   <button
                     className={styles.backButton}
@@ -581,8 +588,8 @@ export default function Page() {
                 </div>
               </div>
             </div>
-            <div className={styles.typeFormItem}>
-              <div className={styles.typeFormItemGroup}>
+            <div className={styles.cardFormItem}>
+              <div className={styles.cardFormItemGroup}>
                 <div className={styles.cartGroup}>
                   <h1 className={styles.cartItemTitle}>
                     CITY
@@ -641,16 +648,16 @@ export default function Page() {
                 submitCustomerForm
               )}
             >
-              <div className={styles.typeFormItem}>
-                <div className={styles.typeFormItemGroup}>
-                  <h1 className={styles.typeFormItemLabel}>
+              <div className={styles.cardFormItem}>
+                <div className={styles.cardFormItemGroup}>
+                  <h1 className={styles.cardFormItemLabel}>
                     CUSTOMER INFORMATION
                   </h1>
-                  <div className={styles.optionWrap}>
+                  <div className={styles.cardFormOptionWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="Email Address"
@@ -662,7 +669,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="Phone"
@@ -674,16 +681,16 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className={styles.typeFormItem}>
-                <div className={styles.typeFormItemGroup}>
-                  <h1 className={styles.typeFormItemLabel}>
+              <div className={styles.cardFormItem}>
+                <div className={styles.cardFormItemGroup}>
+                  <h1 className={styles.cardFormItemLabel}>
                     SHIPPING ADDRESS (FREE SHIPPING)
                   </h1>
-                  <div className={styles.optionWrap}>
+                  <div className={styles.cardFormOptionWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="First Name"
@@ -695,7 +702,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="Last Name"
@@ -707,7 +714,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="United States"
@@ -721,7 +728,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="Street Address"
@@ -734,7 +741,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="Apt, Unit, Suite, etc (optional)"
@@ -747,7 +754,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="Postal / Zip"
@@ -760,7 +767,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="City"
@@ -773,7 +780,7 @@ export default function Page() {
                     <div className={styles.checkoutOption}>
                       <input
                         className={
-                          styles.typeFormItemInputShipping
+                          styles.optionInputShipping
                         }
                         type="text"
                         placeholder="State"
@@ -786,12 +793,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className={styles.typeFormItem}>
-                <div className={styles.typeFormItemGroup}>
-                  <h1 className={styles.typeFormItemLabel}>
+              <div className={styles.cardFormItem}>
+                <div className={styles.cardFormItemGroup}>
+                  <h1 className={styles.cardFormItemLabel}>
                     SPECIAL INSTRUCTIONS
                   </h1>
-                  <div className={styles.optionWrap}>
+                  <div className={styles.cardFormOptionWrap}>
                     <textarea
                       className={styles.specialTextInput}
                       placeholder="Special Instructions"
@@ -803,7 +810,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className={styles.optionWrap}>
+              <div className={styles.cardFormOptionWrap}>
                 <button
                   className={styles.stripeButton}
                   type="submit"
@@ -815,23 +822,24 @@ export default function Page() {
           </div>
         )}
 
+{/* CARD ONE */}
         {showForm && (
           <form
             onSubmit={handleSubmit(submitData)}
-            className={styles.typeForm}
+            className={styles.cardForm}
           >
-            <div className={styles.typeFormItem}>
-              <label className={styles.typeFormItemLabel}>
+            <div className={styles.cardFormItem}>
+              <label className={styles.cardFormItemLabel}>
                 CITY
               </label>
-              <div className={styles.typeFormItemGroup}>
+              <div className={styles.cardFormItemGroup}>
                 {cities.map((city) => (
                   <div
                     key={city}
                     className={
                       city === selectedCity
-                        ? styles.optionWrapSelect
-                        : styles.optionWrap
+                        ? styles.cardFormOptionWrapSelect
+                        : styles.cardFormOptionWrap
                     }
                     onClick={() => {
                       setCity(city)
@@ -840,7 +848,7 @@ export default function Page() {
                   >
                     <div className={styles.option}>
                       <input
-                        className={styles.typeFormItemInput}
+                        className={styles.optionInput}
                         type="radio"
                         {...register('city')}
                         value={city}
@@ -857,13 +865,13 @@ export default function Page() {
             </div>
             <div>
               {showPlan && (
-                <div className={styles.typeFormItem}>
+                <div className={styles.cardFormItem}>
                   <label
-                    className={styles.typeFormItemLabel}
+                    className={styles.cardFormItemLabel}
                   >
                     PLAN
                   </label>
-                  <div className={styles.typeFormItemGroup}>
+                  <div className={styles.cardFormItemGroup}>
                     {Object.keys(membershipOptions).map(
                       (plan) => (
                         <>
@@ -876,8 +884,8 @@ export default function Page() {
                               key={plan}
                               className={
                                 plan === selectedPlan
-                                  ? styles.optionWrapSelect
-                                  : styles.optionWrap
+                                  ? styles.cardFormOptionWrapSelect
+                                  : styles.cardFormOptionWrap
                               }
                               onClick={() => {
                                 setSelectedPlan(plan)
@@ -888,7 +896,7 @@ export default function Page() {
                               >
                                 <input
                                   className={
-                                    styles.typeFormItemInput
+                                    styles.optionInput
                                   }
                                   type="radio"
                                   {...register('plan')}
@@ -916,13 +924,13 @@ export default function Page() {
             </div>
             <div>
               {showTerm && (
-                <div className={styles.typeFormItem}>
+                <div className={styles.cardFormItem}>
                   <label
-                    className={styles.typeFormItemLabel}
+                    className={styles.cardFormItemLabel}
                   >
                     TERM
                   </label>
-                  <div className={styles.typeFormItemGroup}>
+                  <div className={styles.cardFormItemGroup}>
                     {Object.keys(
                       /* @ts-ignore */
                       membershipOptions['performer']
@@ -931,8 +939,8 @@ export default function Page() {
                         key={term}
                         className={
                           term === selectedTerm
-                            ? styles.optionWrapSelect
-                            : styles.optionWrap
+                            ? styles.cardFormOptionWrapSelect
+                            : styles.cardFormOptionWrap
                         }
                         onClick={() => {
                           setSelectedTerm(term)
@@ -941,7 +949,7 @@ export default function Page() {
                         <div className={styles.option}>
                           <input
                             className={
-                              styles.typeFormItemInput
+                              styles.optionInput
                             }
                             type="radio"
                             {...register('term')}
@@ -969,11 +977,11 @@ export default function Page() {
               )}
             </div>
             {showSubTerm && (
-              <div className={styles.typeFormItem}>
-                <label className={styles.typeFormItemLabel}>
+              <div className={styles.cardFormItem}>
+                <label className={styles.cardFormItemLabel}>
                   SEASON
                 </label>
-                <div className={styles.typeFormItemGroup}>
+                <div className={styles.cardFormItemGroup}>
                   {Object.keys(
                     /* @ts-ignore */
                     membershipOptions['performer'][
@@ -984,8 +992,8 @@ export default function Page() {
                       key={subTerm}
                       className={
                         subTerm === selectedSubTerm
-                          ? styles.optionWrapSelect
-                          : styles.optionWrap
+                          ? styles.cardFormOptionWrapSelect
+                          : styles.cardFormOptionWrap
                       }
                       onClick={() => {
                         setSelectedSubTerm(subTerm)
@@ -994,7 +1002,7 @@ export default function Page() {
                       <div className={styles.option}>
                         <input
                           className={
-                            styles.typeFormItemInput
+                            styles.optionInput
                           }
                           type="radio"
                           {...register('subTerm')}
@@ -1018,16 +1026,16 @@ export default function Page() {
               </div>
             )}
             {showQuantity && (
-              <div className={styles.typeFormItem}>
-                <label className={styles.typeFormItemLabel}>
+              <div className={styles.cardFormItem}>
+                <label className={styles.cardFormItemLabel}>
                   QUANTITY
                 </label>
-                <div className={styles.typeFormItemGroup}>
-                  <div className={styles.optionWrap}>
+                <div className={styles.cardFormItemGroup}>
+                  <div className={styles.cardFormOptionWrap}>
                     <div className={styles.numberOption}>
                       <input
                         className={
-                          styles.typeFormItemInputNumber
+                          styles.optionInputNumber
                         }
                         type="number"
                         min="1"
@@ -1055,18 +1063,18 @@ export default function Page() {
               </div>
             )}
             {showStatus && (
-              <div className={styles.typeFormItem}>
-                <label className={styles.typeFormItemLabel}>
+              <div className={styles.cardFormItem}>
+                <label className={styles.cardFormItemLabel}>
                   STATUS
                 </label>
-                <div className={styles.typeFormItemGroup}>
+                <div className={styles.cardFormItemGroup}>
                   {Object.keys(status).map((statusKey) => (
                     <div
                       key={statusKey}
                       className={
                         statusKey === selectedStatus
-                          ? styles.optionWrapSelect
-                          : styles.optionWrap
+                          ? styles.cardFormOptionWrapSelect
+                          : styles.cardFormOptionWrap
                       }
                       onClick={() => {
                         setSelectedStatus(statusKey)
@@ -1075,7 +1083,7 @@ export default function Page() {
                       <div className={styles.option}>
                         <input
                           className={
-                            styles.typeFormItemInput
+                            styles.optionInput
                           }
                           type="radio"
                           {...register('status')}
@@ -1098,8 +1106,8 @@ export default function Page() {
               </div>
             )}
             {showPrice && (
-              <div className={styles.typeFormItemGroup}>
-                <div className={styles.optionWrap}>
+              <div className={styles.cardFormItemGroup}>
+                <div className={styles.cardFormOptionWrap}>
                   <div className={styles.option}>
                     <button
                       className={styles.checkoutButton}

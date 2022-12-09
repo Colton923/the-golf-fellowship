@@ -1,4 +1,8 @@
 import Stripe from 'stripe'
+import type { stripeProduct } from '../../../types/stripe/stripeProduct'
+import { db } from '../../../firebase/firebaseClient'
+import { collection, addDoc } from 'firebase/firestore'
+import admin from 'firebase-admin'
 
 //@ts-ignore
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -42,6 +46,18 @@ const handler = async (req: any, res: any) => {
           },
         })
         res.status(200).json(updated_sub)
+        const productRef = collection(db, 'products')
+        const newProductData: stripeProduct = {
+          id: current_sub.id,
+          object: 'product',
+          active: true,
+          created: Date.now(),
+          default_price: updated_sub.unit_amount? updated_sub.unit_amount.toString() : '',
+          description: current_sub.description? current_sub.description : '',
+          livemode: false,
+          name: current_sub.name? current_sub.name : '',
+        }
+        addDoc(productRef, newProductData)
         return
       }
     } catch (e) {

@@ -179,96 +179,106 @@
   grid-row: 1;
 }
 
-.typeForm {
+.cardForm {
   display: inline-flex;
   flex-wrap: wrap;
 }
 
-.typeFormItemGroup {
+.cardFormItemGroup {
   display: flex;
   flex-wrap: wrap;
 }
 
-.typeFormItem {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: left;
-  align-items: left;
-  border: 1px solid #000;
-  border-radius: 10px;
+.cardFormItem {
   padding: 10px;
   margin: 10px;
+
+  border: 1px solid #000;
+  border-radius: 10px;
   box-shadow: 0 0 5px rgba(8, 7, 16, 0.6);
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: left;
 }
 
-.typeFormItemLabel {
+.cardFormItemLabel {
   font-size: 1rem;
   font-weight: 900;
   margin: 0;
   margin-bottom: 10px;
 }
 
-.optionWrap {
+.cardFormOptionWrap {
+  width: 250px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
-  align-items: left;
-  margin-left: 25px;
+  justify-content: center;
+  align-items: flex-start;
 }
-.optionWrapSelect {
+
+.cardFormOptionWrapSelect {
+  width: 250px;
   display: flex;
-  justify-content: left;
+  justify-content: flex-start;
   align-items: left;
   background-color: #000;
   color: #fff;
   border-color: #fff;
   border-radius: 10px;
-  padding: 10px;
   opacity: 0.95;
-  transform: translateY(10%);
-  transform: scaleX(0.5);
-  transform: scaleY(0.7);
   transition: 0.1s;
+  transform: scale(0.85);
   font-size: 1.2rem;
-  box-shadow: 0 0 17px rgba(8, 7, 16, 0.6);
+  box-shadow: 0 0 10px rgba(8, 7, 16, 0.6);
 }
 
 .option {
   position: relative;
   width: 180px;
   height: 30px;
+  margin: 5px 10px 10px 5px;
+  padding: 5px;
   z-index: 1;
-  margin: 5px;
+
   border: 1px solid #000;
   border-radius: 5px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+}
+
+.optionSelect {
+  position: relative;
+  width: 180px;
+  height: 30px;
+  margin: 5px 10px 10px 5px;
   padding: 5px;
+  z-index: 1;
+
+  border: 1px solid #000;
+  border-radius: 5px;
 }
 
 .numberOption {
   position: relative;
   width: 100px;
   height: 30px;
-  z-index: 1;
-  margin: 0;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  margin: 0 10px 10px 0;
   padding: 10px;
+  z-index: 1;
 }
 
 .option:hover {
-  background-color: #000;
+  background: #000;
   color: #fff;
 }
 
 .option:active {
-  background-color: #000;
+  background: #000;
   color: #fff;
   opacity: 0.5;
 }
 
-.typeFormItemInput {
+.optionInput {
   position: absolute;
   left: 0;
   top: 0;
@@ -280,7 +290,7 @@
   opacity: 0;
 }
 
-.typeFormItemInputNumber {
+.optionInputNumber {
   position: absolute;
   left: 0;
   top: 0;
@@ -294,8 +304,8 @@
   font-weight: 700;
 }
 
-.typeFormItemInputNumber::-webkit-inner-spin-button,
-.typeFormItemInputNumber::-webkit-outer-spin-button {
+.optionInputNumber::-webkit-inner-spin-button,
+.optionInputNumber::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -372,7 +382,7 @@
   text-align: center;
 }
 
-.typeFormItemInputText {
+.optionInputText {
   position: absolute;
   left: 0;
   top: 0;
@@ -423,6 +433,7 @@
   text-align: left;
   vertical-align: top;
   overflow: auto;
+
   font-size: 1.1rem;
   font-weight: 700;
   padding: 5px;
@@ -458,7 +469,7 @@
   opacity: 0.5;
 }
 
-.typeFormItemInputShipping {
+.optionInputShipping {
   position: relative;
   left: 0;
   top: 0;
