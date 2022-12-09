@@ -573,7 +573,6 @@ export default function Page() {
                       setShowTerm(false),
                       setShowPlan(false),
                       setShowSubTerm(false)
-
                     )}
                   >
                     Back
