@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
-<<<<<<< HEAD
-=======
 .navbarmain {
   background: #fff;
   position: fixed;
@@ -16,7 +14,6 @@
   border-bottom: 3px solid #000;
 }
 
->>>>>>> origin/karsten
 .navimage {
   margin: 10px 0 0 30px;
 }
@@ -71,7 +68,7 @@
 
 .navbar:active {
   opacity: 0.5;
-  
+
   transform: scale(1);
 }
 
