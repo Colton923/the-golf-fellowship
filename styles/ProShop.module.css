@@ -207,19 +207,19 @@
   font-weight: 700;
 }
 
-.typeForm {
+.cardForm {
   display: inline-flex;
   flex-wrap: wrap;
 }
 
-.typeFormItemGroup {
+.cardFormItemGroup {
   display: flex;
   flex-wrap: wrap;
 }
 
-.typeFormItem {
-  margin: 10px;
+.cardFormItem {
   padding: 10px;
+  margin: 10px;
 
   border: 1px solid #000;
   border-radius: 10px;
@@ -227,58 +227,61 @@
 
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
+  justify-content: flex-start;
   align-items: left;
 }
 
-.typeFormItemLabel {
-  margin: 0 0 10px 0;
-
+.cardFormItemLabel {
   font-size: 1rem;
   font-weight: 900;
 }
 
-.optionWrap {
+.cardFormOptionWrap {
+  width: 250px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
-  align-items: left;
-
-  cursor: pointer;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-.optionWrapSelect {
-  background: #000;
-  color: #fff;
-  opacity: 0.8;
-
-  border-radius: 10px;
-
-  font-size: 1.2rem;
-  box-shadow: 0 0 17px rgba(8, 7, 16, 0.6);
-  cursor: pointer;
-
+.cardFormOptionWrapSelect {
+  width: 250px;
   display: flex;
-  justify-content: left;
+  justify-content: flex-start;
   align-items: left;
-
-  transform: translateY(10%);
-  transform: scaleX(0.8);
-  transform: scaleY(0.8);
+  background-color: #000;
+  color: #fff;
+  border-color: #fff;
+  border-radius: 10px;
+  opacity: 0.95;
   transition: 0.1s;
+  transform: scale(0.85);
+  font-size: 1.2rem;
+  box-shadow: 0 0 10px rgba(8, 7, 16, 0.6);
 }
 
 .option {
   position: relative;
   width: 180px;
   height: 30px;
-  margin: 5px 15px 15px 5px;
+  margin: 5px 10px 10px 5px;
   padding: 5px;
   z-index: 1;
 
   border: 1px solid #000;
   border-radius: 5px;
-  cursor: pointer;
+}
+
+.optionSelect {
+  position: relative;
+  width: 180px;
+  height: 30px;
+  margin: 5px 10px 10px 5px;
+  padding: 5px;
+  z-index: 1;
+
+  border: 1px solid #000;
+  border-radius: 5px;
 }
 
 .numberOption {
@@ -287,7 +290,6 @@
   height: 30px;
   margin: 0 10px 10px 0;
   padding: 10px;
-
   z-index: 1;
 }
 
@@ -302,7 +304,7 @@
   opacity: 0.5;
 }
 
-.typeFormItemInput {
+.optionInput {
   position: absolute;
   left: 0;
   top: 0;
@@ -316,7 +318,7 @@
   cursor: pointer;
 }
 
-.typeFormItemInputNumber {
+.optionInputNumber {
   position: absolute;
   left: 0;
   top: 0;
@@ -331,8 +333,8 @@
   text-align: center;
 }
 
-.typeFormItemInputNumber::-webkit-inner-spin-button,
-.typeFormItemInputNumber::-webkit-outer-spin-button {
+.optionInputNumber::-webkit-inner-spin-button,
+.optionInputNumber::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -415,7 +417,7 @@
   text-align: center;
 }
 
-.typeFormItemInputText {
+.optionInputText {
   position: absolute;
   left: 0;
   top: 0;
@@ -459,6 +461,13 @@
   width: 350px;
   height: 150px;
   margin: 0;
+  padding: 0;
+  text-align: left;
+  vertical-align: top;
+  overflow: auto;
+
+  font-size: 1.1rem;
+  font-weight: 700;
   padding: 5px;
   z-index: 2;
 
@@ -500,7 +509,7 @@
   opacity: 0.5;
 }
 
-.typeFormItemInputShipping {
+.optionInputShipping {
   position: relative;
   left: 0;
   top: 0;

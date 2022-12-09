@@ -17,8 +17,7 @@ const handler = async (req: any, res: any) => {
         )
       // If a paymentIntent is retrieved update its amount
       if (current_intent) {
-        // Update the paymentIntent to inclue the line items
-
+        // Update the paymentIntent to include the line items
         const updated_intent =
           await stripe.paymentIntents.update(
             body.payment_intent_id,
@@ -60,7 +59,7 @@ const handler = async (req: any, res: any) => {
         enabled: true,
       },
       metadata: {
-        id: body.metadata.id.toString(),
+        id: body.metadata.id
       },
     }
     const payment_intent =
