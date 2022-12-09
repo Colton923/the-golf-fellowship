@@ -1,3 +1,4 @@
+import React from 'react'
 import HomeNavbar from '../../components/HomeNavbar'
 import styles from '../../styles/App.module.css'
 

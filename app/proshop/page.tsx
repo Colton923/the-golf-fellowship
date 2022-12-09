@@ -435,6 +435,7 @@ export default function Page() {
       <div className={styles.processWrap}>
         <div className={styles.processFlow}>
           <div className={styles.processItemOne}>
+            {/* PROGRESS BAR */}
             {stage >= 0 ? (
               <div className={styles.borderCircle}>
                 <div>
