@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
-import type { eventBody } from '../../types/eventCreation'
+import type { eventBody } from '../../types/golfGenius/eventCreation'
 import { useForm } from 'react-hook-form'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../firebase/firebaseClient'
 
 export default function CreateEvents() {
+  const [user, loading, error] = useAuthState(auth)
   const [event, setEvent] = useState({} as eventBody)
   const [numberOfDivisions, setNumberOfDivisions] =
     useState(0)
@@ -13,6 +16,8 @@ export default function CreateEvents() {
     string[]
   >([])
   const [submitted, setSubmitted] = useState(false)
+  const [eventCost, setEventCost] = useState(0)
+  const [eventLocation, setEventLocation] = useState('')
 
   const {
     register,
@@ -32,7 +37,22 @@ export default function CreateEvents() {
 
     const data = await res.json()
     setEvent(data)
-    console.log(data)
+
+    console.log('data', data)
+    const stripeRes = await fetch('/api/stripe/stripe_newEvent', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: data.name,
+        amount: eventCost,
+        eventLocation: eventLocation,
+        uid: user?.uid,
+      }),
+    })
+
+    const stripeData = await stripeRes.json()
+
+    console.log('stripeData', stripeData)
     setSubmitted(true)
   }
 
@@ -78,7 +98,7 @@ export default function CreateEvents() {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <button type="submit">Get Seasons</button>
+        <button type="submit">Create New Event</button>
         <div>
           <h1>New Event</h1>
           <div>
@@ -88,6 +108,27 @@ export default function CreateEvents() {
               type="text"
               placeholder="Name"
               {...register('name', { required: true })}
+            />
+            <h1>Cost to Play</h1>
+            <h2>
+              Technically Optional, but mandatory for stripe
+              otherwise $0.00
+            </h2>
+            <input
+              type="number"
+              placeholder="0.00"
+              onKeyUp={(e) => {
+                setEventCost(
+                  parseInt(e.currentTarget.value) * 100
+                )
+              }}
+            />
+            <h1>Location of Course</h1>
+            <textarea
+              placeholder="Location"
+              onKeyUp={(e) => {
+                setEventLocation(e.currentTarget.value)
+              }}
             />
             <h1>
               Event ExternalID for event roster sync. Roster

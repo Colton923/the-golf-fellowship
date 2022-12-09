@@ -3,13 +3,18 @@
 import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { db } from '../../firebase/firebaseClient'
-import { collection, getDocs, doc } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+} from 'firebase/firestore'
 import styles from '../../styles/ProShop.module.css'
 import productImage from '../../public/static/images/membershipImage.jpg'
 import Image from 'next/image'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import CheckoutForm from '../../components/stripe/CheckoutForm'
+import { auth } from '../../firebase/firebaseClient'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 export type defaultMembership = {
   plans: {
@@ -144,6 +149,7 @@ export type defaultMembership = {
   }
 }
 
+
 type FormData = {
   city: string
   plan: string
@@ -170,13 +176,37 @@ type CustomerData = {
   amount: number
 }
 
-//@ts-ignore
-const stripe = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
+
+type CreateNewSubscription = {
+  requestData: body
+}
+
+type body = {
+  sub: {
+    name: string
+    description: string
+    unit_amount: number
+    currency: string
+    recurring: {
+      aggregate_usage?: string
+      interval: 'day' | 'week' | 'month' | 'year'
+      interval_count?: number
+      trial_period_days?: string
+      usage_type?: string
+    }
+  }
+  uid: string
+}
+
+const stripe = loadStripe(
+  //@ts-ignore
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+)
 
 export default function Page() {
+  const [user] = useAuthState(auth)
   const [membershipOptions, setMembershipOptions] = useState({} as defaultMembership)
   const [showForm, setShowForm] = useState(false)
-
   const [showSubTerm, setShowSubTerm] = useState(false)
   const [showPlan, setShowPlan] = useState(false)
   const [showTerm, setShowTerm] = useState(false)
@@ -189,33 +219,38 @@ export default function Page() {
   const [stage, setStage] = useState(0)
   const [city, setCity] = useState('')
   const [customerData, setCustomerData] = useState({} as CustomerData)
-
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedPlan, setSelectedPlan] = useState('')
   const [selectedTerm, setSelectedTerm] = useState('')
   const [selectedSubTerm, setSelectedSubTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('')
   const [selectedQuantity, setSelectedQuantity] = useState(0)
-
   const [showStripeElement, setShowStripeElement] = useState(false)
   const [clientSecret, setClientSecret] = useState('')
   const [paymentIntent, setPaymentIntent] = useState('')
+  const [stripeSubId, setStripeSubId ] = useState('')
+  const [lineItemPrice, setLineItemPrice] = useState(0)
+  const [intervalPurchase, setIntervalPurchase] = useState('')
+  const [subStatusMessage, setSubStatusMessage] = useState('')
 
   useEffect(() => {
-    // Create PaymentIntent as soon as the page loads using our local API
-    fetch('api/stripe_intent', {
+    fetch('api/stripe/stripe_intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount: totalPrice * 100,
         payment_intent_id: '',
+        metadata: {
+          id: stripeSubId,
+        }
       }),
     })
       .then((res) => res.json())
       .then((data) => {
-        setClientSecret(data.client_secret), setPaymentIntent(data.id)
+        setClientSecret(data.client_secret),
+        setPaymentIntent(data.id)
       })
-  }, [totalPrice])
+  }, [totalPrice, stripeSubId])
 
   const options = {
     clientSecret: clientSecret,
@@ -226,7 +261,13 @@ export default function Page() {
   }
 
   const membershipRef = collection(db, 'membership')
-  const cities = ['San Antonio', 'Austin', 'DFW', 'Houston', 'Hill Country']
+  const cities = [
+    'San Antonio',
+    'Austin',
+    'DFW',
+    'Houston',
+    'Hill Country',
+  ]
   const status = {
     returning: {
       title: 'Returning',
@@ -237,19 +278,15 @@ export default function Page() {
       price: 2500,
     },
   }
-  const events = ['Regular 9 Holes', 'Regular 18 Holes', 'Two Man Challenges', 'Majors']
-  const playerDev = [
-    'Pre-Event Skills Clinic',
-    'Skills Asseesment & Tracking',
-    'Group Training Events',
-  ]
 
   useEffect(() => {
     const getMembershipOptions = async () => {
       const membershipDoc = await getDocs(membershipRef)
       const onlyDoc = membershipDoc.docs[0]
       const data = onlyDoc.data()
-      const DefaultMembership = data['plans'] as defaultMembership
+      const DefaultMembership = data[
+        'plans'
+      ]
       setMembershipOptions(DefaultMembership)
       setShowForm(true)
     }
@@ -283,23 +320,115 @@ export default function Page() {
     setCheckoutData(data)
     setShowForm(false)
     setShowCheckout(true)
-    const price = () => {
-      let tempPrice = 0
-      if (data.status === 'new') {
-        tempPrice += status.new.price
-      }
-      if (data.subTerm !== undefined) {
+    setIntervalPurchase('')
+
+    const getMembershipPrice = async (season: boolean) => {
+      const membershipDoc = await getDocs(membershipRef)
+      const onlyDoc = membershipDoc.docs[0]
+      const da = onlyDoc.data().plans[data.plan][data.term].price
+
+      const seasonal = data.subTerm
+      if (season) {
         //@ts-ignore
-        tempPrice += membershipOptions[data['plan']][data['term']][data['subTerm']][1]
+        const seasonal = data.subTerm.toString().toLowerCase()
+        return onlyDoc.data().plans[data.plan][data.term][seasonal]
       } else {
-        //@ts-ignore
-        tempPrice += membershipOptions[data['plan']][data['term']][1]
+        return onlyDoc.data().plans[data.plan][data.term]
       }
-      return (tempPrice * data.quantity) / 100
     }
-    setTotalPrice(price())
+
+    let tempPrice = 0
+    if (data.status === 'new') {
+      tempPrice += status.new.price
+    }
+    if (data.term.toLowerCase() === 'seasonal') {
+      const price = await getMembershipPrice(true)
+
+      tempPrice += price[1]
+      setLineItemPrice(price[1])
+    } else {
+      const price = await getMembershipPrice(false)
+      tempPrice += price[1]
+      setLineItemPrice(price[1])
+    }
+
+    setTotalPrice(tempPrice * data.quantity / 100)
+
+    if (selectedTerm.toLowerCase() === 'annual') {
+      setIntervalPurchase('year')
+    } else {
+      setIntervalPurchase('month')
+    }
     setStage(1)
   }
+
+
+
+  useEffect(() => {
+    if (user && intervalPurchase !== '') {
+      const purchaseItem: body = {
+        sub: {
+          name: selectedPlan + ' ' + selectedTerm,
+          description: selectedSubTerm? selectedSubTerm + ' ' + selectedCity: selectedCity,
+          unit_amount: lineItemPrice,
+          currency: 'usd',
+          recurring: {
+            //@ts-ignore
+              interval: intervalPurchase,
+          },
+        },
+        uid: user.uid
+      }
+      const stripeSubscriptionID: CreateNewSubscription = {
+        requestData: purchaseItem,
+      }
+      const NewSubscription = async (stripeSubscriptionID: CreateNewSubscription) => {
+        try {
+          fetch('api/stripe/stripe_list_products', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          })
+          .then((res) => res.json())
+          .then((data) => {
+            setSubStatusMessage('Checking for existing subscription')
+            const stripeData = data.data
+            if ((stripeData.map((item: any) => item.name).includes(selectedPlan + ' ' + selectedTerm)) &&
+                (stripeData.map((item: any) => item.description).includes(selectedSubTerm? selectedSubTerm + ' ' + selectedCity: selectedCity))) {
+                  const subId = stripeData.filter((item: any) => (item.name === selectedPlan + ' ' + selectedTerm) &&
+                                                                 (item.description === selectedSubTerm? selectedSubTerm + ' ' + selectedCity: selectedCity)
+                    )[0].id
+                  setStripeSubId(subId)
+                  setSubStatusMessage('Subscription found')
+            } else {
+              setSubStatusMessage('Creating new subscription')
+              try {
+                fetch('api/stripe/stripe_subscription', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(stripeSubscriptionID.requestData),
+                })
+                .then((res) => res.json())
+                .then((data) => {
+                  setStripeSubId(data.product.toString())
+                  setSubStatusMessage('Subscription created')
+                })
+              } catch (error: any) {
+                setSubStatusMessage('Error creating subscription')
+              }
+            }
+          })
+
+        } catch (error: any) {
+          setSubStatusMessage('Error checking for existing subscription')
+        }
+        return stripeSubId
+      }
+      NewSubscription(stripeSubscriptionID)
+    }
+  }, [intervalPurchase])
+
+
+
 
   return (
     <div className={styles.contentWrap}>
@@ -309,16 +438,27 @@ export default function Page() {
             {stage >= 0 ? (
               <div className={styles.borderCircle}>
                 <div>
-                  <h2 className={styles.processNumber}>1</h2>
+                  <h2 className={styles.processNumber}>
+                    1
+                  </h2>
                 </div>
-                <h1 className={styles.processTitle}>Membership Type</h1>
+                <h1 className={styles.processTitle}>
+                  Membership Type
+                </h1>
               </div>
             ) : (
-              <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
+              <div
+                className={styles.borderCircle}
+                style={{ opacity: 0.2 }}
+              >
                 <div>
-                  <h2 className={styles.processNumber}>1</h2>
+                  <h2 className={styles.processNumber}>
+                    1
+                  </h2>
                 </div>
-                <h1 className={styles.processTitle}>Membership Type</h1>
+                <h1 className={styles.processTitle}>
+                  Membership Type
+                </h1>
               </div>
             )}
           </div>
@@ -327,16 +467,27 @@ export default function Page() {
             {stage > 0 ? (
               <div className={styles.borderCircle}>
                 <div>
-                  <h2 className={styles.processNumber}>2</h2>
+                  <h2 className={styles.processNumber}>
+                    2
+                  </h2>
                 </div>
-                <h1 className={styles.processTitle}>Customer Info.</h1>
+                <h1 className={styles.processTitle}>
+                  Customer Info.
+                </h1>
               </div>
             ) : (
-              <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
+              <div
+                className={styles.borderCircle}
+                style={{ opacity: 0.2 }}
+              >
                 <div>
-                  <h2 className={styles.processNumber}>2</h2>
+                  <h2 className={styles.processNumber}>
+                    2
+                  </h2>
                 </div>
-                <h1 className={styles.processTitle}>Customer Info.</h1>
+                <h1 className={styles.processTitle}>
+                  Customer Info.
+                </h1>
               </div>
             )}
           </div>
@@ -345,16 +496,27 @@ export default function Page() {
             {stage > 1 ? (
               <div className={styles.borderCircle}>
                 <div>
-                  <h2 className={styles.processNumber}>3</h2>
+                  <h2 className={styles.processNumber}>
+                    3
+                  </h2>
                 </div>
-                <h1 className={styles.processTitle}>Checkout</h1>
+                <h1 className={styles.processTitle}>
+                  Checkout
+                </h1>
               </div>
             ) : (
-              <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
+              <div
+                className={styles.borderCircle}
+                style={{ opacity: 0.2 }}
+              >
                 <div>
-                  <h2 className={styles.processNumber}>3</h2>
+                  <h2 className={styles.processNumber}>
+                    3
+                  </h2>
                 </div>
-                <h1 className={styles.processTitle}>Checkout</h1>
+                <h1 className={styles.processTitle}>
+                  Checkout
+                </h1>
               </div>
             )}
           </div>
@@ -364,21 +526,33 @@ export default function Page() {
       <div className={styles.card}>
         <div className={styles.logoWrap}>
           <div className={styles.image}>
-            <Image src={productImage} alt="TGF Membership" width={100} height={100} />
+            <Image
+              src={productImage}
+              alt="TGF Membership"
+              width={100}
+              height={100}
+            />
           </div>
-          <h1 className={styles.itemTitle}>TGF MEMBERSHIP</h1>
+          <h1 className={styles.itemTitle}>
+            TGF MEMBERSHIP
+          </h1>
         </div>
 
         {showStripeElement && clientSecret && (
           <Elements stripe={stripe} options={options}>
-            <CheckoutForm paymentIntent={paymentIntent} {...customerData} />
+            <CheckoutForm
+              paymentIntent={paymentIntent}
+              {...customerData}
+            />
           </Elements>
         )}
 
         {showCheckout && (
           <div className={styles.typeForm}>
             <div className={styles.typeFormItemSummary}>
-              <h1 className={styles.typeFormItemLabel}>TGF MEMBERSHIP SUMMARY</h1>
+              <h1 className={styles.typeFormItemLabel}>
+                TGF MEMBERSHIP SUMMARY
+              </h1>
               <div className={styles.optionWrap}>
                 <div className={styles.option}>
                   <button
@@ -388,7 +562,18 @@ export default function Page() {
                       setShowForm(true),
                       setCheckoutData({} as FormData),
                       setCity(''),
-                      setStage(0)
+                      setStage(0),
+                      setSelectedPlan(''),
+                      setSelectedTerm(''),
+                      setSelectedSubTerm(''),
+                      setSelectedStatus(''),
+                      setSelectedCity(''),
+                      setShowStatus(false),
+                      setShowQuantity(false),
+                      setShowTerm(false),
+                      setShowPlan(false),
+                      setShowSubTerm(false)
+
                     )}
                   >
                     Back
@@ -399,48 +584,91 @@ export default function Page() {
             <div className={styles.typeFormItem}>
               <div className={styles.typeFormItemGroup}>
                 <div className={styles.cartGroup}>
-                  <h1 className={styles.cartItemTitle}>CITY</h1>
-                  <h1 className={styles.cartItemSubTitle}>{checkoutData.city}</h1>
-                  <h1 className={styles.cartItemTitle}>PLAN</h1>
-                  <h1 className={styles.cartItemSubTitle}> {checkoutData.plan.toUpperCase()}</h1>
-                  <h1 className={styles.cartItemTitle}>TERM</h1>
-                  <h1 className={styles.cartItemSubTitle}>{checkoutData.term.toUpperCase()}</h1>
+                  <h1 className={styles.cartItemTitle}>
+                    CITY
+                  </h1>
+                  <h1 className={styles.cartItemSubTitle}>
+                    {checkoutData.city}
+                  </h1>
+                  <h1 className={styles.cartItemTitle}>
+                    PLAN
+                  </h1>
+                  <h1 className={styles.cartItemSubTitle}>
+                    {' '}
+                    {checkoutData.plan.toUpperCase()}
+                  </h1>
+                  <h1 className={styles.cartItemTitle}>
+                    TERM
+                  </h1>
+                  <h1 className={styles.cartItemSubTitle}>
+                    {checkoutData.term.toUpperCase()}
+                  </h1>
                   {checkoutData.subTerm && (
                     <>
-                      <h1 className={styles.cartItemTitle}>SUB TERM</h1>
-                      <h1 className={styles.cartItemSubTitle}>
+                      <h1 className={styles.cartItemTitle}>
+                        SUB TERM
+                      </h1>
+                      <h1
+                        className={styles.cartItemSubTitle}
+                      >
                         {checkoutData.subTerm.toUpperCase()}
                       </h1>
                     </>
                   )}
-                  <h1 className={styles.cartItemTitle}>STATUS</h1>
-                  <h1 className={styles.cartItemSubTitle}>{checkoutData.status.toUpperCase()}</h1>
-                  <h1 className={styles.cartItemTitle}>QUANTITY</h1>
-                  <h1 className={styles.cartItemSubTitle}>{checkoutData.quantity}</h1>
-                  <h1 className={styles.cartItemTitle}>TOTAL</h1>
-                  <h1 className={styles.cartItemSubTitle}>${totalPrice}</h1>
+                  <h1 className={styles.cartItemTitle}>
+                    STATUS
+                  </h1>
+                  <h1 className={styles.cartItemSubTitle}>
+                    {checkoutData.status.toUpperCase()}
+                  </h1>
+                  <h1 className={styles.cartItemTitle}>
+                    QUANTITY
+                  </h1>
+                  <h1 className={styles.cartItemSubTitle}>
+                    {checkoutData.quantity}
+                  </h1>
+                  <h1 className={styles.cartItemTitle}>
+                    TOTAL
+                  </h1>
+                  <h1 className={styles.cartItemSubTitle}>
+                    ${totalPrice}
+                  </h1>
                 </div>
               </div>
             </div>
-            <form onSubmit={customerHandleSubmit(submitCustomerForm)}>
+            <form
+              onSubmit={customerHandleSubmit(
+                submitCustomerForm
+              )}
+            >
               <div className={styles.typeFormItem}>
                 <div className={styles.typeFormItemGroup}>
-                  <h1 className={styles.typeFormItemLabel}>CUSTOMER INFORMATION</h1>
+                  <h1 className={styles.typeFormItemLabel}>
+                    CUSTOMER INFORMATION
+                  </h1>
                   <div className={styles.optionWrap}>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="Email Address"
-                        {...customerRegister('email', { required: true })}
+                        {...customerRegister('email', {
+                          required: true,
+                        })}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="Phone"
-                        {...customerRegister('phone', { required: true })}
+                        {...customerRegister('phone', {
+                          required: true,
+                        })}
                       />
                     </div>
                   </div>
@@ -448,71 +676,111 @@ export default function Page() {
               </div>
               <div className={styles.typeFormItem}>
                 <div className={styles.typeFormItemGroup}>
-                  <h1 className={styles.typeFormItemLabel}>SHIPPING ADDRESS (FREE SHIPPING)</h1>
+                  <h1 className={styles.typeFormItemLabel}>
+                    SHIPPING ADDRESS (FREE SHIPPING)
+                  </h1>
                   <div className={styles.optionWrap}>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="First Name"
-                        {...customerRegister('firstName', { required: true })}
+                        {...customerRegister('firstName', {
+                          required: true,
+                        })}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="Last Name"
-                        {...customerRegister('lastName', { required: true })}
+                        {...customerRegister('lastName', {
+                          required: true,
+                        })}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="United States"
                         defaultValue={'United States'}
-                        {...customerRegister('address.country', { required: true })}
+                        {...customerRegister(
+                          'address.country',
+                          { required: true }
+                        )}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="Street Address"
-                        {...customerRegister('address.street', { required: true })}
+                        {...customerRegister(
+                          'address.street',
+                          { required: true }
+                        )}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="Apt, Unit, Suite, etc (optional)"
-                        {...customerRegister('address.opt', { required: false })}
+                        {...customerRegister(
+                          'address.opt',
+                          { required: false }
+                        )}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="Postal / Zip"
-                        {...customerRegister('address.postalCode', { required: true })}
+                        {...customerRegister(
+                          'address.postalCode',
+                          { required: true }
+                        )}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="City"
-                        {...customerRegister('address.city', { required: true })}
+                        {...customerRegister(
+                          'address.city',
+                          { required: true }
+                        )}
                       />
                     </div>
                     <div className={styles.checkoutOption}>
                       <input
-                        className={styles.typeFormItemInputShipping}
+                        className={
+                          styles.typeFormItemInputShipping
+                        }
                         type="text"
                         placeholder="State"
-                        {...customerRegister('address.state', { required: true })}
+                        {...customerRegister(
+                          'address.state',
+                          { required: true }
+                        )}
                       />
                     </div>
                   </div>
@@ -520,18 +788,26 @@ export default function Page() {
               </div>
               <div className={styles.typeFormItem}>
                 <div className={styles.typeFormItemGroup}>
-                  <h1 className={styles.typeFormItemLabel}>SPECIAL INSTRUCTIONS</h1>
+                  <h1 className={styles.typeFormItemLabel}>
+                    SPECIAL INSTRUCTIONS
+                  </h1>
                   <div className={styles.optionWrap}>
                     <textarea
                       className={styles.specialTextInput}
                       placeholder="Special Instructions"
-                      {...customerRegister('address.special', { required: false })}
+                      {...customerRegister(
+                        'address.special',
+                        { required: false }
+                      )}
                     />
                   </div>
                 </div>
               </div>
               <div className={styles.optionWrap}>
-                <button className={styles.stripeButton} type="submit">
+                <button
+                  className={styles.stripeButton}
+                  type="submit"
+                >
                   SUBMIT
                 </button>
               </div>
@@ -540,14 +816,23 @@ export default function Page() {
         )}
 
         {showForm && (
-          <form onSubmit={handleSubmit(submitData)} className={styles.typeForm}>
+          <form
+            onSubmit={handleSubmit(submitData)}
+            className={styles.typeForm}
+          >
             <div className={styles.typeFormItem}>
-              <label className={styles.typeFormItemLabel}>CITY</label>
+              <label className={styles.typeFormItemLabel}>
+                CITY
+              </label>
               <div className={styles.typeFormItemGroup}>
                 {cities.map((city) => (
                   <div
                     key={city}
-                    className={city === selectedCity ? styles.optionWrapSelect : styles.optionWrap}
+                    className={
+                      city === selectedCity
+                        ? styles.optionWrapSelect
+                        : styles.optionWrap
+                    }
                     onClick={() => {
                       setCity(city)
                       setSelectedCity(city)
@@ -573,38 +858,58 @@ export default function Page() {
             <div>
               {showPlan && (
                 <div className={styles.typeFormItem}>
-                  <label className={styles.typeFormItemLabel}>PLAN</label>
+                  <label
+                    className={styles.typeFormItemLabel}
+                  >
+                    PLAN
+                  </label>
                   <div className={styles.typeFormItemGroup}>
-                    {Object.keys(membershipOptions).map((plan) => (
-                      <>
-                        {(city !== 'San Antonio' && plan === 'performerPlus') ||
-                        (city !== 'San Antonio' && plan === 'playerPlus') ? null : (
-                          <div
-                            key={plan}
-                            className={
-                              plan === selectedPlan ? styles.optionWrapSelect : styles.optionWrap
-                            }
-                            onClick={() => {
-                              setSelectedPlan(plan)
-                            }}
-                          >
-                            <div className={styles.option}>
-                              <input
-                                className={styles.typeFormItemInput}
-                                type="radio"
-                                {...register('plan')}
-                                value={plan}
-                                onChange={(e) => {
-                                  setValue('plan', e.target.value)
-                                  setShowTerm(true)
-                                }}
-                              />
-                              <label>{plan.toUpperCase()}</label>
+                    {Object.keys(membershipOptions).map(
+                      (plan) => (
+                        <>
+                          {(city !== 'San Antonio' &&
+                            plan === 'performerPlus') ||
+                          (city !== 'San Antonio' &&
+                            plan ===
+                              'playerPlus') ? null : (
+                            <div
+                              key={plan}
+                              className={
+                                plan === selectedPlan
+                                  ? styles.optionWrapSelect
+                                  : styles.optionWrap
+                              }
+                              onClick={() => {
+                                setSelectedPlan(plan)
+                              }}
+                            >
+                              <div
+                                className={styles.option}
+                              >
+                                <input
+                                  className={
+                                    styles.typeFormItemInput
+                                  }
+                                  type="radio"
+                                  {...register('plan')}
+                                  value={plan}
+                                  onChange={(e) => {
+                                    setValue(
+                                      'plan',
+                                      e.target.value
+                                    )
+                                    setShowTerm(true)
+                                  }}
+                                />
+                                <label>
+                                  {plan.toUpperCase()}
+                                </label>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </>
-                    ))}
+                          )}
+                        </>
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -612,14 +917,22 @@ export default function Page() {
             <div>
               {showTerm && (
                 <div className={styles.typeFormItem}>
-                  <label className={styles.typeFormItemLabel}>TERM</label>
+                  <label
+                    className={styles.typeFormItemLabel}
+                  >
+                    TERM
+                  </label>
                   <div className={styles.typeFormItemGroup}>
-                    {/* @ts-ignore */}
-                    {Object.keys(membershipOptions['performer']).map((term) => (
+                    {Object.keys(
+                      /* @ts-ignore */
+                      membershipOptions['performer']
+                    ).map((term) => (
                       <div
                         key={term}
                         className={
-                          term === selectedTerm ? styles.optionWrapSelect : styles.optionWrap
+                          term === selectedTerm
+                            ? styles.optionWrapSelect
+                            : styles.optionWrap
                         }
                         onClick={() => {
                           setSelectedTerm(term)
@@ -627,18 +940,27 @@ export default function Page() {
                       >
                         <div className={styles.option}>
                           <input
-                            className={styles.typeFormItemInput}
+                            className={
+                              styles.typeFormItemInput
+                            }
                             type="radio"
                             {...register('term')}
                             value={term}
                             onChange={(e) => {
                               term === 'seasonal'
                                 ? setShowSubTerm(true)
-                                : (setShowSubTerm(false), setShowQuantity(true))
-                              setValue('term', e.target.value), setShowStatus(true)
+                                : (setShowSubTerm(false),
+                                  setShowQuantity(true))
+                              setValue(
+                                'term',
+                                e.target.value
+                              ),
+                                setShowStatus(true)
                             }}
                           />
-                          <label>{term.toUpperCase()}</label>
+                          <label>
+                            {term.toUpperCase()}
+                          </label>
                         </div>
                       </div>
                     ))}
@@ -648,14 +970,22 @@ export default function Page() {
             </div>
             {showSubTerm && (
               <div className={styles.typeFormItem}>
-                <label className={styles.typeFormItemLabel}>SEASON</label>
+                <label className={styles.typeFormItemLabel}>
+                  SEASON
+                </label>
                 <div className={styles.typeFormItemGroup}>
-                  {/* @ts-ignore */}
-                  {Object.keys(membershipOptions['performer']['seasonal']).map((subTerm) => (
+                  {Object.keys(
+                    /* @ts-ignore */
+                    membershipOptions['performer'][
+                      'seasonal'
+                    ]
+                  ).map((subTerm) => (
                     <div
                       key={subTerm}
                       className={
-                        subTerm === selectedSubTerm ? styles.optionWrapSelect : styles.optionWrap
+                        subTerm === selectedSubTerm
+                          ? styles.optionWrapSelect
+                          : styles.optionWrap
                       }
                       onClick={() => {
                         setSelectedSubTerm(subTerm)
@@ -663,17 +993,24 @@ export default function Page() {
                     >
                       <div className={styles.option}>
                         <input
-                          className={styles.typeFormItemInput}
+                          className={
+                            styles.typeFormItemInput
+                          }
                           type="radio"
                           {...register('subTerm')}
                           value={subTerm}
                           onChange={(e) => (
                             setShowQuantity(true),
-                            setValue('subTerm', e.target.value),
+                            setValue(
+                              'subTerm',
+                              e.target.value
+                            ),
                             setShowStatus(true)
                           )}
                         />
-                        <label>{subTerm.toUpperCase()}</label>
+                        <label>
+                          {subTerm.toUpperCase()}
+                        </label>
                       </div>
                     </div>
                   ))}
@@ -682,22 +1019,32 @@ export default function Page() {
             )}
             {showQuantity && (
               <div className={styles.typeFormItem}>
-                <label className={styles.typeFormItemLabel}>QUANTITY</label>
+                <label className={styles.typeFormItemLabel}>
+                  QUANTITY
+                </label>
                 <div className={styles.typeFormItemGroup}>
                   <div className={styles.optionWrap}>
                     <div className={styles.numberOption}>
                       <input
-                        className={styles.typeFormItemInputNumber}
+                        className={
+                          styles.typeFormItemInputNumber
+                        }
                         type="number"
                         min="1"
                         max="10"
                         defaultValue={1}
                         {...register('quantity')}
                         onChange={(e) => {
-                          setValue('quantity', parseInt(e.target.value))
+                          setValue(
+                            'quantity',
+                            parseInt(e.target.value)
+                          )
                         }}
                         onInput={(e) => {
-                          e.currentTarget.value = Math.max(1, parseInt(e.currentTarget.value))
+                          e.currentTarget.value = Math.max(
+                            1,
+                            parseInt(e.currentTarget.value)
+                          )
                             .toString()
                             .slice(0, 1)
                         }}
@@ -709,13 +1056,17 @@ export default function Page() {
             )}
             {showStatus && (
               <div className={styles.typeFormItem}>
-                <label className={styles.typeFormItemLabel}>STATUS</label>
+                <label className={styles.typeFormItemLabel}>
+                  STATUS
+                </label>
                 <div className={styles.typeFormItemGroup}>
                   {Object.keys(status).map((statusKey) => (
                     <div
                       key={statusKey}
                       className={
-                        statusKey === selectedStatus ? styles.optionWrapSelect : styles.optionWrap
+                        statusKey === selectedStatus
+                          ? styles.optionWrapSelect
+                          : styles.optionWrap
                       }
                       onClick={() => {
                         setSelectedStatus(statusKey)
@@ -723,13 +1074,23 @@ export default function Page() {
                     >
                       <div className={styles.option}>
                         <input
-                          className={styles.typeFormItemInput}
+                          className={
+                            styles.typeFormItemInput
+                          }
                           type="radio"
                           {...register('status')}
                           value={statusKey}
-                          onChange={(e) => (setShowPrice(true), setValue('status', e.target.value))}
+                          onChange={(e) => (
+                            setShowPrice(true),
+                            setValue(
+                              'status',
+                              e.target.value
+                            )
+                          )}
                         />
-                        <label>{statusKey.toUpperCase()}</label>
+                        <label>
+                          {statusKey.toUpperCase()}
+                        </label>
                       </div>
                     </div>
                   ))}
@@ -740,7 +1101,10 @@ export default function Page() {
               <div className={styles.typeFormItemGroup}>
                 <div className={styles.optionWrap}>
                   <div className={styles.option}>
-                    <button className={styles.checkoutButton} type="submit">
+                    <button
+                      className={styles.checkoutButton}
+                      type="submit"
+                    >
                       CHECKOUT
                     </button>
                   </div>

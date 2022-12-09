@@ -1,12 +1,12 @@
 'use client'
 
-import NewSubscription from '../../components/stripe/NewSubscription'
 import { auth } from '../../firebase/firebaseClient'
-import type { body } from '../../components/stripe/NewSubscription'
 import { useForm } from 'react-hook-form'
 import styles from '../../styles/Admin.module.css'
 import CreateEvents from '../../components/golfGenius/CreateEvents'
 import { useState } from 'react'
+import {stripeSubscriptionBody} from '../../types/stripe/stripeSubscriptionBody'
+
 export default function Page() {
   const [show, setShow] = useState(false)
 
@@ -16,13 +16,13 @@ export default function Page() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<body>()
+  } = useForm<stripeSubscriptionBody>()
 
-  const onSubmit = (data: body) => {
+  const onSubmit = (data: stripeSubscriptionBody) => {
     if (uid) {
       data.sub.currency = 'usd'
       data.uid = uid
-      console.log(NewSubscription({ requestData: data }))
+      console.log('todo: create subscription', data)
     } else {
       console.log('You are not logged in.')
     }

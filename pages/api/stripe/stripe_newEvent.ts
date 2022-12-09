@@ -5,45 +5,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 })
 
-type body = {
-  sub: {
-    name: string
-    description: string
-    unit_amount: number
-    currency: string
-    recurring: {
-      aggregate_usage?: string
-      interval: 'day' | 'week' | 'month' | 'year'
-      interval_count?: number
-      trial_period_days?: string
-      usage_type?: string
-    }
-  }
-  uid: string
-}
-
 const admin = process.env.ADMIN_COLTON_SECRET_UID
 
 const handler = async (req: any, res: any) => {
-  const newProduct: body = req.body
-  console.log(newProduct)
-  console.log(admin)
+  const newProduct = req.body
 
   if (req.method === 'POST' && newProduct.uid === admin) {
     try {
       const current_sub = await stripe.products.create({
-        name: newProduct.sub.name,
-        description: newProduct.sub.description,
+        name: newProduct.name,
+        description: newProduct.eventLocation,
       })
 
       if (current_sub) {
         const updated_sub = await stripe.prices.create({
           product: current_sub.id,
-          unit_amount: newProduct.sub.unit_amount,
-          currency: newProduct.sub.currency,
-          recurring: {
-            interval: newProduct.sub.recurring.interval,
-          },
+          unit_amount: newProduct.amount,
+          currency: 'usd',
         })
         res.status(200).json(updated_sub)
         return
