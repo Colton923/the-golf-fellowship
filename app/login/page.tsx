@@ -111,16 +111,15 @@ export default function Page() {
         <div className={styles.backgroundimage}>
           <Image src={image} alt="TGF" fill />
         </div>
-        <div>
+        <div className={styles.userformWrapper}>
           <form
             onSubmit={handleSubmit(signInWithGoogle)}
             className={styles.userform}
           >
             <div className={styles.userformcontent}>
-              <h1 className={styles.userformheader}>Welcome</h1>
+              <h1 className={styles.userformheader}>TGF LOGIN</h1>
               <h3 className={styles.userformsubheader}></h3>
               <div className={styles.userformheader}>
-                <label className={styles.userformlabel}>FIRST NAME</label>
                 <input
                   className={styles.userforminput}
                   type="text"
@@ -131,10 +130,10 @@ export default function Page() {
                       validName.test(value) ||
                       'First name must contain only letters',
                   })}
+                  defaultValue="First Name"
                 />
               </div>
               <div className={styles.userformheader}>
-                <label className={styles.userformlabel}>LAST NAME</label>
                 <input
                   className={styles.userforminput}
                   type="text"
@@ -144,10 +143,10 @@ export default function Page() {
                     validate: (value) =>
                       validName.test(value) || 'Last name must contain only letters',
                   })}
+                  defaultValue="Last Name"
                 />
               </div>
               <div className={styles.userformheader}>
-                <label className={styles.userformlabel}>EMAIL</label>
                 <input
                   className={styles.userforminput}
                   type="text"
@@ -156,6 +155,7 @@ export default function Page() {
                     validate: (value) =>
                       validEmail.test(value) || 'E-mail must be valid',
                   })}
+                  defaultValue="Email"
                 />
 
                 <button
@@ -163,7 +163,7 @@ export default function Page() {
                   value="Sign In"
                   className={styles.userformbutton}
                 >
-                  <Image src={googleLogo} alt="Google Logo" height={25} width={30} />
+                  <Image src={googleLogo} alt="Google Logo" height={25} width={25} />
                 </button>
               </div>
             </div>
