@@ -537,10 +537,11 @@ export default function Page() {
                       setShowQuantity(false),
                       setShowTerm(false),
                       setShowPlan(false),
-                      setShowSubTerm(false)
+                      setShowSubTerm(false),
+                      setShowPrice(false)
                     )}
                   >
-                    Back
+                    BACK
                   </button>
                 </div>
               </div>
