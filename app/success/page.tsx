@@ -1,7 +1,7 @@
-export default function Page(){
+export default function Page() {
   return (
     <div>
-      <h1>Success</h1>
+      <h1>Success - Page in Progress</h1>
     </div>
   )
 }
