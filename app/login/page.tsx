@@ -112,9 +112,12 @@ export default function Page() {
           <Image src={image} alt="TGF" fill />
         </div>
         <div>
-          <form onSubmit={handleSubmit(signInWithGoogle)} className={styles.userform}>
+          <form
+            onSubmit={handleSubmit(signInWithGoogle)}
+            className={styles.userform}
+          >
             <div className={styles.userformcontent}>
-              <h1 className={styles.userformheader}>Sign in with Google</h1>
+              <h1 className={styles.userformheader}>Welcome</h1>
               <h3 className={styles.userformsubheader}></h3>
               <div className={styles.userformheader}>
                 <label className={styles.userformlabel}>FIRST NAME</label>
@@ -125,7 +128,8 @@ export default function Page() {
                     maxLength: 20,
                     required: true,
                     validate: (value) =>
-                      validName.test(value) || 'First name must contain only letters',
+                      validName.test(value) ||
+                      'First name must contain only letters',
                   })}
                 />
               </div>
@@ -149,11 +153,16 @@ export default function Page() {
                   type="text"
                   {...register('email', {
                     required: true,
-                    validate: (value) => validEmail.test(value) || 'E-mail must be valid',
+                    validate: (value) =>
+                      validEmail.test(value) || 'E-mail must be valid',
                   })}
                 />
 
-                <button type="submit" value="Sign In" className={styles.userformbutton}>
+                <button
+                  type="submit"
+                  value="Sign In"
+                  className={styles.userformbutton}
+                >
                   <Image src={googleLogo} alt="Google Logo" height={25} width={30} />
                 </button>
               </div>

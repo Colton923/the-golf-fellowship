@@ -14,13 +14,19 @@ export default function AdminNavbar() {
   return (
     <div>
       <div className={styles.navimageborder}>
-        <Image src={logo} alt="TGF Logo" height="75" width="75" className={styles.navimage} />
+        <Image
+          src={logo}
+          alt="TGF Logo"
+          height="75"
+          width="75"
+          className={styles.navimage}
+        />
       </div>
       <nav className={styles.navbar}>
         <Link href="/" className={styles.navbarlink}>
           Home
         </Link>
-        <Link href="/" className={styles.navbarlink} onInput={signOut}>
+        <Link href="/" className={styles.navbarlink} onClick={signOut}>
           Logout
         </Link>
         <Link href="/admin" className={styles.navbarlink}>

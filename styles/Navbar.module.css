@@ -2,7 +2,7 @@
 
 .navbarmain {
   background: #fff;
-  position: fixed;
+  position: sticky;
   left: 0;
   right: 0;
   width: 100%;
@@ -14,33 +14,39 @@
   border-bottom: 3px solid #000;
 }
 
+.navbarContainer {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .navimage {
-  margin: 10px 0 0 30px;
+  margin-top: 20px;
 }
 
 .navimageborder {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   z-index: 999;
 }
 
 .navbar {
-  position: fixed;
-  top: 50px;
+  position: sticky;
   width: 100%;
-
   text-align: center;
 }
 
 .navbarlink {
   color: #16151b;
   position: relative;
-  margin: 0 15px;
+  margin: 0 5px;
 
   display: inline-block;
 
-  font-size: 24px;
+  font-size: 4vw;
   font-weight: 500;
   text-transform: uppercase;
   text-decoration: none;
@@ -127,4 +133,10 @@
 }
 .navbarlink:nth-of-type(5) {
   animation: show 0.2s 2s ease 1 both;
+}
+
+@media screen and (min-width: 768px) {
+  .navbarlink {
+    font-size: 28px;
+  }
 }

@@ -9,7 +9,7 @@ export default async function RootLayout({ children }: Props) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="The Golf Fellowship" />
       </head>
-      <body>
+      <body style={{ margin: 0 }}>
         <div>
           <div>
             <main>{children}</main>

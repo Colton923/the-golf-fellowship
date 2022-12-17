@@ -13,23 +13,31 @@ export default function DashboardNavbar() {
 
   return (
     <div className={styles.navbarmain}>
-      <div className={styles.navimageborder}>
-        <Image src={logo} alt="TGF Logo" height="75" width="75" className={styles.navimage} />
+      <div className={styles.navbarContainer}>
+        <div className={styles.navimageborder}>
+          <Image
+            src={logo}
+            alt="TGF Logo"
+            height="75"
+            width="75"
+            className={styles.navimage}
+          />
+        </div>
+        <nav className={styles.navbar}>
+          <Link href="/" className={styles.navbarlink}>
+            Home
+          </Link>
+          <Link href="/" className={styles.navbarlink} onClick={signOut}>
+            Logout
+          </Link>
+          <Link href="/admin" className={styles.navbarlink}>
+            Admin
+          </Link>
+          <Link href="/proshop" className={styles.navbarlink}>
+            Pro Shop
+          </Link>
+        </nav>
       </div>
-      <nav className={styles.navbar}>
-        <Link href="/" className={styles.navbarlink}>
-          Home
-        </Link>
-        <Link href="/" className={styles.navbarlink} onInput={signOut}>
-          Logout
-        </Link>
-        <Link href="/admin" className={styles.navbarlink}>
-          Admin
-        </Link>
-        <Link href="/proshop" className={styles.navbarlink}>
-          Pro Shop
-        </Link>
-      </nav>
     </div>
   )
 }
