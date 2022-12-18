@@ -110,6 +110,89 @@
   cursor: pointer;
 }
 
+.signupMenuCardWrapper {
+  backdrop-filter: blur(35px);
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  width: 50%;
+  height: 400px;
+  margin: auto;
+
+  border-radius: 10px;
+
+  transform: translate(-50%);
+  transition: 0.2s ease-in-out;
+}
+
+.signupMenuCardWrapperHidden {
+  display: none;
+
+  transition: all .2s ease-in-out;
+}
+
+.signupMenuCard {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 10px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.signupMenuCardTitle {
+  font-family: ;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.signupMenuCardFormWrapper {
+
+}
+
+.signupMenuCardForm {
+
+}
+
+.signupMenuCardFormInput {
+  width: 65%;
+  height: 26px;
+  margin-bottom: 20px;
+
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.signupMenuCardFormSubmit {
+  width: 50%;
+  height: 35px;
+
+  cursor: pointer;
+}
+
+.signupMenuCardCloseBtnWrapper {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.signupMenuCardCloseBtn {
+  color: blue;
+
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .whoAreWeSection {
   width: 100%;
   margin-top: 8vw;
@@ -119,9 +202,9 @@
   justify-content: center;
 }
 
-.whoAreWeTitle {
+.whoWeAreTitle {
   width: 100vw;
-  padding: 2vw;
+  padding: 2vw 0 0 2vw;
 
   border-bottom: 0.2rem solid #000000;
 
@@ -130,13 +213,22 @@
   letter-spacing: 0.1rem;
 }
 
-.youtubeEmbed {
+.youtubeEmbedWrapper {
   width: 100vw;
   height: 100%;
 
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.youtubeEmbed {
+  width: 75%;
+  aspect-ratio: 16/9;
+
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
 .whatWeDoSection {
@@ -212,7 +304,7 @@
   margin-left: 10px;
   margin-top: 0;
   z-index: 7;
-  
+
   font-size: 4vw;
   font-weight: 300;
   letter-spacing: 0.1rem;

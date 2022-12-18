@@ -9,6 +9,7 @@ import imgGolf from '../public/static/images/tgf_home_page_golf.jpg'
 import imgImprove from '../public/static/images/tgf_home_page_improve.jpg'
 import imgNetwork from '../public/static/images/tgf_home_page_network.jpg'
 import Link from 'next/link'
+import { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../firebase/firebaseClient'
 import DashboardNavbar from '../components/DashboardNavbar'
@@ -16,6 +17,15 @@ import imgBack from '../public/static/images/background.png'
 
 export default function Index() {
   const [user, loading, error] = useAuthState(auth)
+  const [showSignupMenu, setShowSignupMenu] = useState(false)
+
+  const displaySignupMenu = () => {
+    if (showSignupMenu) {
+      setShowSignupMenu(false)
+    } else {
+      setShowSignupMenu(true)
+    }
+  }
 
   return (
     <div className={styles.main}>
@@ -31,15 +41,59 @@ export default function Index() {
           </h2>
         </div>
       </div>
-      <Link href="/login" className={styles.overlayButton}>
-        <h1 className={styles.overlayButtonText}>Become a Member</h1>
+      <Link href="/" className={styles.overlayButton}>
+        <h1 onClick={displaySignupMenu} className={styles.overlayButtonText}>
+          Become a Member
+        </h1>
       </Link>
+      <div
+        className={
+          showSignupMenu
+            ? styles.signupMenuCardWrapper
+            : styles.signupMenuCardWrapperHidden
+        }
+      >
+        <div className={styles.signupMenuCard}>
+          <h3 className={styles.signupMenuCardTitle}>Sign Up</h3>
+          <div className={styles.signupMenuCardFormWrapper}>
+            <form className={styles.signupMenuCardForm}>
+              <input
+                className={styles.signupMenuCardFormInput}
+                type="text"
+                placeholder="First name"
+              />
+              <input
+                className={styles.signupMenuCardFormInput}
+                type="text"
+                placeholder="Last name"
+              />
+              <input
+                className={styles.signupMenuCardFormInput}
+                type="email"
+                placeholder="Email address"
+              />
+              <button className={styles.signupMenuCardFormSubmit} type="submit">
+                Submit
+              </button>
+            </form>
+          </div>
+          <p>OR</p>
+          <Link href="/">Sign in with Google</Link>
+          <div className={styles.signupMenuCardCloseBtnWrapper}>
+            <h4
+              onClick={displaySignupMenu}
+              className={styles.signupMenuCardCloseBtn}
+            >
+              Close
+            </h4>
+          </div>
+        </div>
+      </div>
       <div className={styles.whoAreWeSection}>
-        <h1 className={styles.whoAreWeTitle}>WHO WE ARE</h1>
-        <div className={styles.youtubeEmbed}>
+        <h1 className={styles.whoWeAreTitle}>WHO WE ARE</h1>
+        <div className={styles.youtubeEmbedWrapper}>
           <iframe
-            width="720"
-            height="405"
+            className={styles.youtubeEmbed}
             src="https://www.youtube.com/embed/-wYJnzg6NHo"
             title="Membership Announcement"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
