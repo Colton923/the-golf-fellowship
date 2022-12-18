@@ -95,18 +95,23 @@ export default function Index() {
     }
   }
 
-  const handleClickOutside = (event: MouseEvent | TouchEvent | KeyboardEvent) => {
-    if (
-      event.target &&
-      (event.target as HTMLElement).className === styles.main &&
-      (event.target as HTMLElement).className !== styles.signupMenuCardWrapper &&
-      showSignupMenu === true
-    ) {
-      setShowSignupMenu(false)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent | KeyboardEvent) => {
+      if (
+        event.target &&
+        (event.target as HTMLElement).className === styles.main &&
+        (event.target as HTMLElement).className !== styles.signupMenuCardWrapper &&
+        showSignupMenu === true
+      ) {
+        setShowSignupMenu(false)
+      }
     }
-  }
+    window.addEventListener('click', handleClickOutside)
 
-  document.addEventListener('click', handleClickOutside)
+    return () => {
+      window.removeEventListener('click', handleClickOutside)
+    }
+  }, [showSignupMenu])
 
   return (
     <div className={styles.main}>
