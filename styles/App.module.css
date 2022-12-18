@@ -23,11 +23,15 @@
 }
 
 .backgroundWrapper {
-  position: absolute;
   margin-top: 100px;
   z-index: -1;
 
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
 }
 
 .backgroundImage {
@@ -80,11 +84,12 @@
   color: #ffffff;
   width: 40%;
   height: 8%;
-  margin-top: 38vw;
   opacity: 0.75;
-
+  margin-top: -20vw;
+  margin-bottom: 15vw;
   border-radius: 7px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
+  border: 1px solid #ffffff;
 
   display: flex;
   justify-content: center;
@@ -93,6 +98,23 @@
 
   text-decoration: none;
   text-align: center;
+}
+
+.overlayButton:hover {
+  background: #ffffff;
+  color: #000000;
+  opacity: 1;
+  box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
+  border: 1px solid #000000;
+}
+
+.overlayButton:active {
+  background: #ffffff;
+  color: #000000;
+  opacity: 1;
+  box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
+  border: 1px solid #000000;
+  tranform: scale(0.95);
 }
 
 .overlayButtonText {
@@ -111,12 +133,12 @@
 }
 
 .signupMenuCardWrapper {
-  backdrop-filter: blur(35px);
+  backdrop-filter: blur(8px);
   position: absolute;
   top: 30%;
   left: 50%;
   width: 50%;
-  height: 400px;
+  height: 450px;
   margin: auto;
 
   border-radius: 10px;
@@ -128,7 +150,7 @@
 .signupMenuCardWrapperHidden {
   display: none;
 
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .signupMenuCard {
@@ -136,7 +158,7 @@
   height: 100%;
 
   border-radius: 10px;
-  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 40px 2px rgba(0, 0, 0, 0.8);
 
   display: flex;
   flex-direction: column;
@@ -146,18 +168,20 @@
 }
 
 .signupMenuCardTitle {
-  font-family: ;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
   letter-spacing: 1px;
-}
-
-.signupMenuCardFormWrapper {
-
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .signupMenuCardForm {
+  width: 100%;
+  height: 100%;
 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .signupMenuCardFormInput {
@@ -168,18 +192,91 @@
   border: none;
   outline: none;
   border-radius: 6px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 40px 2px rgba(0, 0, 0, 0.8);
 }
 
 .signupMenuCardFormSubmit {
   width: 50%;
-  height: 35px;
+  height: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  box-shadow: 0 2px 40px 2px rgba(0, 0, 0, 0.8);
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+  font-size: 16px;
 
   cursor: pointer;
 }
 
-.signupMenuCardCloseBtnWrapper {
+.signupMenuCardFormSubmit:hover {
+  transform: scale(0.95);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.orWrapper {
+  width: 100%;
   height: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.lineBetweenOrDivs1234 {
+  width: 100%;
+  height: 1px;
+  background-color: #000000;
+  margin-left: 10%;
+  margin-right: 5%;
+}
+
+.lineBetweenOrDivs5678 {
+  width: 100%;
+  height: 1px;
+  background-color: #000000;
+  margin-left: 5%;
+  margin-right: 10%;
+}
+
+.signupMenuCardFormSubmitGoogle {
+  width: 60px;
+  height: 60px;
+  border-radius: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+.signupMenuCardFormSubmitGoogle:hover {
+  border: 1px solid rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 5px 2px rgba(255, 255, 255, 1);
+  transform: scale(0.95);
+}
+
+.googleLogoWrapper {
+  width: 50px;
+  height: 50px;
+  margin: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 5px 2px rgba(255, 255, 255, 0.8);
+}
+
+.signupMenuCardCloseBtnWrapper {
+  height: 50px;
+  width: 100%;
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+  font-size: 16px;
 
   display: flex;
   flex-direction: column;
@@ -187,15 +284,11 @@
 }
 
 .signupMenuCardCloseBtn {
-  color: blue;
-
-  text-decoration: underline;
   cursor: pointer;
 }
 
-.whoAreWeSection {
+.whoWeAreSection {
   width: 100%;
-  margin-top: 8vw;
 
   display: flex;
   flex-direction: column;
@@ -207,6 +300,7 @@
   padding: 2vw 0 0 2vw;
 
   border-bottom: 0.2rem solid #000000;
+  text-shadow: 5px 0 10px rgba(0, 0, 0, 0.5);
 
   font-size: 4vw;
   font-weight: 700;
@@ -228,7 +322,7 @@
 
   border: none;
   border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 .whatWeDoSection {
@@ -241,9 +335,10 @@
 
 .whatWeDoTitle {
   width: 100vw;
-  padding: 2vw;
+  padding: 2vw 0 0 2vw;
 
   border-bottom: 0.2rem solid #000000;
+  text-shadow: 5px 0 10px rgba(0, 0, 0, 0.5);
 
   font-size: 4vw;
   font-weight: 700;
@@ -310,17 +405,56 @@
   letter-spacing: 0.1rem;
 }
 
-@media screen and (min-width: 450px) {
+@media screen and (min-width: 900px) {
   .cardTitle {
     font-size: 22px;
   }
   .cardSubTitle {
     font-size: 20px;
   }
-  .whoAreWeTitle {
-    font-size: 22px;
+  .whoWeAreTitle {
+    font-size: 44px;
   }
   .whatWeDoTitle {
+    font-size: 44px;
+  }
+  .signupMenuCardTitle {
+    font-size: 28px;
+  }
+}
+
+@media screen and (min-width: 900px) and (max-width: 1200px) {
+  .cardTitle {
+    font-size: 22px;
+  }
+  .cardSubTitle {
+    font-size: 20px;
+  }
+  .whoWeAreTitle {
+    font-size: 36px;
+  }
+  .whatWeDoTitle {
+    font-size: 36px;
+  }
+  .signupMenuCardTitle {
+    font-size: 24px;
+  }
+}
+
+@media screen and (min-width: 450px) and (max-width: 900px) {
+  .cardTitle {
+    font-size: 22px;
+  }
+  .cardSubTitle {
+    font-size: 20px;
+  }
+  .whoWeAreTitle {
+    font-size: 24px;
+  }
+  .whatWeDoTitle {
+    font-size: 24px;
+  }
+  .signupMenuCardTitle {
     font-size: 22px;
   }
 }
