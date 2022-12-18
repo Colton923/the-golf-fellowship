@@ -13,7 +13,9 @@ export default function ProShopLayout({ children }: ProShopLayoutProps) {
 
   return (
     <div className={styles.pageWrap}>
-      {!user ? <HomeNavbar /> : <DashboardNavbar />}
+      {/* {!user ? <HomeNavbar /> : <DashboardNavbar />} */}
+      <h1>TODO: Add login/register functionality overlay to this page</h1>
+      <h1>TODO: Make login/register a component to call into other pages</h1>
       <div>{children}</div>
     </div>
   )

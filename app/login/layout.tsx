@@ -9,9 +9,7 @@ interface Props {
 export default function Layout({ children }: Props) {
   return (
     <div>
-      <div className={styles.main}>
-        <HomeNavbar />
-      </div>
+      <div className={styles.main}>{/* <HomeNavbar  /> */}</div>
       <section>{children}</section>
     </div>
   )
