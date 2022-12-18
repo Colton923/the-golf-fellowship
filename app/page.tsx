@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../firebase/firebaseClient'
 import DashboardNavbar from '../components/DashboardNavbar'
+import imgBack from '../public/static/images/background.png'
 
 export default function Index() {
   const [user, loading, error] = useAuthState(auth)
@@ -46,6 +47,9 @@ export default function Index() {
         </div>
       </div>
       <div className={styles.whatWeDoSection}>
+        {/* <div className={styles.backgroundImageDallE}>
+          <Image src={imgBack} fill alt="tgfBackground" />
+        </div> */}
         <h1 className={styles.whatWeDoTitle}>WHAT WE DO</h1>
         <div className={styles.cardWrapper}>
           <div className={styles.card}>

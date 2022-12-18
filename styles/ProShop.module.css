@@ -212,9 +212,16 @@
   flex-wrap: wrap;
 }
 
+.cardFormSummaryTitle {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin: 3px;
+}
+
 .cardFormItemGroup {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .cardFormItem {
@@ -246,6 +253,7 @@
   text-align: center;
   height: 45px;
   width: 180px;
+  border-radius: 5px;
 }
 
 .cardFormOptionWrapSelect {
@@ -260,7 +268,7 @@
   background-color: #000;
   color: #fff;
   opacity: 0.95;
-  transition: 0.7s ease-out;
+  transition: 0.3s ease-out;
   transform: scaleX(0.85);
   transform: scaleY(0.8);
   font-size: 1rem;
@@ -369,14 +377,13 @@
 .backButton {
   background: #000;
   color: #fff;
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
+  position: relative;
+  width: 100px;
+  height: 30px;
+  margin-top: 10px;
   z-index: 2;
   font-size: 1rem;
+  border-radius: 5px;
 }
 
 .cartGroup {
@@ -444,7 +451,8 @@
 .checkoutOption {
   color: #fff;
   position: relative;
-  margin: 10px;
+
+  margin: 5px;
   padding: 0;
   z-index: 1;
 }
@@ -515,12 +523,25 @@
   opacity: 0.5;
 }
 
+.optionInputShippingWrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: center;
+  height: 30px;
+  width: 250px;
+  border-radius: 5px;
+}
+
 .optionInputShipping {
   position: relative;
   width: 100%;
-  height: 45px;
-  padding: 5px;
-  z-index: 2;
+  height: 100%;
+  z-index: 99;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
 
   vertical-align: top;
   border: 1px solid #000;
@@ -528,7 +549,7 @@
   word-wrap: break-word;
   word-break: break-all;
 
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-align: left;
 }

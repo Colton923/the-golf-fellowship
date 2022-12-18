@@ -517,9 +517,11 @@ export default function Page() {
         {showCheckout && (
           <div className={styles.cardForm}>
             <div className={styles.cardFormItem}>
-              <h1 className={styles.cardFormItemLabel}>TGF MEMBERSHIP SUMMARY</h1>
-              <div className={styles.cardFormOptionWrap}>
-                <div className={styles.option}>
+              <div className={styles.cardFormItemGroup}>
+                <h1 className={styles.cardFormSummaryTitle}>
+                  TGF MEMBERSHIP SUMMARY
+                </h1>
+                <div className={styles.cardFormOptionWrap}>
                   <button
                     className={styles.backButton}
                     onClick={() => (
@@ -544,53 +546,53 @@ export default function Page() {
                     BACK
                   </button>
                 </div>
-              </div>
-            </div>
-            <div className={styles.cardFormItem}>
-              <div className={styles.cardFormItemGroup}>
-                <div className={styles.cartGroup}>
-                  <div className={styles.cartSubGroup}>
-                    <h1 className={styles.cartItemTitle}>CITY</h1>
-                    <h1 className={styles.cartItemSubTitle}>{checkoutData.city}</h1>
-                  </div>
-                  <div className={styles.cartSubGroup}>
-                    <h1 className={styles.cartItemTitle}>PLAN</h1>
-                    <h1 className={styles.cartItemSubTitle}>
-                      {' '}
-                      {checkoutData.plan.toUpperCase()}
-                    </h1>
-                  </div>
-                  <div className={styles.cartSubGroup}>
-                    <h1 className={styles.cartItemTitle}>TERM</h1>
-                    <h1 className={styles.cartItemSubTitle}>
-                      {checkoutData.term.toUpperCase()}
-                    </h1>
-                  </div>
-                  {checkoutData.subTerm && (
-                    <>
-                      <div className={styles.cartSubGroup}>
-                        <h1 className={styles.cartItemTitle}>SUB TERM</h1>
-                        <h1 className={styles.cartItemSubTitle}>
-                          {checkoutData.subTerm.toUpperCase()}
-                        </h1>
-                      </div>
-                    </>
-                  )}
-                  <div className={styles.cartSubGroup}>
-                    <h1 className={styles.cartItemTitle}>STATUS</h1>
-                    <h1 className={styles.cartItemSubTitle}>
-                      {checkoutData.status.toUpperCase()}
-                    </h1>
-                  </div>
-                  <div className={styles.cartSubGroup}>
-                    <h1 className={styles.cartItemTitle}>QUANTITY</h1>
-                    <h1 className={styles.cartItemSubTitle}>
-                      {checkoutData.quantity}
-                    </h1>
-                  </div>
-                  <div className={styles.cartSubGroup}>
-                    <h1 className={styles.cartItemTitle}>TOTAL</h1>
-                    <h1 className={styles.cartItemSubTitle}>${totalPrice}</h1>
+                <div className={styles.cardFormItemGroup}>
+                  <div className={styles.cartGroup}>
+                    <div className={styles.cartSubGroup}>
+                      <h1 className={styles.cartItemTitle}>CITY</h1>
+                      <h1 className={styles.cartItemSubTitle}>
+                        {checkoutData.city}
+                      </h1>
+                    </div>
+                    <div className={styles.cartSubGroup}>
+                      <h1 className={styles.cartItemTitle}>PLAN</h1>
+                      <h1 className={styles.cartItemSubTitle}>
+                        {' '}
+                        {checkoutData.plan.toUpperCase()}
+                      </h1>
+                    </div>
+                    <div className={styles.cartSubGroup}>
+                      <h1 className={styles.cartItemTitle}>TERM</h1>
+                      <h1 className={styles.cartItemSubTitle}>
+                        {checkoutData.term.toUpperCase()}
+                      </h1>
+                    </div>
+                    {checkoutData.subTerm && (
+                      <>
+                        <div className={styles.cartSubGroup}>
+                          <h1 className={styles.cartItemTitle}>SUB TERM</h1>
+                          <h1 className={styles.cartItemSubTitle}>
+                            {checkoutData.subTerm.toUpperCase()}
+                          </h1>
+                        </div>
+                      </>
+                    )}
+                    <div className={styles.cartSubGroup}>
+                      <h1 className={styles.cartItemTitle}>STATUS</h1>
+                      <h1 className={styles.cartItemSubTitle}>
+                        {checkoutData.status.toUpperCase()}
+                      </h1>
+                    </div>
+                    <div className={styles.cartSubGroup}>
+                      <h1 className={styles.cartItemTitle}>QUANTITY</h1>
+                      <h1 className={styles.cartItemSubTitle}>
+                        {checkoutData.quantity}
+                      </h1>
+                    </div>
+                    <div className={styles.cartSubGroup}>
+                      <h1 className={styles.cartItemTitle}>TOTAL</h1>
+                      <h1 className={styles.cartItemSubTitle}>${totalPrice}</h1>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -599,7 +601,7 @@ export default function Page() {
               <div className={styles.cardFormItem}>
                 <div className={styles.cardFormItemGroup}>
                   <h1 className={styles.cardFormItemLabel}>CUSTOMER INFORMATION</h1>
-                  <div className={styles.cardFormOptionWrap}>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -610,6 +612,8 @@ export default function Page() {
                         })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -628,7 +632,7 @@ export default function Page() {
                   <h1 className={styles.cardFormItemLabel}>
                     SHIPPING ADDRESS (FREE SHIPPING)
                   </h1>
-                  <div className={styles.cardFormOptionWrap}>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -639,6 +643,8 @@ export default function Page() {
                         })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -649,6 +655,8 @@ export default function Page() {
                         })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -658,6 +666,8 @@ export default function Page() {
                         {...customerRegister('address.country', { required: true })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -666,6 +676,8 @@ export default function Page() {
                         {...customerRegister('address.street', { required: true })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -674,6 +686,8 @@ export default function Page() {
                         {...customerRegister('address.opt', { required: false })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -684,6 +698,8 @@ export default function Page() {
                         })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -692,6 +708,8 @@ export default function Page() {
                         {...customerRegister('address.city', { required: true })}
                       />
                     </div>
+                  </div>
+                  <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
                         className={styles.optionInputShipping}
@@ -706,7 +724,7 @@ export default function Page() {
               <div className={styles.cardFormItem}>
                 <div className={styles.cardFormItemGroup}>
                   <h1 className={styles.cardFormItemLabel}>SPECIAL INSTRUCTIONS</h1>
-                  <div className={styles.cardFormOptionWrap}>
+                  <div className={styles.optionInputShippingWrap}>
                     <textarea
                       className={styles.specialTextInput}
                       placeholder="Special Instructions"
@@ -715,7 +733,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className={styles.cardFormOptionWrap}>
+              <div className={styles.optionInputShippingWrap}>
                 <button className={styles.stripeButton} type="submit">
                   SUBMIT
                 </button>
