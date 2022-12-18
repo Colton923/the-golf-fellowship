@@ -724,10 +724,10 @@ export default function Page() {
               <div className={styles.cardFormItem}>
                 <div className={styles.cardFormItemGroup}>
                   <h1 className={styles.cardFormItemLabel}>SPECIAL INSTRUCTIONS</h1>
-                  <div className={styles.optionInputShippingWrap}>
+                  <div className={styles.checkoutOption}>
                     <textarea
                       className={styles.specialTextInput}
-                      placeholder="Special Instructions"
+                      placeholder="Delivery instructions, special requests, etc."
                       {...customerRegister('address.special', { required: false })}
                     />
                   </div>
