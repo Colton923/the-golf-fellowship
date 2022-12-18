@@ -16,7 +16,7 @@ import DashboardNavbar from '../components/DashboardNavbar'
 
 export default function Index() {
   const [user, loading, error] = useAuthState(auth)
-  const [showSignupMenu, setShowSignupMenu] = useState(false);
+  const [showSignupMenu, setShowSignupMenu] = useState(false)
 
   const displaySignupMenu = () => {
     if (showSignupMenu) {
@@ -41,24 +41,51 @@ export default function Index() {
         </div>
       </div>
       <Link href="/" className={styles.overlayButton}>
-        <h1 onClick={displaySignupMenu} className={styles.overlayButtonText}>Become a Member</h1>
+        <h1 onClick={displaySignupMenu} className={styles.overlayButtonText}>
+          Become a Member
+        </h1>
       </Link>
-      <div className={showSignupMenu ? styles.signupMenuCardWrapper : styles.signupMenuCardWrapperHidden}>
+      <div
+        className={
+          showSignupMenu
+            ? styles.signupMenuCardWrapper
+            : styles.signupMenuCardWrapperHidden
+        }
+      >
         <div className={styles.signupMenuCard}>
           <h3 className={styles.signupMenuCardTitle}>Sign Up</h3>
           <div className={styles.signupMenuCardFormWrapper}>
             <form className={styles.signupMenuCardForm}>
-              <input className={styles.signupMenuCardFormInput} type="text" placeholder="First name" />
-              <input className={styles.signupMenuCardFormInput} type="text" placeholder="Last name" />
-              <input className={styles.signupMenuCardFormInput} type="email" placeholder="Email address" />
-              <button className={styles.signupMenuCardFormSubmit} type="submit">Submit</button>
+              <input
+                className={styles.signupMenuCardFormInput}
+                type="text"
+                placeholder="First name"
+              />
+              <input
+                className={styles.signupMenuCardFormInput}
+                type="text"
+                placeholder="Last name"
+              />
+              <input
+                className={styles.signupMenuCardFormInput}
+                type="email"
+                placeholder="Email address"
+              />
+              <button className={styles.signupMenuCardFormSubmit} type="submit">
+                Submit
+              </button>
             </form>
           </div>
           <p>OR</p>
-            <Link href="/">Sign in with Google</Link>
-            <div className={styles.signupMenuCardCloseBtnWrapper}>
-              <h4 onClick={displaySignupMenu} className={styles.signupMenuCardCloseBtn}>Close</h4>
-            </div>
+          <Link href="/">Sign in with Google</Link>
+          <div className={styles.signupMenuCardCloseBtnWrapper}>
+            <h4
+              onClick={displaySignupMenu}
+              className={styles.signupMenuCardCloseBtn}
+            >
+              Close
+            </h4>
+          </div>
         </div>
       </div>
       <div className={styles.whoAreWeSection}>
