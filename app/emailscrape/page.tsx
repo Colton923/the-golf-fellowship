@@ -99,7 +99,6 @@ export default function Page() {
     const scrapeOne = scrapeInputValues
       .replace('|', ' ')
       .replace(/[\r\n\t\x0B\x0C\u0085\u2028\u2029]+/g, ' ')
-    console.log('scrapeOne', scrapeOne)
 
     const name = scrapeOne.match(/New order from:\s\w+\s\w+/)
     const phone = scrapeOne.match(phoneRegex)
@@ -211,7 +210,7 @@ export default function Page() {
 
   return (
     <div className={styles.pageWrapper}>
-      <h1>Email Scraper</h1>
+      <h1 className={styles.scrapeTitle}>Copy and paste email below.</h1>
       <div className={styles.scrapeWrapper}>
         <textarea
           className={styles.scrapeInput}
@@ -225,8 +224,6 @@ export default function Page() {
         >
           Scrape
         </button>
-      </div>
-      <div className={styles.scrapeWrapper}>
         <textarea
           id={'output'}
           value={outputText}
@@ -234,6 +231,9 @@ export default function Page() {
           onChange={(event) => setOutputText(event.target.value)}
         ></textarea>
       </div>
+      <h1>TODO: Add a button to verify that the ouput is correct.</h1>
+      <h1>If it is, then add the data to the database. </h1>
+      <h1>First lets make sure that this works correctly with a few emails.</h1>
     </div>
   )
 }
