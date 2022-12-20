@@ -35,6 +35,9 @@ export default function AdminNavbar() {
         <Link href="/proshop" className={styles.navbarlink}>
           Pro Shop
         </Link>
+        <Link href="/emailscrape" className={styles.navbarlink}>
+          Email Scraper
+        </Link>
       </nav>
     </div>
   )
