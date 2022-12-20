@@ -2,49 +2,27 @@
 import { useEffect, useState } from 'react'
 import styles from '../../styles/Scrape.module.css'
 
-//Data we are parsing example:
-// New order from: James Jasso
-
-// (512) 656-1292 | jjasso227@gmail.com
-
-// VIEW ORDER
-// Order: R527673457  |  Date: 12-18-2022
-// Shipping Address
-// JAMES JASSO
-// 11101 COPPER SPRING DR
-// AUSTIN TX 78748
-// (512) 656-1292
-
-// Billing Address
-// Same as the shipping address
-
-// Shipping Method
-// Ships Free
-
-// Order Summary
-// Rs=w:400,h:400
-// TGF MEMBERSHIP
-// CITY: AUSTIN
-// PLAN: PLAYER +
-// TERM: ANNUAL yearly
-// STATUS: RETURNING
-// SKU: MEM-STN-PLY-NNL-YRL1
-// $350.00
-// Subtotal:	$350.00
-// Shipping (Ships Free):	$0.00
-// Sales Tax 8.25%:	$28.89
-// Order Total:
-// $378.89
-// Selected payment method:
-// Credit/Debit Card - GoDaddy Payments
-
-// Regex for all 14 digit phone numbers '(###) ###-####'
-
+const nameRegex = /New order from:\s\w+\s\w+/
 const phoneRegex = /\(\d{3}\)\s\d{3}-\d{4}/
-
-// Regex for email addresses
-
 const emailRegex = /[\w.]+@[\w.]+\.\w+/
+const orderRegex = /Order:\s\w+/
+const dateRegex = /Date:\s\d+-\d+-\d+/
+const shippingRegex = /Shipping Address([^]*?)Billing Address/
+const billingRegex = /Billing Address([^]*?)Shipping Method/
+//city type one: CITY: San Antonio
+//city type two: CITY: Austin
+const orderCityRegex = /CITY:\s\w+\s\w+/ || /CITY:\s\w+/
+const orderPlanRegex = /PLAN:\s\w+/
+const orderTermRegex = /TERM:\s\w+/
+const orderStatusRegex = /STATUS:\s\w+/
+//SKU type one: MEM-SAN-PLY-NNL-YRL
+//SKU type two: MEM-SAN-PLY-NNL-YRL8
+const skuRegexOne = /SKU:\s\w+-\w+-\w+-\w+-\w+/
+const skuRegexTwo = /SKU:\s\w+-\w+-\w+-\w+-\w+\d/
+const orderSubTotalRegex = /Subtotal:\s\$\d+\.\d+/
+const orderShippingPlusTaxRegex = /Shipping \(Ships Free\):\s\$\d+\.\d+/
+const orderSalesTaxRegex = /Sales Tax 8.25%:\s\$\d+\.\d+/
+const orderOrderTotalRegex = /Order Total:\s\$\d+\.\d+/
 
 type Order = {
   name: string
@@ -100,45 +78,43 @@ export default function Page() {
       .replace('|', ' ')
       .replace(/[\r\n\t\x0B\x0C\u0085\u2028\u2029]+/g, ' ')
 
-    const name = scrapeOne.match(/New order from:\s\w+\s\w+/)
+    const name = scrapeOne.match(nameRegex)
     const phone = scrapeOne.match(phoneRegex)
     const email = scrapeOne.match(emailRegex)
-    const order = scrapeOne.match(/Order:\s\w+/)
-    const date = scrapeOne.match(/Date:\s\d+-\d+-\d+/)
-    const shipping = scrapeOne.match(/Shipping Address([^]*?)Billing Address/)
-    const billing = scrapeOne.match(/Billing Address([^]*?)Shipping Method/)
-    const orderCity = scrapeOne.match(/CITY:\s\w+/)
-    const orderPlan = scrapeOne.match(/PLAN:\s\w+/)
-    const orderTerm = scrapeOne.match(/TERM:\s\w+/)
-    const orderStatus = scrapeOne.match(/STATUS:\s\w+/)
-    const orderSKU = scrapeOne.match(/SKU:\s\w+\-\w+\-\w+\-\w+\-\w+\d/)
-    const orderSubTotal = scrapeOne.match(/Subtotal:\s\$\d+\.\d+/)
-    const orderShippingPlusTax = scrapeOne.match(
-      /Shipping \(Ships Free\):\s\$\d+\.\d+/
-    )
-    const orderSalesTax = scrapeOne.match(/Sales Tax 8.25%:\s\$\d+\.\d+/)
-    const orderOrderTotal = scrapeOne.match(/Order Total:\s\$\d+\.\d+/)
+    const order = scrapeOne.match(orderRegex)
+    const date = scrapeOne.match(dateRegex)
+    const shipping = scrapeOne.match(shippingRegex)
+    const billing = scrapeOne.match(billingRegex)
+    const orderCity = scrapeOne.match(orderCityRegex)
+    const orderPlan = scrapeOne.match(orderPlanRegex)
+    const orderTerm = scrapeOne.match(orderTermRegex)
+    const orderStatus = scrapeOne.match(orderStatusRegex)
+    const orderSKU = scrapeOne.match(skuRegexOne) || scrapeOne.match(skuRegexTwo)
+    const orderSubTotal = scrapeOne.match(orderSubTotalRegex)
+    const orderShippingPlusTax = scrapeOne.match(orderShippingPlusTaxRegex)
+    const orderSalesTax = scrapeOne.match(orderSalesTaxRegex)
+    const orderOrderTotal = scrapeOne.match(orderOrderTotalRegex)
 
     setScrapeValues(
       Object.assign({}, scrapeValues, {
-        name: name ? name[0].replace('New order from: ', '') : '',
+        name: name ? name[0].replace('New order from:', '') : '',
         phone: phone ? phone[0] : '',
         email: email ? email[0] : '',
-        OrderNumber: order ? order[0].replace('Order: ', '') : '',
+        OrderNumber: order ? order[0].replace('Order:', '') : '',
         OrderDate: date ? date[0].replace('Date: ', '') : '',
         ShippingAddress: shipping
           ? shipping[0]
-              .replace('Shipping Address ', '')
+              .replace('Shipping Address', '')
               .replace('Billing Address', '')
           : '',
         BillingAddress: billing
-          ? billing[0].replace('Billing Address ', '').replace('Shipping Method', '')
+          ? billing[0].replace('Billing Address', '').replace('Shipping Method', '')
           : '',
         Order: {
-          City: orderCity ? orderCity[0].replace('City: ', '') : '',
-          Plan: orderPlan ? orderPlan[0].replace('Plan: ', '') : '',
-          Term: orderTerm ? orderTerm[0].replace('Term: ', '') : '',
-          Status: orderStatus ? orderStatus[0].replace('Status: ', '') : '',
+          City: orderCity ? orderCity[0].replace('CITY: ', '') : '',
+          Plan: orderPlan ? orderPlan[0].replace('PLAN: ', '') : '',
+          Term: orderTerm ? orderTerm[0].replace('TERM: ', '') : '',
+          Status: orderStatus ? orderStatus[0].replace('STATUS: ', '') : '',
           SKU: orderSKU ? orderSKU[0].replace('SKU: ', '') : '',
           SubTotal: orderSubTotal ? orderSubTotal[0].replace('Subtotal: ', '') : '',
           ShippingPlusTax: orderShippingPlusTax
@@ -191,7 +167,7 @@ export default function Page() {
         'status: ' +
         scrapeValues.Order.Status +
         '\n' +
-        'sKU: ' +
+        'sku: ' +
         scrapeValues.Order.SKU +
         '\n' +
         'subTotal: ' +
