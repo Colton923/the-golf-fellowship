@@ -3,15 +3,12 @@
 .navbarMain {
   background: rgba(0, 0, 0, 0.08);
   position: fixed;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(30px);
   top: 0;
   left: 0;
   width: 100%;
   height: 90px;
-  opacity: 0.85;
   z-index: 999;
-  border-top: 5px solid #000;
-  border-bottom: 3px solid #000;
 }
 
 .navbarContainer {
@@ -20,7 +17,7 @@
   height: 100%;
   width: 100%;
   margin: 0;
-  box-shadow: 10px 10px 10px 2px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 10px 2px rgba(0, 0, 0, 0.6);
 }
 
 .navbarImage {

@@ -122,13 +122,10 @@
   border-radius: 10px;
 
   transform: translate(-50%);
-  transition: 0.2s ease-in-out;
 }
 
 .signupMenuCardWrapperHidden {
   display: none;
-
-  transition: all .2s ease-in-out;
 }
 
 .signupMenuCard {
