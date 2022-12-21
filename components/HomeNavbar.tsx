@@ -3,7 +3,11 @@ import styles from '../styles/Navbar.module.css'
 import Image from 'next/image'
 import logo from '../public/static/images/tgf_logo.jpg'
 
-export default function HomeNavbar() {
+interface HomeNavbarProps {
+  showSignupMenuSetter: (showSignupMenu: boolean) => void
+}
+
+export default function HomeNavbar(props: HomeNavbarProps) {
   return (
     <div className={styles.navbarMain}>
       <div className={styles.navbarContainer}>
@@ -21,9 +25,16 @@ export default function HomeNavbar() {
             </Link>
           </div>
           <div className={styles.navbarTextWrapper}>
-            <Link href="/login" className={styles.navbarLink} key={'nav2'}>
+            <h1
+              onClick={() => {
+                props.showSignupMenuSetter(true)
+              }}
+              className={styles.navbarLink}
+              key={'nav2'}
+              style={{ cursor: 'pointer' }}
+            >
               Login
-            </Link>
+            </h1>
           </div>
           <div className={styles.navbarTextWrapper}>
             <Link href="/proshop" className={styles.navbarLink} key={'nav3'}>

@@ -1,7 +1,7 @@
+'use client'
 import React from 'react'
-import HomeNavbar from '../../components/HomeNavbar'
+import AdminNavbar from '../../components/AdminNavbar'
 import styles from '../../styles/App.module.css'
-
 interface Props {
   children: React.ReactNode
 }
@@ -9,7 +9,9 @@ interface Props {
 export default function Layout({ children }: Props) {
   return (
     <div>
-      <div className={styles.main}>{/* <HomeNavbar  /> */}</div>
+      <div>
+        <AdminNavbar />
+      </div>
       <section>{children}</section>
     </div>
   )

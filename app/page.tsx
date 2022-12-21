@@ -9,15 +9,83 @@ import imgGolf from '../public/static/images/tgf_home_page_golf.jpg'
 import imgImprove from '../public/static/images/tgf_home_page_improve.jpg'
 import imgNetwork from '../public/static/images/tgf_home_page_network.jpg'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../firebase/firebaseClient'
 import DashboardNavbar from '../components/DashboardNavbar'
 import imgBack from '../public/static/images/background.png'
+import { useCallback } from 'react'
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
+import { useForm } from 'react-hook-form'
+import { collection, doc, setDoc } from 'firebase/firestore'
+import { useRouter } from 'next/navigation'
+import googleLogo from '../public/static/images/googleLogo.png'
+
+type FormData = {
+  firstName: string
+  lastName: string
+  email: string
+}
+
+const validName = RegExp(/^[A-Za-z]+$/i)
+
+const validEmail = RegExp(
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+)
 
 export default function Index() {
   const [user, loading, error] = useAuthState(auth)
   const [showSignupMenu, setShowSignupMenu] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  const router = useRouter()
+
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>()
+
+  const db = getFirestore()
+
+  const signInWithGoogle = async (data: FormData) => {
+    try {
+      const provider = new GoogleAuthProvider()
+      const result = await signInWithPopup(auth, provider)
+      const userRef = collection(db, 'users')
+      const docRef = doc(userRef, result.user.uid)
+      await setDoc(docRef, {
+        userTypedFirstName: data.firstName,
+        userTypedLastName: data.lastName,
+        userTypedEmail: data.email,
+        uid: result.user.uid,
+        googleAccountFirstName: result.user.displayName
+          ? result.user.displayName?.split(' ')[0]
+          : data.firstName,
+        googleAccountLastName: result.user.displayName
+          ? result.user.displayName?.split(' ')[1]
+          : data.lastName,
+        email: result.user.email,
+        photoUrl: result.user.photoURL,
+      })
+      router.push('/dashboard')
+    } catch (error) {
+      console.log(error)
+      alert('Error signing in with Google')
+    }
+    setValue('lastName', '')
+    setValue('firstName', '')
+    setValue('email', '')
+  }
+
+  const wrapperSetShowSignupMenu = useCallback(
+    (showSignupMenu: boolean) => {
+      setShowSignupMenu(showSignupMenu)
+    },
+    [setShowSignupMenu]
+  )
 
   const displaySignupMenu = () => {
     if (showSignupMenu) {
@@ -27,9 +95,33 @@ export default function Index() {
     }
   }
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent | KeyboardEvent) => {
+      if (
+        event.target &&
+        (event.target as HTMLElement).className === styles.main &&
+        (event.target as HTMLElement).className !== styles.signupMenuCardWrapper &&
+        showSignupMenu === true
+      ) {
+        setShowSignupMenu(false)
+      }
+    }
+    window.addEventListener('click', handleClickOutside)
+
+    return () => {
+      window.removeEventListener('click', handleClickOutside)
+    }
+  }, [showSignupMenu])
+
   return (
     <div className={styles.main}>
-      <div>{!user ? <HomeNavbar /> : <DashboardNavbar />}</div>
+      <div>
+        {!user ? (
+          <HomeNavbar showSignupMenuSetter={wrapperSetShowSignupMenu} />
+        ) : (
+          <DashboardNavbar />
+        )}
+      </div>
       <div className={styles.backgroundWrapper}>
         <div className={styles.backgroundImage}>
           <Image src={imgHome} alt="Home Page" quality={100} fill />
@@ -46,6 +138,7 @@ export default function Index() {
           Become a Member
         </h1>
       </Link>
+
       <div
         className={
           showSignupMenu
@@ -53,43 +146,78 @@ export default function Index() {
             : styles.signupMenuCardWrapperHidden
         }
       >
-        <div className={styles.signupMenuCard}>
-          <h3 className={styles.signupMenuCardTitle}>Sign Up</h3>
-          <div className={styles.signupMenuCardFormWrapper}>
-            <form className={styles.signupMenuCardForm}>
+        <form onSubmit={handleSubmit(signInWithGoogle)}>
+          <div className={styles.signupMenuCard}>
+            <h3 className={styles.signupMenuCardTitle}>
+              Welcome to The Golf Fellowship
+            </h3>
+            <div className={styles.signupMenuCardFormWrapper}>
               <input
                 className={styles.signupMenuCardFormInput}
                 type="text"
                 placeholder="First name"
+                {...register('firstName', {
+                  maxLength: 20,
+                  required: true,
+                  validate: (value) =>
+                    validName.test(value) || 'First name must contain only letters',
+                })}
               />
               <input
                 className={styles.signupMenuCardFormInput}
                 type="text"
                 placeholder="Last name"
+                {...register('lastName', {
+                  maxLength: 20,
+                  required: true,
+                  validate: (value) =>
+                    validName.test(value) || 'Last name must contain only letters',
+                })}
               />
               <input
                 className={styles.signupMenuCardFormInput}
                 type="email"
                 placeholder="Email address"
+                {...register('email', {
+                  required: true,
+                  validate: (value) =>
+                    validEmail.test(value) || 'E-mail must be valid',
+                })}
               />
               <button className={styles.signupMenuCardFormSubmit} type="submit">
                 Submit
               </button>
-            </form>
-          </div>
-          <p>OR</p>
-          <Link href="/">Sign in with Google</Link>
-          <div className={styles.signupMenuCardCloseBtnWrapper}>
-            <h4
-              onClick={displaySignupMenu}
-              className={styles.signupMenuCardCloseBtn}
+            </div>
+            <div className={styles.orWrapper}>
+              <div className={styles.lineBetweenOrDivs1234}></div>
+              <p>or</p>
+              <div className={styles.lineBetweenOrDivs5678}></div>
+            </div>
+            <button
+              type="submit"
+              value="Sign In"
+              className={styles.signupMenuCardFormSubmitGoogle}
             >
-              Close
-            </h4>
+              <Image
+                src={googleLogo}
+                alt="Google Logo"
+                height={75}
+                width={75}
+                className={styles.googleLogoWrapper}
+              />
+            </button>
+            <div className={styles.signupMenuCardCloseBtnWrapper}>
+              <h4
+                onClick={displaySignupMenu}
+                className={styles.signupMenuCardCloseBtn}
+              >
+                Close
+              </h4>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
-      <div className={styles.whoAreWeSection}>
+      <div className={styles.whoWeAreSection}>
         <h1 className={styles.whoWeAreTitle}>WHO WE ARE</h1>
         <div className={styles.youtubeEmbedWrapper}>
           <iframe

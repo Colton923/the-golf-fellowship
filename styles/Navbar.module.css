@@ -3,7 +3,11 @@
 .navbarMain {
   background: rgba(0, 0, 0, 0.08);
   position: fixed;
+<<<<<<< HEAD
   backdrop-filter: blur(30px);
+=======
+  backdrop-filter: blur(5px);
+>>>>>>> 10dc1216cd1e2852dbd0e789ae3b24ae0872e4ac
   top: 0;
   left: 0;
   width: 100%;
