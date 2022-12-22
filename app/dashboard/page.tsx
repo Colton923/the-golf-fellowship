@@ -1,9 +1,6 @@
 'use client'
+import styles from '../../styles/PlayerDashboard.module.css'
 
 export default function Page() {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  )
+  return <div></div>
 }
