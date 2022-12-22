@@ -3,11 +3,7 @@
 .navbarMain {
   background: rgba(0, 0, 0, 0.08);
   position: fixed;
-<<<<<<< HEAD
-  backdrop-filter: blur(30px);
-=======
   backdrop-filter: blur(5px);
->>>>>>> 10dc1216cd1e2852dbd0e789ae3b24ae0872e4ac
   top: 0;
   left: 0;
   width: 100%;
@@ -21,6 +17,7 @@
   height: 100%;
   width: 100%;
   margin: 0;
+
   box-shadow: 0 4px 10px 2px rgba(0, 0, 0, 0.6);
 }
 
@@ -51,7 +48,7 @@
   display: inline-block;
   justify-self: center;
 
-  text-shadow: 0px 1px 1px rgba(255, 255, 255, 1);
+  -webkit-text-stroke: 0.001rem #fff;
 
   font-size: 4vw;
   font-weight: 800;

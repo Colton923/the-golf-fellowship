@@ -133,11 +133,11 @@ export default function Index() {
           </h2>
         </div>
       </div>
-      <Link href="/" className={styles.overlayButton}>
+      <button className={styles.overlayButton}>
         <h1 onClick={displaySignupMenu} className={styles.overlayButtonText}>
           Become a Member
         </h1>
-      </Link>
+      </button>
 
       <div
         className={
