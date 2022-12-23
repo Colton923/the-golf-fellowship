@@ -1,0 +1,116 @@
+
+
+.calendarWrapper {
+    background: #fff;
+    width: 450px;
+    height: 500px;
+}
+
+.calendar {
+    width: 100%;
+    height: 100%;
+}
+
+.calendarHeader {
+    height: 28px;
+}
+
+.calendarHeaderItem {
+
+}
+
+.calendarMonth {
+    
+}
+
+/* Calendar Grid Header */
+
+.calendarGridWrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.calendarGrid {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.calendarGridHeaderWrapper {
+    width: 100%;
+    height: 50px;
+
+    display: flex;
+    justify-content: space-around;
+}
+
+.calendarGridHeaderItem {
+    
+}
+
+.calendarGridHeaderItemText {
+    font-size: 18px;
+}
+
+
+/* Calendar Grid Body */
+
+.calendarGridItems {
+    height: 75%;
+
+    display: grid;
+    grid-template: repeat(7, 1fr) / repeat(6, 1fr);
+}
+
+.calendarGridItem {
+    height: 50px;
+}
+
+.calendarGridItemDaySelected {
+    background: #e1e1e1;
+    height: 100%;
+    margin: 1px;
+
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.calendarGridItemDay {
+    background: #e1e1e1;
+    height: 100%;
+    margin: 1px;
+
+    border-radius: 5px;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.calendarGridItemDayCircle {
+    width: 20px;
+    height: 20px;
+
+    border-radius: 50%;
+    background: #fff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.calendarGridItemDayText {
+    opacity: 80%;
+    margin: 0;
+
+    font-size: 16px;
+    font-weight: bold;
+}

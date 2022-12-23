@@ -1,12 +1,12 @@
 'use client'
 import Image from 'next/image'
 import imgBackground from '../../public/static/images/tgf_dashboard_background.png'
-import styles from '../../styles/Dashboard_new.module.css'
+import styles from '../../styles/Testpage.module.css'
 import AdminNavbar from '../../components/AdminNavbar'
 import { useEffect } from 'react'
+import { Calendar } from '../../components/calendar/Calendar'
 
 export default function Page() {
-
   return (
     <div className={styles.dashboardWrapper}>
       <AdminNavbar />
@@ -17,14 +17,8 @@ export default function Page() {
       </div>
       <div className={styles.contentWrapper}>
         <div className={styles.content}>
-          <div className={styles.events}>
-            Events
-          </div>
-          <div className={styles.stats}>
-            Statistics
-          </div>
-          <div className={styles.account}>
-            My Account
+          <div className={styles.calendarWrapper}>
+            <Calendar />
           </div>
         </div>
       </div>
