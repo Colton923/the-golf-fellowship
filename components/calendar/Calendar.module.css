@@ -1,116 +1,330 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
 .calendarWrapper {
-    background: #fff;
-    width: 450px;
-    height: 500px;
+  background: #fff;
+  width: 450px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+  font-family: 'Open Sans', sans-serif;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .calendar {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .calendarHeader {
-    height: 28px;
+  height: 28px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
 }
 
 .calendarHeaderItem {
-
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.calendarMonth {
-    
+.calendarMonthText {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 0;
+
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Calendar Grid Header */
 
 .calendarGridWrapper {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .calendarGrid {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .calendarGridHeaderWrapper {
-    width: 100%;
-    height: 50px;
+  width: 95%;
+  height: 50px;
+  align-self: center;
 
-    display: flex;
-    justify-content: space-around;
+  display: grid;
+  grid-columns: 7;
+  grid-template: 1fr / repeat(7, 1fr);
+  grid-gap: 20px;
 }
 
 .calendarGridHeaderItem {
-    
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
 }
 
 .calendarGridHeaderItemText {
-    font-size: 18px;
-}
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 0;
 
+  color: rgba(255, 255, 255, 0.5);
+}
 
 /* Calendar Grid Body */
 
 .calendarGridItems {
-    height: 75%;
+  height: 60%;
 
-    display: grid;
-    grid-template: repeat(7, 1fr) / repeat(6, 1fr);
+  display: grid;
+  grid-template: repeat(6, 1fr) / repeat(7, 1fr);
 }
 
 .calendarGridItem {
-    height: 50px;
+  height: 55px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 1);
+  margin: 3px;
+}
+
+.calendarGridItem:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.calendarGridItem:active {
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  transform: scale(0.95);
 }
 
 .calendarGridItemDaySelected {
-    background: #e1e1e1;
-    height: 100%;
-    margin: 1px;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  height: 100%;
+  margin: 1px;
 
-    box-shadow: 0 0 4px rgba(0,0,0,0.5);
-    border-radius: 5px;
-    overflow: hidden;
+  border-radius: 5px;
+  overflow: hidden;
 
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
+  display: flex;
 }
 
 .calendarGridItemDay {
-    background: #e1e1e1;
-    height: 100%;
-    margin: 1px;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(5px);
+  height: 100%;
+  margin: 1px;
 
-    border-radius: 5px;
-    overflow: hidden;
+  border-radius: 5px;
+  overflow: hidden;
 
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
+  display: flex;
 }
 
 .calendarGridItemDayCircle {
-    width: 20px;
-    height: 20px;
+  width: 33px;
+  height: 33px;
+  padding: 1px;
 
-    border-radius: 50%;
-    background: #fff;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.calendarGridItemDayCircleSvg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(270deg);
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  fill: #fff;
+
+  z-index: 0;
 }
 
 .calendarGridItemDayText {
-    opacity: 80%;
-    margin: 0;
+  opacity: 80%;
+  margin: 0;
 
-    font-size: 16px;
-    font-weight: bold;
+  font-weight: bold;
+  color: #000;
+
+  z-index: 1;
+  transform: rotate(90deg);
+}
+
+.calendarGridItemEvents {
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  margin: 3px;
+  grid-gap: 3px;
+}
+
+.calendarGridItemEvent {
+  height: 10px;
+  width: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.calendarGridItemEvent:nth-child(1) {
+  grid-column: span 3;
+  height: 10px;
+  width: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.calendarGridItemEvent:nth-child(2) {
+  grid-column: 1 / span 1;
+  height: 10px;
+  width: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.calendarGridItemEvent:nth-child(3) {
+  grid-column: 2 / span 2;
+  height: 10px;
+  width: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  border-radius: 5px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.calendarGridItemEventText {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.calendarGridFooter {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendarGridFooterItems {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendarGridFooterItem {
+  width: 90%;
+  height: 40px;
+  display: flex;
+
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+
+  margin: 2px;
+
+  align-self: center;
+}
+
+.calendarGridFooterItemText {
+  font-size: 18px;
+  font-weight: 500;
+}
+.calendarGridFooterItemSubText {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+.calendarGridFooterItemTime {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filterWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.filterItem {
+  width: 50px;
+  height: 100%;
+  margin-top: 3px;
+  margin-right: 30px;
+  margin-left: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.filterItemInput {
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.filterItemInput:hover {
+  transform: scale(1.1);
+}
+
+.filterItemInput:active {
+  transform: scale(0.9);
+}
+
+.filterItemInput:checked {
+  transform: scale(1.1);
+  accent-color: rgba(255, 255, 255, 0.5);
+}
+
+.filterItemLabel {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
 }
