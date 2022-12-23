@@ -67,40 +67,47 @@ export const Calendar = () => {
           </div>
           <div className={styles.calendarGridWrapper}>
             <div className={styles.calendarGrid}>
-              <div className={styles.calendarGridItem}>
-                <div className={styles.calendarGridItemHeader}>
-                  <h2 className={styles.calendarGridItemHeaderText}>Sun</h2>
+              <div className={styles.calendarGridHeaderWrapper}>
+                <div className={styles.calendarGridHeaderItem}>
+                  <h2 className={styles.calendarGridHeaderItemText}>Sun</h2>
                 </div>
-                <div className={styles.calendarGridItemHeader}>
-                  <h2 className={styles.calendarGridItemHeaderText}>Mon</h2>
+                <div className={styles.calendarGridHeaderItem}>
+                  <h2 className={styles.calendarGridHeaderItemText}>Mon</h2>
                 </div>
-                <div className={styles.calendarGridItemHeader}>
-                  <h2 className={styles.calendarGridItemHeaderText}>Tue</h2>
+                <div className={styles.calendarGridHeaderItem}>
+                  <h2 className={styles.calendarGridHeaderItemText}>Tue</h2>
                 </div>
-                <div className={styles.calendarGridItemHeader}>
-                  <h2 className={styles.calendarGridItemHeaderText}>Wed</h2>
+                <div className={styles.calendarGridHeaderItem}>
+                  <h2 className={styles.calendarGridHeaderItemText}>Wed</h2>
                 </div>
-                <div className={styles.calendarGridItemHeader}>
-                  <h2 className={styles.calendarGridItemHeaderText}>Thu</h2>
+                <div className={styles.calendarGridHeaderItem}>
+                  <h2 className={styles.calendarGridHeaderItemText}>Thu</h2>
                 </div>
-                <div className={styles.calendarGridItemHeader}>
-                  <h2 className={styles.calendarGridItemHeaderText}>Fri</h2>
+                <div className={styles.calendarGridHeaderItem}>
+                  <h2 className={styles.calendarGridHeaderItemText}>Fri</h2>
                 </div>
-                <div className={styles.calendarGridItemHeader}>
-                  <h2 className={styles.calendarGridItemHeaderText}>Sat</h2>
+                <div className={styles.calendarGridHeaderItem}>
+                  <h2 className={styles.calendarGridHeaderItemText}>Sat</h2>
                 </div>
               </div>
-              <div className={styles.calendarGridItem}>
+              <div className={styles.calendarGridItems}>
                 {calendar.map((day, index) => (
-                  <div
-                    className={
-                      selectedDay === index
-                        ? styles.calendarGridItemDaySelected
-                        : styles.calendarGridItemDay
-                    }
-                    key={index}
-                  >
-                    {day}
+                  <div className={styles.calendarGridItem}>
+                    <div
+                      className={
+                        selectedDay === index
+                          ? styles.calendarGridItemDaySelected
+                          : styles.calendarGridItemDay
+                      }
+                      key={index}
+                    >
+                      <div className={styles.calendarGridItemDayCircle}>
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg%22%3E">
+                          <circle cx="100" cy="100" r="75" />
+                        </svg>
+                        <h6 className={styles.calendarGridItemDayText}>{day}</h6>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
