@@ -34,18 +34,27 @@
   }
 
   .contentWrapper {
-    position: absolute;
-    top: 100px;
+    height: 100vh;
   }
 
   .content {
-    height: 200px;
-    margin: 200px 0 0 150px;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .buttonsWrapper {
+    width: 500px;
+    height: 370px;
+    margin-bottom: 100px;
 
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
     align-items: center;
+    justify-content: space-around;
   }
 
   .events {
@@ -103,10 +112,30 @@
   .stats:hover,
   .account:hover {
     background: green;
+    color: #fff;
     width: 265px;
     height: 35px;
     margin: 2.5px;
 
     box-shadow: 0 0 10px rgba(0,0,0,1);
+
+    text-shadow: 0 0 4px #fff;
     transition: all 0.05s ease-in-out;
+  }
+
+
+  /* Cards */
+
+  .cardsWrapper {
+    background: green;
+  }
+
+  .eventsCard {
+    background: #fff;
+    width: 500px;
+    height: 200px;
+  }
+
+  .hidden {
+    display: none;
   }
