@@ -11,40 +11,22 @@
   height: 100%;
   font-family: 'Open Sans', sans-serif;
 }
-.itemHeader {
-  font-size: 20px;
-  font-weight: 600;
-  color: #000000;
-  margin-bottom: 1px;
-}
 
-.itemLabel {
-  font-size: 14px;
-  font-weight: 600;
-  color: #000000;
-  margin-bottom: 1px;
-}
-
-.gridLayout {
+.gridWrapper {
   display: flex;
-  flex-direction: column;
-  grid-gap: 1px;
-  margin-bottom: 1px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  height: auto;
+  width: auto;
 }
 
-.gridHeaders {
-  height: 40px;
-  display: grid;
-  grid-gap: 1px;
-  margin-bottom: 1px;
-  grid-columns: 11;
-  grid-template: 1fr / repeat(11, 1fr);
-}
-
-.gridData {
-  display: grid;
-  grid-gap: 1px;
-  margin-bottom: 1px;
-  grid-columns: 11;
-  grid-template: 1fr / repeat(11, 1fr);
+.totalsGridWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  height: auto;
+  width: auto;
 }

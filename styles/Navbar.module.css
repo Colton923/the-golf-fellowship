@@ -26,6 +26,7 @@
 }
 
 .navbar {
+  font-family: 'Open Sans', sans-serif;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -48,7 +49,7 @@
   display: inline-block;
   justify-self: center;
 
-  -webkit-text-stroke: 0.001rem #fff;
+  font-background: rgba(255, 255, 255, 0.8);
 
   font-size: 4vw;
   font-weight: 800;
