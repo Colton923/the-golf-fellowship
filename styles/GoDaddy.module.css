@@ -11,44 +11,40 @@
   height: 100%;
   font-family: 'Open Sans', sans-serif;
 }
-
-.cardGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-gap: 10px;
-  padding: 10px;
+.itemHeader {
+  font-size: 20px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 1px;
 }
 
-.card {
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap: 10px;
+.itemLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 1px;
 }
 
-.cardTextWrapper {
-  border: 1px solid #000000;
-  border-radius: 2px;
-  padding: 2px;
-  height: 90px;
-  justify-content: center;
+.gridLayout {
   display: flex;
   flex-direction: column;
+  grid-gap: 1px;
+  margin-bottom: 1px;
 }
 
-.cardText {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-left: 2px;
+.gridHeaders {
+  height: 40px;
+  display: grid;
+  grid-gap: 1px;
+  margin-bottom: 1px;
+  grid-columns: 11;
+  grid-template: 1fr / repeat(11, 1fr);
 }
 
-.cardLeftColumn {
-  column: 1;
-}
-
-.cardRightColumn {
-  column: 2;
+.gridData {
+  display: grid;
+  grid-gap: 1px;
+  margin-bottom: 1px;
+  grid-columns: 11;
+  grid-template: 1fr / repeat(11, 1fr);
 }

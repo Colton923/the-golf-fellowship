@@ -1,20 +1,18 @@
 export type Order = {
-  name: string
-  phone: string
-  email: string
-  orderNumber: string
-  orderDate: string
-  shippingAddress: string
   billingAddress: string
-  order: {
-    city: string
-    plan: string
-    term: string
-    status: string
-    sku: string
-    subTotal: string
-    shippingPlusTax: string
-    salesTax: string
-    orderTotal: string
-  }
+  city: string
+  club: string
+  date: string
+  email: string
+  name: string
+  orderNumber: string
+  orderTotal: string
+  phone: string
+  plan: string
+  salesTax: string
+  shippingAddress: string
+  sku: string
+  status: string
+  subTotal: string
+  term: string
 }
