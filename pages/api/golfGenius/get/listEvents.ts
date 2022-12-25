@@ -1,10 +1,10 @@
 const admin = process.env.NEXT_PUBLIC_GOLF_GENIUS_KEY
 
 export type GetEvents = {
-  page?: number
-  season_id?: number
-  category_id?: number
-  directory_id?: number
+  page?: string
+  season_id?: string
+  category_id?: string
+  directory_id?: string
   archived?: boolean
 }
 

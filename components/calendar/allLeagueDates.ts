@@ -1,5 +1,5 @@
-import handler from '../../pages/api/listEvents'
-import type { GetEvents } from '../../pages/api/listEvents'
+import handler from '../../pages/api/golfGenius/get/listEvents'
+import type { GetEvents } from '../../pages/api/golfGenius/get/listEvents'
 
 type event = {
   category: {
