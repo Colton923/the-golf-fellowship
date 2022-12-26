@@ -227,10 +227,15 @@ export default function Page() {
   const [lineItemPrice, setLineItemPrice] = useState(0)
   const [intervalPurchase, setIntervalPurchase] = useState('')
   const [subStatusMessage, setSubStatusMessage] = useState('')
+  const [focusedElementID, setFocusedElementID] = useState('')
 
   useEffect(() => {
-    console.log('paymentIntent', paymentIntent)
-  }, [paymentIntent])
+    const handleNewFocusedElement = () => {
+      const focusedElement = document.getElementById(focusedElementID)
+      focusedElement?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+    handleNewFocusedElement()
+  }, [focusedElementID])
 
   useEffect(() => {
     fetch('api/stripe/stripe_intent', {
@@ -503,7 +508,9 @@ export default function Page() {
               height={100}
             />
           </div>
-          <h1 className={styles.itemTitle}>TGF MEMBERSHIP</h1>
+          <h1 className={styles.itemTitle} id="top">
+            TGF MEMBERSHIP
+          </h1>
         </div>
 
         {/* CARD THREE */}
@@ -523,6 +530,7 @@ export default function Page() {
                 </h1>
                 <div className={styles.cardFormOptionWrap}>
                   <button
+                    id="backButton"
                     className={styles.backButton}
                     onClick={() => (
                       setShowCheckout(false),
@@ -604,24 +612,32 @@ export default function Page() {
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="emailAddress"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="Email Address"
                         {...customerRegister('email', {
                           required: true,
                         })}
+                        onKeyUp={() => {
+                          setFocusedElementID('phoneNumber')
+                        }}
                       />
                     </div>
                   </div>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="phoneNumber"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="Phone"
                         {...customerRegister('phone', {
                           required: true,
                         })}
+                        onKeyUp={() => {
+                          setFocusedElementID('shippingFirst')
+                        }}
                       />
                     </div>
                   </div>
@@ -635,30 +651,39 @@ export default function Page() {
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingFirst"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="First Name"
                         {...customerRegister('firstName', {
                           required: true,
                         })}
+                        onKeyUp={() => {
+                          setFocusedElementID('shippingLast')
+                        }}
                       />
                     </div>
                   </div>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingLast"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="Last Name"
                         {...customerRegister('lastName', {
                           required: true,
                         })}
+                        onKeyUp={() => {
+                          setFocusedElementID('shippingStreet')
+                        }}
                       />
                     </div>
                   </div>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingCountry"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="United States"
@@ -670,52 +695,72 @@ export default function Page() {
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingStreet"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="Street Address"
                         {...customerRegister('address.street', { required: true })}
+                        onKeyUp={() => {
+                          setFocusedElementID('shippingApt')
+                        }}
                       />
                     </div>
                   </div>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingApt"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="Apt, Unit, Suite, etc (optional)"
                         {...customerRegister('address.opt', { required: false })}
+                        onKeyUp={() => {
+                          setFocusedElementID('shippingPostal')
+                        }}
                       />
                     </div>
                   </div>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingPostal"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="Postal / Zip"
                         {...customerRegister('address.postalCode', {
                           required: true,
                         })}
+                        onKeyUp={() => {
+                          setFocusedElementID('shippingCity')
+                        }}
                       />
                     </div>
                   </div>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingCity"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="City"
                         {...customerRegister('address.city', { required: true })}
+                        onKeyUp={() => {
+                          setFocusedElementID('shippingState')
+                        }}
                       />
                     </div>
                   </div>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
+                        id="shippingState"
                         className={styles.optionInputShipping}
                         type="text"
                         placeholder="State"
                         {...customerRegister('address.state', { required: true })}
+                        onKeyUp={() => {
+                          setFocusedElementID('submitButton')
+                        }}
                       />
                     </div>
                   </div>
@@ -726,6 +771,7 @@ export default function Page() {
                   <h1 className={styles.cardFormItemLabel}>SPECIAL INSTRUCTIONS</h1>
                   <div className={styles.checkoutOption}>
                     <textarea
+                      id="shippingSpecial"
                       className={styles.specialTextInput}
                       placeholder="Delivery instructions, special requests, etc."
                       {...customerRegister('address.special', { required: false })}
@@ -734,7 +780,11 @@ export default function Page() {
                 </div>
               </div>
               <div className={styles.optionInputShippingWrap}>
-                <button className={styles.stripeButton} type="submit">
+                <button
+                  className={styles.stripeButton}
+                  type="submit"
+                  id="submitButton"
+                >
                   SUBMIT
                 </button>
               </div>
@@ -747,7 +797,7 @@ export default function Page() {
           <form onSubmit={handleSubmit(submitData)} className={styles.cardForm}>
             <div className={styles.cardFormItem}>
               <label className={styles.cardFormItemLabel}>CITY</label>
-              <div className={styles.cardFormItemGroup}>
+              <div className={styles.cardFormItemGroup} id="cities">
                 {cities.map((city) => (
                   <div
                     key={city}
@@ -770,6 +820,7 @@ export default function Page() {
                         onChange={(e) => {
                           setValue('city', e.target.value)
                           setShowPlan(true)
+                          setFocusedElementID('plans')
                         }}
                       />
                       <label>{city.toUpperCase()}</label>
@@ -782,7 +833,7 @@ export default function Page() {
               {showPlan && (
                 <div className={styles.cardFormItem}>
                   <label className={styles.cardFormItemLabel}>PLAN</label>
-                  <div className={styles.cardFormItemGroup}>
+                  <div className={styles.cardFormItemGroup} id="plans">
                     {Object.keys(membershipOptions).map((plan) => (
                       <>
                         {(city !== 'San Antonio' && plan === 'performerPlus') ||
@@ -807,6 +858,7 @@ export default function Page() {
                                 onChange={(e) => {
                                   setValue('plan', e.target.value)
                                   setShowTerm(true)
+                                  setFocusedElementID('terms')
                                 }}
                               />
                               <label>{plan.toUpperCase()}</label>
@@ -823,7 +875,7 @@ export default function Page() {
               {showTerm && (
                 <div className={styles.cardFormItem}>
                   <label className={styles.cardFormItemLabel}>TERM</label>
-                  <div className={styles.cardFormItemGroup}>
+                  <div className={styles.cardFormItemGroup} id="terms">
                     {Object.keys(
                       /* @ts-ignore */
                       membershipOptions['performer']
@@ -847,8 +899,11 @@ export default function Page() {
                             value={term}
                             onChange={(e) => {
                               term === 'seasonal'
-                                ? setShowSubTerm(true)
-                                : (setShowSubTerm(false), setShowQuantity(true))
+                                ? (setShowSubTerm(true),
+                                  setFocusedElementID('seasons'))
+                                : (setShowSubTerm(false),
+                                  setShowQuantity(true),
+                                  setFocusedElementID('quantity'))
                               setValue('term', e.target.value), setShowStatus(true)
                             }}
                           />
@@ -861,7 +916,7 @@ export default function Page() {
               )}
             </div>
             {showSubTerm && (
-              <div className={styles.cardFormItem}>
+              <div className={styles.cardFormItem} id="seasons">
                 <label className={styles.cardFormItemLabel}>SEASON</label>
                 <div className={styles.cardFormItemGroup}>
                   {Object.keys(
@@ -888,7 +943,8 @@ export default function Page() {
                           onChange={(e) => (
                             setShowQuantity(true),
                             setValue('subTerm', e.target.value),
-                            setShowStatus(true)
+                            setShowStatus(true),
+                            setFocusedElementID('quantity')
                           )}
                         />
                         <label>{subTerm.toUpperCase()}</label>
@@ -899,7 +955,7 @@ export default function Page() {
               </div>
             )}
             {showQuantity && (
-              <div className={styles.cardFormItem}>
+              <div className={styles.cardFormItem} id="quantity">
                 <label className={styles.cardFormItemLabel}>QUANTITY</label>
                 <div className={styles.cardFormItemGroup}>
                   <div className={styles.cardFormOptionWrap}>
@@ -929,7 +985,7 @@ export default function Page() {
               </div>
             )}
             {showStatus && (
-              <div className={styles.cardFormItem}>
+              <div className={styles.cardFormItem} id="status">
                 <label className={styles.cardFormItemLabel}>STATUS</label>
                 <div className={styles.cardFormItemGroup}>
                   {Object.keys(status).map((statusKey) => (
@@ -942,6 +998,7 @@ export default function Page() {
                       }
                       onClick={() => {
                         setSelectedStatus(statusKey)
+                        setFocusedElementID('checkoutButton')
                       }}
                     >
                       <div className={styles.option}>
@@ -964,8 +1021,14 @@ export default function Page() {
             {showPrice && (
               <div className={styles.cardFormItemGroup}>
                 <div className={styles.cardFormOptionWrap}>
-                  <div className={styles.option}>
-                    <button className={styles.checkoutButton} type="submit">
+                  <div className={styles.option} id="checkoutButton">
+                    <button
+                      className={styles.checkoutButton}
+                      type="submit"
+                      onClick={() => {
+                        setFocusedElementID('top')
+                      }}
+                    >
                       CHECKOUT
                     </button>
                   </div>

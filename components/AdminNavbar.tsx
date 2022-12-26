@@ -12,46 +12,43 @@ export default function AdminNavbar() {
   }
 
   return (
-    <div className={styles.navbarContainer}>
-      <Image
-        src={logo}
-        alt="TGF Logo"
-        height="75"
-        width="75"
-        className={styles.navbarImage}
-      />
-      <nav className={styles.navbar}>
-        <div className={styles.navbarTextWrapper} key={'nav1'}>
-          <Link href="/" className={styles.navbarLink}>
-            Home
-          </Link>
+    <div className={styles.navbarMain}>
+      <div className={styles.navbarContainer}>
+        <div className={styles.navbarImageWrapper}>
+          <Image src={logo} alt="TGF Logo" fill className={styles.navbarImage} />
         </div>
-        <div className={styles.navbarTextWrapper} key={'nav2'}>
-          <Link href="/" className={styles.navbarLink} onClick={signOut}>
-            Logout
-          </Link>
-        </div>
-        <div className={styles.navbarTextWrapper} key={'nav3'}>
-          <Link href="/admin" className={styles.navbarLink}>
-            Admin
-          </Link>
-        </div>
-        <div className={styles.navbarTextWrapper} key={'nav4'}>
-          <Link href="/proshop" className={styles.navbarLink}>
-            Pro Shop
-          </Link>
-        </div>
-        <div className={styles.navbarTextWrapper} key={'nav5'}>
-          <Link href="/godaddy" className={styles.navbarLink}>
-            GoDaddy
-          </Link>
-        </div>
-        <div className={styles.navbarTextWrapper} key={'nav6'}>
-          <Link href="/dashboard" className={styles.navbarLink}>
-            Dashboard
-          </Link>
-        </div>
-      </nav>
+        <nav className={styles.navbar}>
+          <div className={styles.navbarTextWrapper} key={'nav1'}>
+            <Link href="/" className={styles.navbarLink}>
+              Home
+            </Link>
+          </div>
+          <div className={styles.navbarTextWrapper} key={'nav2'}>
+            <Link href="/" className={styles.navbarLink} onClick={signOut}>
+              Logout
+            </Link>
+          </div>
+          <div className={styles.navbarTextWrapper} key={'nav4'}>
+            <Link href="/proshop" className={styles.navbarLink}>
+              Pro Shop
+            </Link>
+          </div>
+        </nav>
+      </div>
+      <div className={styles.navbarContainer}>
+        <nav className={styles.navbar}>
+          <div className={styles.navbarTextWrapper} key={'nav3'}>
+            <Link href="/admin" className={styles.navbarLink}>
+              Admin
+            </Link>
+          </div>
+          <div className={styles.navbarTextWrapper} key={'nav5'}>
+            <Link href="/godaddy" className={styles.navbarLink}>
+              GoDaddy
+            </Link>
+          </div>
+        </nav>
+      </div>
     </div>
   )
 }

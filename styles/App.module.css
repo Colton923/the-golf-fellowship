@@ -22,18 +22,28 @@
   display: none;
 }
 
+.main::-ms-scrollbar {
+  display: none;
+}
+
+.main::-moz-scrollbar {
+  display: none;
+}
+
 .backgroundWrapper {
-  margin-top: 100px;
   z-index: -1;
 
   position: relative;
+
+  background-color: #000000;
 }
 
 .backgroundImage {
+  margin-top: 10px;
   position: relative;
   top: 15%;
   left: 15%;
-  height: 60vw;
+  height: 65vw;
   width: 100vw;
   margin-left: auto;
   margin-right: auto;
@@ -69,7 +79,7 @@
   color: #ffffff;
   margin: 0;
 
-  font-size: 2vw;
+  font-size: 3vw;
   font-weight: 400;
   letter-spacing: 0.1rem;
 }
@@ -77,12 +87,12 @@
 .overlayButton {
   background: #000000;
   color: #ffffff;
+  opacity: 0.5;
+  backdrop-filter: blur(20px);
   width: 40%;
-  height: 8%;
-  opacity: 0.75;
   margin-top: -20vw;
   margin-bottom: 15vw;
-  border-radius: 7px;
+  border-radius: 10px;
   box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
   border: 1px solid #ffffff;
 
@@ -98,7 +108,7 @@
 .overlayButton:hover {
   background: #ffffff;
   color: #000000;
-  opacity: 1;
+  opacity: 0.6;
   box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
   border: 1px solid #000000;
 }
@@ -106,7 +116,7 @@
 .overlayButton:active {
   background: #ffffff;
   color: #000000;
-  opacity: 1;
+  opacity: 0.8;
   box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
   border: 1px solid #000000;
   tranform: scale(0.95);
@@ -121,9 +131,9 @@
   justify-content: center;
   align-items: center;
 
-  font-size: 2vw;
+  font-size: 3vw;
   font-weight: 500;
-  letter-spacing: 0.2rem;
+  letter-spacing: 0.1rem;
   cursor: pointer;
 }
 
@@ -132,9 +142,12 @@
   position: absolute;
   top: 52%;
   left: 50%;
-  width: 50%;
+  width: 75%;
+  max-width: 300px;
   height: 450px;
   margin: auto;
+
+  z-index: 10;
 
   border-radius: 10px;
 

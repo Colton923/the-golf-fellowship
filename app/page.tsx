@@ -38,8 +38,23 @@ export default function Index() {
   const [user, loading, error] = useAuthState(auth)
   const [showSignupMenu, setShowSignupMenu] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
-
+  const [focus, setFocus] = useState(false)
   const router = useRouter()
+  console.log('focus: ', focus)
+
+  useEffect(() => {
+    const handleFocusForm = () => {
+      const firstNameFocus = document.getElementById('firstName')
+      firstNameFocus?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'center',
+      })
+      //select the first input field
+      firstNameFocus?.focus()
+    }
+    handleFocusForm()
+  }, [focus])
 
   const {
     register,
@@ -50,7 +65,30 @@ export default function Index() {
 
   const db = getFirestore()
 
-  const signInWithGoogle = async (data: FormData) => {
+  const signInWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider()
+      const result = await signInWithPopup(auth, provider)
+      const userRef = collection(db, 'users')
+      const docRef = doc(userRef, result.user.uid)
+      await setDoc(docRef, {
+        uid: result.user.uid,
+        googleAccountFirstName: result.user.displayName
+          ? result.user.displayName?.split(' ')[0]
+          : '',
+        googleAccountLastName: result.user.displayName
+          ? result.user.displayName?.split(' ')[1]
+          : '',
+        email: result.user.email,
+        photoUrl: result.user.photoURL,
+      })
+      router.push('/dashboard')
+    } catch (error) {
+      alert('Error signing in with Google')
+    }
+  }
+
+  const newSignInWithGoogle = async (data: FormData) => {
     try {
       const provider = new GoogleAuthProvider()
       const result = await signInWithPopup(auth, provider)
@@ -88,20 +126,16 @@ export default function Index() {
   )
 
   const displaySignupMenu = () => {
-    if (showSignupMenu) {
-      setShowSignupMenu(false)
-    } else {
-      setShowSignupMenu(true)
-    }
+    setShowSignupMenu(!showSignupMenu)
+    setFocus(!focus)
   }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent | KeyboardEvent) => {
       if (
-        event.target &&
-        (event.target as HTMLElement).className === styles.main &&
-        (event.target as HTMLElement).className !== styles.signupMenuCardWrapper &&
-        showSignupMenu === true
+        showSignupMenu &&
+        event.target instanceof HTMLElement &&
+        event.target.className.includes('main')
       ) {
         setShowSignupMenu(false)
       }
@@ -113,15 +147,17 @@ export default function Index() {
     }
   }, [showSignupMenu])
 
+  if (user) {
+    router.push('/dashboard')
+  }
+
   return (
     <div className={styles.main}>
-      <div>
-        {!user ? (
-          <HomeNavbar showSignupMenuSetter={wrapperSetShowSignupMenu} />
-        ) : (
-          <DashboardNavbar />
-        )}
-      </div>
+      {!user ? (
+        <HomeNavbar showSignupMenuSetter={wrapperSetShowSignupMenu} />
+      ) : (
+        <DashboardNavbar />
+      )}
       <div className={styles.backgroundWrapper}>
         <div className={styles.backgroundImage}>
           <Image src={imgHome} alt="Home Page" quality={100} fill />
@@ -140,19 +176,21 @@ export default function Index() {
       </button>
 
       <div
+        id="showSignUpID"
         className={
           showSignupMenu
             ? styles.signupMenuCardWrapper
             : styles.signupMenuCardWrapperHidden
         }
       >
-        <form onSubmit={handleSubmit(signInWithGoogle)}>
+        <form onSubmit={handleSubmit(newSignInWithGoogle)}>
           <div className={styles.signupMenuCard}>
             <h3 className={styles.signupMenuCardTitle}>
               Welcome to The Golf Fellowship
             </h3>
             <div className={styles.signupMenuCardFormWrapper}>
               <input
+                id="firstName"
                 className={styles.signupMenuCardFormInput}
                 type="text"
                 placeholder="First name"
@@ -164,6 +202,7 @@ export default function Index() {
                 })}
               />
               <input
+                id="lastName"
                 className={styles.signupMenuCardFormInput}
                 type="text"
                 placeholder="Last name"
@@ -173,8 +212,16 @@ export default function Index() {
                   validate: (value) =>
                     validName.test(value) || 'Last name must contain only letters',
                 })}
+                onClick={() =>
+                  document.getElementById('lastName')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'center',
+                  })
+                }
               />
               <input
+                id="email"
                 className={styles.signupMenuCardFormInput}
                 type="email"
                 placeholder="Email address"
@@ -183,6 +230,13 @@ export default function Index() {
                   validate: (value) =>
                     validEmail.test(value) || 'E-mail must be valid',
                 })}
+                onClick={() =>
+                  document.getElementById('email')?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'center',
+                  })
+                }
               />
               <button className={styles.signupMenuCardFormSubmit} type="submit">
                 Submit
@@ -194,8 +248,7 @@ export default function Index() {
               <div className={styles.lineBetweenOrDivs5678}></div>
             </div>
             <button
-              type="submit"
-              value="Sign In"
+              onClick={signInWithGoogle}
               className={styles.signupMenuCardFormSubmitGoogle}
             >
               <Image
@@ -274,6 +327,25 @@ export default function Index() {
               Tracking Focused on Quality Practice & Lower Scores
             </h3>
           </div>
+        </div>
+        <div className={styles.cardWrapper}>
+          <input
+            type="button"
+            value="Become a Member"
+            className={styles.whatWeDoTitle}
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: 'white',
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              margin: '10px',
+            }}
+            onClick={() => {
+              displaySignupMenu()
+            }}
+          ></input>
         </div>
       </div>
     </div>

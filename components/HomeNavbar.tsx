@@ -11,13 +11,9 @@ export default function HomeNavbar(props: HomeNavbarProps) {
   return (
     <div className={styles.navbarMain}>
       <div className={styles.navbarContainer}>
-        <Image
-          src={logo}
-          alt="TGF Logo"
-          height="75"
-          width="75"
-          className={styles.navbarImage}
-        />
+        <div className={styles.navbarImageWrapper}>
+          <Image src={logo} alt="TGF Logo" fill className={styles.navbarImage} />
+        </div>
         <nav className={styles.navbar}>
           <div className={styles.navbarTextWrapper}>
             <Link href="/" className={styles.navbarLink} key={'nav1'}>
