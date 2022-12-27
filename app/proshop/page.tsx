@@ -468,7 +468,8 @@ export default function Page() {
         const memberDoc = await getDoc(memberDocRef)
         if (memberDoc.exists()) {
           const memberData = memberDoc.data()
-          if (memberData?.googleAccountFirstName) {
+
+          if (memberData?.firstName) {
             setUserFirstName(memberData.googleAccountFirstName)
           }
           if (memberData?.googleAccountLastName) {
@@ -484,19 +485,19 @@ export default function Page() {
             setUserCity(memberData.address.city)
           }
           if (memberData?.address?.postal) {
-            setUserPostal
+            setUserPostal(memberData.address.postal)
           }
           if (memberData?.address?.state) {
-            setUserState
+            setUserState(memberData.address.state)
           }
           if (memberData?.address?.street) {
-            setUserStreet
+            setUserStreet(memberData.address.street)
           }
           if (memberData?.address?.opt) {
-            setUserStreetTwo
+            setUserStreetTwo(memberData.address.opt)
           }
           if (memberData?.address?.special) {
-            setUserSpecial
+            setUserSpecial(memberData.address.special)
           }
         }
       }
