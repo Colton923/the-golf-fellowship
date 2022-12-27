@@ -36,7 +36,6 @@ export default function Index() {
   const [showSignupMenu, setShowSignupMenu] = useState(false)
   const [focus, setFocus] = useState(false)
   const router = useRouter()
-  console.log('focus: ', focus)
 
   useEffect(() => {
     const handleFocusForm = () => {
@@ -106,7 +105,6 @@ export default function Index() {
       })
       router.push('/dashboard')
     } catch (error) {
-      console.log(error)
       alert('Error signing in with Google')
     }
     setValue('lastName', '')

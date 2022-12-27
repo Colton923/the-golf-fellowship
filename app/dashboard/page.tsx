@@ -17,7 +17,7 @@ export default function Page() {
   const [placeholder, setPlaceholder] = useState(false)
   const [screenWidth, setScreenWidth] = useState(0)
   const [showOptions, setShowOptions] = useState(true)
-  console.log('screenWidth', screenWidth)
+
   const initialScreenWidth = () => {
     setScreenWidth(window.innerWidth)
   }

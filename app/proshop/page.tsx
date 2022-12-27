@@ -248,6 +248,7 @@ export default function Page() {
     handleNewFocusedElement()
   }, [focusedElementID])
 
+  //Initialize stripe payment intent
   useEffect(() => {
     fetch('api/stripe/stripe_intent', {
       method: 'POST',
@@ -265,7 +266,6 @@ export default function Page() {
         setClientSecret(data.client_secret), setPaymentIntent(data.id)
       })
   }, [totalPrice, stripeSubId])
-
   const options = {
     clientSecret: clientSecret,
     // Fully customizable with appearance API.
@@ -274,6 +274,7 @@ export default function Page() {
     },
   }
 
+  //Convert this to a dynamic data read when the membership schema is finalized
   const membershipRef = collection(db, 'membership')
   const cities = ['San Antonio', 'Austin', 'DFW', 'Houston', 'Hill Country']
   const status = {
@@ -287,6 +288,7 @@ export default function Page() {
     },
   }
 
+  //Dynamic read of membership schema for pricing
   useEffect(() => {
     const getMembershipOptions = async () => {
       const membershipDoc = await getDocs(membershipRef)
@@ -299,6 +301,7 @@ export default function Page() {
     getMembershipOptions()
   }, [])
 
+  //FormData is 'Card One' form data
   const {
     register,
     setValue,
@@ -306,6 +309,7 @@ export default function Page() {
     formState: { errors },
   } = useForm<FormData>()
 
+  //CustomerData is 'Card Two' form data
   const {
     register: customerRegister,
     setValue: customerSetValue,
@@ -313,6 +317,7 @@ export default function Page() {
     formState: { errors: customerErrors },
   } = useForm<CustomerData>()
 
+  //OnSubmit for 'Card Two' form
   const submitCustomerForm = (data: CustomerData) => {
     data.amount = totalPrice * 100
     setCustomerData(data)
@@ -321,7 +326,6 @@ export default function Page() {
     setShowCheckout(false)
     setShowStripeElement(true)
     if (user) {
-      console.log('user', user.uid)
       const SetNewData = async (data: CustomerData) => {
         const memberDocRef = doc(db, 'users', user.uid)
         const memberDoc = await getDoc(memberDocRef)
@@ -338,6 +342,7 @@ export default function Page() {
     }
   }
 
+  //OnSubmit for 'Card One' form
   const submitData = async (data: FormData) => {
     setCheckoutData(data)
     setShowForm(false)
@@ -382,6 +387,7 @@ export default function Page() {
     setStage(1)
   }
 
+  //Dynamically creates stripe products based on the membership schema
   useEffect(() => {
     if (user && intervalPurchase !== '') {
       const purchaseItem: body = {
@@ -462,6 +468,7 @@ export default function Page() {
     }
   }, [intervalPurchase])
 
+  //Handles auto filling the customer data form if the user is logged in
   useEffect(() => {
     if (user) {
       const memberDocRef = doc(db, 'users', user.uid)
@@ -470,7 +477,7 @@ export default function Page() {
         if (memberDoc.exists()) {
           const memberData = memberDoc.data()
 
-          if (memberData?.firstName) {
+          if (memberData?.googleAccountFirstName) {
             setUserFirstName(memberData.googleAccountFirstName)
           }
           if (memberData?.googleAccountLastName) {
@@ -485,8 +492,8 @@ export default function Page() {
           if (memberData?.address?.city) {
             setUserCity(memberData.address.city)
           }
-          if (memberData?.address?.postal) {
-            setUserPostal(memberData.address.postal)
+          if (memberData?.address?.postalCode) {
+            setUserPostal(memberData.address.postalCode)
           }
           if (memberData?.address?.state) {
             setUserState(memberData.address.state)
@@ -567,6 +574,7 @@ export default function Page() {
         </div>
       </div>
 
+      {/* Header */}
       <div className={styles.card}>
         <div className={styles.logoWrap}>
           <div className={styles.image}>
@@ -582,11 +590,250 @@ export default function Page() {
           </h1>
         </div>
 
-        {/* CARD THREE */}
-        {showStripeElement && clientSecret && (
-          <Elements stripe={stripe} options={options}>
-            <CheckoutForm paymentIntent={paymentIntent} {...customerData} />
-          </Elements>
+        {/* CARD ONE */}
+        {showForm && (
+          <form onSubmit={handleSubmit(submitData)} className={styles.cardForm}>
+            <div className={styles.cardFormItem}>
+              <label className={styles.cardFormItemLabel}>CITY</label>
+              <div className={styles.cardFormItemGroup} id="cities">
+                {cities.map((city) => (
+                  <div
+                    key={city}
+                    className={
+                      city === selectedCity
+                        ? styles.cardFormOptionWrapSelect
+                        : styles.cardFormOptionWrap
+                    }
+                    onClick={() => {
+                      setCity(city)
+                      setSelectedCity(city)
+                    }}
+                  >
+                    <div className={styles.option}>
+                      <input
+                        className={styles.optionInput}
+                        type="radio"
+                        {...register('city')}
+                        value={city}
+                        onChange={(e) => {
+                          setValue('city', e.target.value)
+                          setShowPlan(true)
+                          setFocusedElementID('plans')
+                        }}
+                      />
+                      <label>{city.toUpperCase()}</label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              {showPlan && (
+                <div className={styles.cardFormItem}>
+                  <label className={styles.cardFormItemLabel}>PLAN</label>
+                  <div className={styles.cardFormItemGroup} id="plans">
+                    {Object.keys(membershipOptions).map((plan) => (
+                      <>
+                        {(city !== 'San Antonio' && plan === 'performerPlus') ||
+                        (city !== 'San Antonio' && plan === 'playerPlus') ? null : (
+                          <div
+                            key={plan}
+                            className={
+                              plan === selectedPlan
+                                ? styles.cardFormOptionWrapSelect
+                                : styles.cardFormOptionWrap
+                            }
+                            onClick={() => {
+                              setSelectedPlan(plan)
+                            }}
+                          >
+                            <div className={styles.option}>
+                              <input
+                                className={styles.optionInput}
+                                type="radio"
+                                {...register('plan')}
+                                value={plan}
+                                onChange={(e) => {
+                                  setValue('plan', e.target.value)
+                                  setShowTerm(true)
+                                  setFocusedElementID('terms')
+                                }}
+                              />
+                              <label>{plan.toUpperCase()}</label>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div>
+              {showTerm && (
+                <div className={styles.cardFormItem}>
+                  <label className={styles.cardFormItemLabel}>TERM</label>
+                  <div className={styles.cardFormItemGroup} id="terms">
+                    {Object.keys(
+                      /* @ts-ignore */
+                      membershipOptions['performer']
+                    ).map((term) => (
+                      <div
+                        key={term}
+                        className={
+                          term === selectedTerm
+                            ? styles.cardFormOptionWrapSelect
+                            : styles.cardFormOptionWrap
+                        }
+                        onClick={() => {
+                          setSelectedTerm(term)
+                        }}
+                      >
+                        <div className={styles.option}>
+                          <input
+                            className={styles.optionInput}
+                            type="radio"
+                            {...register('term')}
+                            value={term}
+                            onChange={(e) => {
+                              term === 'seasonal'
+                                ? (setShowSubTerm(true),
+                                  setFocusedElementID('seasons'))
+                                : (setShowSubTerm(false),
+                                  setShowQuantity(true),
+                                  setFocusedElementID('quantity'))
+                              setValue('term', e.target.value), setShowStatus(true)
+                            }}
+                          />
+                          <label>{term.toUpperCase()}</label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            {showSubTerm && (
+              <div className={styles.cardFormItem} id="seasons">
+                <label className={styles.cardFormItemLabel}>SEASON</label>
+                <div className={styles.cardFormItemGroup}>
+                  {Object.keys(
+                    /* @ts-ignore */
+                    membershipOptions['performer']['seasonal']
+                  ).map((subTerm) => (
+                    <div
+                      key={subTerm}
+                      className={
+                        subTerm === selectedSubTerm
+                          ? styles.cardFormOptionWrapSelect
+                          : styles.cardFormOptionWrap
+                      }
+                      onClick={() => {
+                        setSelectedSubTerm(subTerm)
+                      }}
+                    >
+                      <div className={styles.option}>
+                        <input
+                          className={styles.optionInput}
+                          type="radio"
+                          {...register('subTerm')}
+                          value={subTerm}
+                          onChange={(e) => (
+                            setShowQuantity(true),
+                            setValue('subTerm', e.target.value),
+                            setShowStatus(true),
+                            setFocusedElementID('quantity')
+                          )}
+                        />
+                        <label>{subTerm.toUpperCase()}</label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {showQuantity && (
+              <div className={styles.cardFormItem} id="quantity">
+                <label className={styles.cardFormItemLabel}>QUANTITY</label>
+                <div className={styles.cardFormItemGroup}>
+                  <div className={styles.cardFormOptionWrap}>
+                    <div className={styles.numberOption}>
+                      <input
+                        className={styles.optionInputNumber}
+                        type="number"
+                        min="1"
+                        max="10"
+                        defaultValue={1}
+                        {...register('quantity')}
+                        onChange={(e) => {
+                          setValue('quantity', parseInt(e.target.value))
+                        }}
+                        onInput={(e) => {
+                          e.currentTarget.value = Math.max(
+                            1,
+                            parseInt(e.currentTarget.value)
+                          )
+                            .toString()
+                            .slice(0, 1)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {showStatus && (
+              <div className={styles.cardFormItem} id="status">
+                <label className={styles.cardFormItemLabel}>STATUS</label>
+                <div className={styles.cardFormItemGroup}>
+                  {Object.keys(status).map((statusKey) => (
+                    <div
+                      key={statusKey}
+                      className={
+                        statusKey === selectedStatus
+                          ? styles.cardFormOptionWrapSelect
+                          : styles.cardFormOptionWrap
+                      }
+                      onClick={() => {
+                        setSelectedStatus(statusKey)
+                        setFocusedElementID('checkoutButton')
+                      }}
+                    >
+                      <div className={styles.option}>
+                        <input
+                          className={styles.optionInput}
+                          type="radio"
+                          {...register('status')}
+                          value={statusKey}
+                          onChange={(e) => (
+                            setShowPrice(true), setValue('status', e.target.value)
+                          )}
+                        />
+                        <label>{statusKey.toUpperCase()}</label>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {showPrice && (
+              <div className={styles.cardFormItemGroup}>
+                <div className={styles.cardFormOptionWrap}>
+                  <div className={styles.option} id="checkoutButton">
+                    <button
+                      className={styles.checkoutButton}
+                      type="submit"
+                      onClick={() => {
+                        setFocusedElementID('top')
+                      }}
+                    >
+                      CHECKOUT
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </form>
         )}
 
         {/* CARD TWO */}
@@ -875,250 +1122,11 @@ export default function Page() {
           </div>
         )}
 
-        {/* CARD ONE */}
-        {showForm && (
-          <form onSubmit={handleSubmit(submitData)} className={styles.cardForm}>
-            <div className={styles.cardFormItem}>
-              <label className={styles.cardFormItemLabel}>CITY</label>
-              <div className={styles.cardFormItemGroup} id="cities">
-                {cities.map((city) => (
-                  <div
-                    key={city}
-                    className={
-                      city === selectedCity
-                        ? styles.cardFormOptionWrapSelect
-                        : styles.cardFormOptionWrap
-                    }
-                    onClick={() => {
-                      setCity(city)
-                      setSelectedCity(city)
-                    }}
-                  >
-                    <div className={styles.option}>
-                      <input
-                        className={styles.optionInput}
-                        type="radio"
-                        {...register('city')}
-                        value={city}
-                        onChange={(e) => {
-                          setValue('city', e.target.value)
-                          setShowPlan(true)
-                          setFocusedElementID('plans')
-                        }}
-                      />
-                      <label>{city.toUpperCase()}</label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              {showPlan && (
-                <div className={styles.cardFormItem}>
-                  <label className={styles.cardFormItemLabel}>PLAN</label>
-                  <div className={styles.cardFormItemGroup} id="plans">
-                    {Object.keys(membershipOptions).map((plan) => (
-                      <>
-                        {(city !== 'San Antonio' && plan === 'performerPlus') ||
-                        (city !== 'San Antonio' && plan === 'playerPlus') ? null : (
-                          <div
-                            key={plan}
-                            className={
-                              plan === selectedPlan
-                                ? styles.cardFormOptionWrapSelect
-                                : styles.cardFormOptionWrap
-                            }
-                            onClick={() => {
-                              setSelectedPlan(plan)
-                            }}
-                          >
-                            <div className={styles.option}>
-                              <input
-                                className={styles.optionInput}
-                                type="radio"
-                                {...register('plan')}
-                                value={plan}
-                                onChange={(e) => {
-                                  setValue('plan', e.target.value)
-                                  setShowTerm(true)
-                                  setFocusedElementID('terms')
-                                }}
-                              />
-                              <label>{plan.toUpperCase()}</label>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            <div>
-              {showTerm && (
-                <div className={styles.cardFormItem}>
-                  <label className={styles.cardFormItemLabel}>TERM</label>
-                  <div className={styles.cardFormItemGroup} id="terms">
-                    {Object.keys(
-                      /* @ts-ignore */
-                      membershipOptions['performer']
-                    ).map((term) => (
-                      <div
-                        key={term}
-                        className={
-                          term === selectedTerm
-                            ? styles.cardFormOptionWrapSelect
-                            : styles.cardFormOptionWrap
-                        }
-                        onClick={() => {
-                          setSelectedTerm(term)
-                        }}
-                      >
-                        <div className={styles.option}>
-                          <input
-                            className={styles.optionInput}
-                            type="radio"
-                            {...register('term')}
-                            value={term}
-                            onChange={(e) => {
-                              term === 'seasonal'
-                                ? (setShowSubTerm(true),
-                                  setFocusedElementID('seasons'))
-                                : (setShowSubTerm(false),
-                                  setShowQuantity(true),
-                                  setFocusedElementID('quantity'))
-                              setValue('term', e.target.value), setShowStatus(true)
-                            }}
-                          />
-                          <label>{term.toUpperCase()}</label>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            {showSubTerm && (
-              <div className={styles.cardFormItem} id="seasons">
-                <label className={styles.cardFormItemLabel}>SEASON</label>
-                <div className={styles.cardFormItemGroup}>
-                  {Object.keys(
-                    /* @ts-ignore */
-                    membershipOptions['performer']['seasonal']
-                  ).map((subTerm) => (
-                    <div
-                      key={subTerm}
-                      className={
-                        subTerm === selectedSubTerm
-                          ? styles.cardFormOptionWrapSelect
-                          : styles.cardFormOptionWrap
-                      }
-                      onClick={() => {
-                        setSelectedSubTerm(subTerm)
-                      }}
-                    >
-                      <div className={styles.option}>
-                        <input
-                          className={styles.optionInput}
-                          type="radio"
-                          {...register('subTerm')}
-                          value={subTerm}
-                          onChange={(e) => (
-                            setShowQuantity(true),
-                            setValue('subTerm', e.target.value),
-                            setShowStatus(true),
-                            setFocusedElementID('quantity')
-                          )}
-                        />
-                        <label>{subTerm.toUpperCase()}</label>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {showQuantity && (
-              <div className={styles.cardFormItem} id="quantity">
-                <label className={styles.cardFormItemLabel}>QUANTITY</label>
-                <div className={styles.cardFormItemGroup}>
-                  <div className={styles.cardFormOptionWrap}>
-                    <div className={styles.numberOption}>
-                      <input
-                        className={styles.optionInputNumber}
-                        type="number"
-                        min="1"
-                        max="10"
-                        defaultValue={1}
-                        {...register('quantity')}
-                        onChange={(e) => {
-                          setValue('quantity', parseInt(e.target.value))
-                        }}
-                        onInput={(e) => {
-                          e.currentTarget.value = Math.max(
-                            1,
-                            parseInt(e.currentTarget.value)
-                          )
-                            .toString()
-                            .slice(0, 1)
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            {showStatus && (
-              <div className={styles.cardFormItem} id="status">
-                <label className={styles.cardFormItemLabel}>STATUS</label>
-                <div className={styles.cardFormItemGroup}>
-                  {Object.keys(status).map((statusKey) => (
-                    <div
-                      key={statusKey}
-                      className={
-                        statusKey === selectedStatus
-                          ? styles.cardFormOptionWrapSelect
-                          : styles.cardFormOptionWrap
-                      }
-                      onClick={() => {
-                        setSelectedStatus(statusKey)
-                        setFocusedElementID('checkoutButton')
-                      }}
-                    >
-                      <div className={styles.option}>
-                        <input
-                          className={styles.optionInput}
-                          type="radio"
-                          {...register('status')}
-                          value={statusKey}
-                          onChange={(e) => (
-                            setShowPrice(true), setValue('status', e.target.value)
-                          )}
-                        />
-                        <label>{statusKey.toUpperCase()}</label>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {showPrice && (
-              <div className={styles.cardFormItemGroup}>
-                <div className={styles.cardFormOptionWrap}>
-                  <div className={styles.option} id="checkoutButton">
-                    <button
-                      className={styles.checkoutButton}
-                      type="submit"
-                      onClick={() => {
-                        setFocusedElementID('top')
-                      }}
-                    >
-                      CHECKOUT
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </form>
+        {/* CARD THREE */}
+        {showStripeElement && clientSecret && (
+          <Elements stripe={stripe} options={options}>
+            <CheckoutForm paymentIntent={paymentIntent} {...customerData} />
+          </Elements>
         )}
       </div>
     </div>
