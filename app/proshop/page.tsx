@@ -239,6 +239,7 @@ export default function Page() {
   const [userStreetTwo, setUserStreetTwo] = useState('')
   const [userSpecial, setUserSpecial] = useState('')
 
+  //handles the user focus on the form
   useEffect(() => {
     const handleNewFocusedElement = () => {
       const focusedElement = document.getElementById(focusedElementID)
