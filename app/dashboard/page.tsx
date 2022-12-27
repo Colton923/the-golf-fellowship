@@ -145,6 +145,7 @@ export default function Page() {
           >
             {showOptions ? (
               <svg
+                xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 width="24"
                 height="24"
@@ -160,6 +161,7 @@ export default function Page() {
             ) : (
               <>
                 <svg
+                  xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   width="24"
                   height="24"
