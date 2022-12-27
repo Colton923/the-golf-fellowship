@@ -1,13 +1,9 @@
 import Link from 'next/link'
-import styles from '../styles/Navbar.module.css'
+import styles from './Navbar.module.css'
 import Image from 'next/image'
-import logo from '../public/static/images/tgf_logo.jpg'
+import logo from '../../public/static/images/tgf_logo.jpg'
 
-interface HomeNavbarProps {
-  showSignupMenuSetter: (showSignupMenu: boolean) => void
-}
-
-export default function HomeNavbar(props: HomeNavbarProps) {
+export default function HomeNavbar() {
   return (
     <div className={styles.navbarMain}>
       <div className={styles.navbarContainer}>
@@ -23,7 +19,7 @@ export default function HomeNavbar(props: HomeNavbarProps) {
           <div className={styles.navbarTextWrapper}>
             <h1
               onClick={() => {
-                props.showSignupMenuSetter(true)
+                alert('TODO: Componentualize Login Modal from ./HomePage')
               }}
               className={styles.navbarLink}
               key={'nav2'}

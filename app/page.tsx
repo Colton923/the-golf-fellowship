@@ -1,26 +1,23 @@
 'use client'
 
-import HomeNavbar from '../components/HomeNavbar'
+import Navbar from '../components/navbar/Navbar'
+import { auth } from '../firebase/firebaseClient'
 import styles from '../styles/App.module.css'
+
 import Image from 'next/image'
 import imgHome from '../public/static/images/tgf_home_page.jpg'
 import imgCompete from '../public/static/images/tgf_home_page_compete.jpg'
 import imgGolf from '../public/static/images/tgf_home_page_golf.jpg'
 import imgImprove from '../public/static/images/tgf_home_page_improve.jpg'
 import imgNetwork from '../public/static/images/tgf_home_page_network.jpg'
-import Link from 'next/link'
+import googleLogo from '../public/static/images/googleLogo.png'
+
 import { useState, useEffect } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../firebase/firebaseClient'
-import DashboardNavbar from '../components/DashboardNavbar'
-import imgBack from '../public/static/images/background.png'
-import { useCallback } from 'react'
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, collection, doc, setDoc } from 'firebase/firestore'
 import { useForm } from 'react-hook-form'
-import { collection, doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
-import googleLogo from '../public/static/images/googleLogo.png'
 
 type FormData = {
   firstName: string
@@ -37,7 +34,6 @@ const validEmail = RegExp(
 export default function Index() {
   const [user, loading, error] = useAuthState(auth)
   const [showSignupMenu, setShowSignupMenu] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(false)
   const [focus, setFocus] = useState(false)
   const router = useRouter()
   console.log('focus: ', focus)
@@ -118,13 +114,6 @@ export default function Index() {
     setValue('email', '')
   }
 
-  const wrapperSetShowSignupMenu = useCallback(
-    (showSignupMenu: boolean) => {
-      setShowSignupMenu(showSignupMenu)
-    },
-    [setShowSignupMenu]
-  )
-
   const displaySignupMenu = () => {
     setShowSignupMenu(!showSignupMenu)
     setFocus(!focus)
@@ -151,13 +140,17 @@ export default function Index() {
     router.push('/dashboard')
   }
 
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>
+  }
+
   return (
     <div className={styles.main}>
-      {!user ? (
-        <HomeNavbar showSignupMenuSetter={wrapperSetShowSignupMenu} />
-      ) : (
-        <DashboardNavbar />
-      )}
+      <Navbar />
       <div className={styles.backgroundWrapper}>
         <div className={styles.backgroundImage}>
           <Image src={imgHome} alt="Home Page" quality={100} fill />

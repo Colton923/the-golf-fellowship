@@ -1,12 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import styles from '../styles/Navbar.module.css'
+import styles from './Navbar.module.css'
 import Image from 'next/image'
-import logo from '../public/static/images/tgf_logo.jpg'
-import { auth } from '../firebase/firebaseClient'
+import logo from '../../public/static/images/tgf_logo.jpg'
+import { auth } from '../../firebase/firebaseClient'
 
-export default function AdminNavbar() {
+export default function DashboardNavbar() {
   const signOut = () => {
     auth.signOut()
   }
@@ -19,7 +19,7 @@ export default function AdminNavbar() {
         </div>
         <nav className={styles.navbar}>
           <div className={styles.navbarTextWrapper} key={'nav1'}>
-            <Link href="/" className={styles.navbarLink}>
+            <Link href="/dashboard" className={styles.navbarLink}>
               Home
             </Link>
           </div>
@@ -31,20 +31,6 @@ export default function AdminNavbar() {
           <div className={styles.navbarTextWrapper} key={'nav4'}>
             <Link href="/proshop" className={styles.navbarLink}>
               Pro Shop
-            </Link>
-          </div>
-        </nav>
-      </div>
-      <div className={styles.navbarContainer}>
-        <nav className={styles.navbar}>
-          <div className={styles.navbarTextWrapper} key={'nav3'}>
-            <Link href="/admin" className={styles.navbarLink}>
-              Admin
-            </Link>
-          </div>
-          <div className={styles.navbarTextWrapper} key={'nav5'}>
-            <Link href="/godaddy" className={styles.navbarLink}>
-              GoDaddy
             </Link>
           </div>
         </nav>

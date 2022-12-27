@@ -1,15 +1,20 @@
 'use client'
-
-import { auth } from '../../firebase/firebaseClient'
-import { useForm } from 'react-hook-form'
 import styles from '../../styles/Admin.module.css'
 import CreateEvents from '../../components/golfGenius/CreateEvents'
+
+import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import {stripeSubscriptionBody} from '../../types/stripe/stripeSubscriptionBody'
+import { useRouter } from 'next/navigation'
+import { useAuthState } from 'react-firebase-hooks/auth'
+
+import { stripeSubscriptionBody } from '../../types/stripe/stripeSubscriptionBody'
+import { auth } from '../../firebase/firebaseClient'
 
 export default function Page() {
   const [show, setShow] = useState(false)
+  const [user, loading, error] = useAuthState(auth)
 
+  const router = useRouter()
   const uid = auth.currentUser?.uid
 
   const {
@@ -28,13 +33,20 @@ export default function Page() {
     }
   }
 
+  if (error) {
+    return <div>error {error.message}</div>
+  }
+
+  if (loading) {
+    return <div>loading</div>
+  }
+
+  if (!user) {
+    router.push('/')
+  }
+
   return (
     <div className={styles.pageWrapper}>
-      <div>
-        <button onClick={() => setShow(!show)}>
-          Function Swap
-        </button>
-      </div>
       {show ? (
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -48,9 +60,7 @@ export default function Page() {
               />
             </div>
             <div>
-              <label htmlFor="description">
-                Description
-              </label>
+              <label htmlFor="description">Description</label>
               <input
                 id="description"
                 type="text"
@@ -61,9 +71,7 @@ export default function Page() {
               />
             </div>
             <div>
-              <label htmlFor="unit_amount">
-                Unit Amount
-              </label>
+              <label htmlFor="unit_amount">Unit Amount</label>
               <input
                 id="unit_amount"
                 type="text"
@@ -74,9 +82,7 @@ export default function Page() {
               />
             </div>
             <div>
-              <label htmlFor="recurring.interval">
-                Recurring Interval
-              </label>
+              <label htmlFor="recurring.interval">Recurring Interval</label>
               <input
                 id="recurring.interval"
                 type="text"

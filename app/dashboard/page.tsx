@@ -1,10 +1,12 @@
 'use client'
 import Image from 'next/image'
 import imgBackground from '../../public/static/images/tgf_dashboard_background.png'
-import styles from '../../styles/Dashboard_new.module.css'
+import styles from '../../styles/Dashboard.module.css'
+import GolferSVG from '../../components/svgs/golfer'
 
 import { useEffect } from 'react'
 import { useState } from 'react'
+
 import { Calendar } from '../../components/calendar/Calendar'
 
 export default function Page() {
@@ -51,6 +53,9 @@ export default function Page() {
       setPlaceholder(false)
       setAccount(true)
     } else if (one === 'calendar') {
+      if (screenWidth < 1000) {
+        setShowOptions(false)
+      }
       setEvents(false)
       setStats(false)
       setAccount(false)
@@ -90,7 +95,7 @@ export default function Page() {
   }
 
   return (
-    <div className={styles.main}>
+    <>
       <div className={styles.backgroundWrapper}>
         <div className={styles.backgroundImage}>
           <Image src={imgBackground} alt="Background image" quality={100} fill />
@@ -133,25 +138,12 @@ export default function Page() {
             </div>
           </div>
         </div>
-      </div>
-      <div className={styles.toggleWrapper}>
-        <div className={styles.toggle} onClick={() => setShowOptions(!showOptions)}>
-          {showOptions ? (
-            <svg
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-              stroke="currentColor"
-              strokeWidth="2"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={styles.toggleIcon}
-            >
-              <path d="M18 15L12 9 6 15"></path>
-            </svg>
-          ) : (
-            <>
+        <div className={styles.toggleWrapper}>
+          <div
+            className={styles.toggle}
+            onClick={() => setShowOptions(!showOptions)}
+          >
+            {showOptions ? (
               <svg
                 viewBox="0 0 24 24"
                 width="24"
@@ -163,45 +155,66 @@ export default function Page() {
                 strokeLinejoin="round"
                 className={styles.toggleIcon}
               >
-                <path d="M6 9l6 6 6-6"></path>
+                <path d="M18 15L12 9 6 15"></path>
               </svg>
+            ) : (
+              <>
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={styles.toggleIcon}
+                >
+                  <path d="M6 9l6 6 6-6"></path>
+                </svg>
+              </>
+            )}
+          </div>
+          {showOptions ? null : (
+            <>
+              <div className={styles.toggle}>
+                <div
+                  className={styles.userOptionCollapsed}
+                  onClick={handleStatsClick}
+                >
+                  <svg viewBox="0 0 512 512">
+                    <path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z" />
+                  </svg>
+                </div>
+              </div>
+              <div className={styles.toggle}>
+                <div
+                  className={styles.userOptionCollapsed}
+                  onClick={handleAccountClick}
+                >
+                  <GolferSVG />
+                </div>
+              </div>
+              <div className={styles.toggle}>
+                <div
+                  className={styles.userOptionCollapsed}
+                  onClick={handleCalendarClick}
+                >
+                  <svg viewBox="0 0 448 512">
+                    <path d="M152 64H296V24C296 10.75 306.7 0 320 0C333.3 0 344 10.75 344 24V64H384C419.3 64 448 92.65 448 128V448C448 483.3 419.3 512 384 512H64C28.65 512 0 483.3 0 448V128C0 92.65 28.65 64 64 64H104V24C104 10.75 114.7 0 128 0C141.3 0 152 10.75 152 24V64zM48 448C48 456.8 55.16 464 64 464H384C392.8 464 400 456.8 400 448V192H48V448z" />
+                  </svg>
+                </div>
+              </div>
+              <div className={styles.toggle}>
+                <div
+                  className={styles.userOptionCollapsed}
+                  onClick={handlePlaceholderClick}
+                ></div>
+              </div>
             </>
           )}
         </div>
-        {showOptions ? null : (
-          <>
-            <div className={styles.toggle}>
-              <div className={styles.userOptionCollapsed} onClick={handleStatsClick}>
-                <svg viewBox="0 0 512 512">
-                  <path d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z" />
-                </svg>
-              </div>
-            </div>
-            <div className={styles.toggle}>
-              <div
-                className={styles.userOptionCollapsed}
-                onClick={handleAccountClick}
-              ></div>
-            </div>
-            <div className={styles.toggle}>
-              <div
-                className={styles.userOptionCollapsed}
-                onClick={handleCalendarClick}
-              >
-                <svg viewBox="0 0 448 512">
-                  <path d="M152 64H296V24C296 10.75 306.7 0 320 0C333.3 0 344 10.75 344 24V64H384C419.3 64 448 92.65 448 128V448C448 483.3 419.3 512 384 512H64C28.65 512 0 483.3 0 448V128C0 92.65 28.65 64 64 64H104V24C104 10.75 114.7 0 128 0C141.3 0 152 10.75 152 24V64zM48 448C48 456.8 55.16 464 64 464H384C392.8 464 400 456.8 400 448V192H48V448z" />
-                </svg>
-              </div>
-            </div>
-            <div className={styles.toggle}>
-              <div
-                className={styles.userOptionCollapsed}
-                onClick={handlePlaceholderClick}
-              ></div>
-            </div>
-          </>
-        )}
       </div>
-    </div>
+    </>
   )
 }

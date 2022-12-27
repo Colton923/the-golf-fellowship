@@ -2,15 +2,17 @@
 
 .calendarWrapper {
   background: #fff;
-  width: 450px;
+  width: 355px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
   font-family: 'Open Sans', sans-serif;
   background-color: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(5px);
-  position: relative;
   z-index: 1;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .calendar {

@@ -1,10 +1,11 @@
-import AdminNavbar from '../../components/AdminNavbar'
+import styles from '../../styles/Dashboard.module.css'
+import Navbar from '../../components/navbar/Navbar'
 
 export default function Layout({ children }: any) {
   return (
-    <>
-      <AdminNavbar />
+    <div className={styles.main}>
+      <Navbar />
       <div>{children}</div>
-    </>
+    </div>
   )
 }

@@ -1,17 +1,18 @@
 'use client'
-
-import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
-import { db } from '../../firebase/firebaseClient'
-import { collection, getDocs } from 'firebase/firestore'
 import styles from '../../styles/ProShop.module.css'
-import productImage from '../../public/static/images/membershipImage.jpg'
-import Image from 'next/image'
-import { Elements, PaymentElement } from '@stripe/react-stripe-js'
-import { loadStripe } from '@stripe/stripe-js'
 import CheckoutForm from '../../components/stripe/CheckoutForm'
 import { auth } from '../../firebase/firebaseClient'
+import { db } from '../../firebase/firebaseClient'
+
+import Image from 'next/image'
+import productImage from '../../public/static/images/membershipImage.jpg'
+
+import { useForm } from 'react-hook-form'
 import { useAuthState } from 'react-firebase-hooks/auth'
+import { useEffect, useState } from 'react'
+import { collection, getDocs, getDoc, doc, setDoc } from 'firebase/firestore'
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 
 export type defaultMembership = {
   plans: {
@@ -219,7 +220,6 @@ export default function Page() {
   const [selectedTerm, setSelectedTerm] = useState('')
   const [selectedSubTerm, setSelectedSubTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('')
-  const [selectedQuantity, setSelectedQuantity] = useState(0)
   const [showStripeElement, setShowStripeElement] = useState(false)
   const [clientSecret, setClientSecret] = useState('')
   const [paymentIntent, setPaymentIntent] = useState('')
@@ -228,6 +228,16 @@ export default function Page() {
   const [intervalPurchase, setIntervalPurchase] = useState('')
   const [subStatusMessage, setSubStatusMessage] = useState('')
   const [focusedElementID, setFocusedElementID] = useState('')
+  const [userEmail, setUserEmail] = useState('')
+  const [userFirstName, setUserFirstName] = useState('')
+  const [userLastName, setUserLastName] = useState('')
+  const [userPhone, setUserPhone] = useState('')
+  const [userCity, setUserCity] = useState('')
+  const [userPostal, setUserPostal] = useState('')
+  const [userState, setUserState] = useState('')
+  const [userStreet, setUserStreet] = useState('')
+  const [userStreetTwo, setUserStreetTwo] = useState('')
+  const [userSpecial, setUserSpecial] = useState('')
 
   useEffect(() => {
     const handleNewFocusedElement = () => {
@@ -309,6 +319,22 @@ export default function Page() {
     setShowForm(false)
     setShowCheckout(false)
     setShowStripeElement(true)
+    if (user) {
+      console.log('user', user.uid)
+      const SetNewData = async (data: CustomerData) => {
+        const memberDocRef = doc(db, 'users', user.uid)
+        const memberDoc = await getDoc(memberDocRef)
+        const memberData = memberDoc.data()
+        if (memberData) {
+          setDoc(memberDocRef, {
+            ...memberData,
+            address: data.address,
+            phone: data.phone,
+          })
+        }
+      }
+      SetNewData(data)
+    }
   }
 
   const submitData = async (data: FormData) => {
@@ -320,9 +346,7 @@ export default function Page() {
     const getMembershipPrice = async (season: boolean) => {
       const membershipDoc = await getDocs(membershipRef)
       const onlyDoc = membershipDoc.docs[0]
-      const da = onlyDoc.data().plans[data.plan][data.term].price
 
-      const seasonal = data.subTerm
       if (season) {
         //@ts-ignore
         const seasonal = data.subTerm.toString().toLowerCase()
@@ -436,6 +460,49 @@ export default function Page() {
       NewSubscription(stripeSubscriptionID)
     }
   }, [intervalPurchase])
+
+  useEffect(() => {
+    if (user) {
+      const memberDocRef = doc(db, 'users', user.uid)
+      const getMemberData = async () => {
+        const memberDoc = await getDoc(memberDocRef)
+        if (memberDoc.exists()) {
+          const memberData = memberDoc.data()
+          if (memberData?.googleAccountFirstName) {
+            setUserFirstName(memberData.googleAccountFirstName)
+          }
+          if (memberData?.googleAccountLastName) {
+            setUserLastName(memberData.googleAccountLastName)
+          }
+          if (memberData?.email) {
+            setUserEmail(memberData.email)
+          }
+          if (memberData?.phone) {
+            setUserPhone(memberData.phone)
+          }
+          if (memberData?.address?.city) {
+            setUserCity(memberData.address.city)
+          }
+          if (memberData?.address?.postal) {
+            setUserPostal
+          }
+          if (memberData?.address?.state) {
+            setUserState
+          }
+          if (memberData?.address?.street) {
+            setUserStreet
+          }
+          if (memberData?.address?.opt) {
+            setUserStreetTwo
+          }
+          if (memberData?.address?.special) {
+            setUserSpecial
+          }
+        }
+      }
+      getMemberData()
+    }
+  }, [showForm])
 
   return (
     <div className={styles.contentWrap}>
@@ -622,6 +689,7 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('phoneNumber')
                         }}
+                        defaultValue={userEmail !== '' ? userEmail : undefined}
                       />
                     </div>
                   </div>
@@ -638,6 +706,7 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('shippingFirst')
                         }}
+                        defaultValue={userPhone !== '' ? userPhone : undefined}
                       />
                     </div>
                   </div>
@@ -661,6 +730,9 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('shippingLast')
                         }}
+                        defaultValue={
+                          userFirstName !== '' ? userFirstName : undefined
+                        }
                       />
                     </div>
                   </div>
@@ -677,6 +749,7 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('shippingStreet')
                         }}
+                        defaultValue={userLastName !== '' ? userLastName : undefined}
                       />
                     </div>
                   </div>
@@ -703,6 +776,7 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('shippingApt')
                         }}
+                        defaultValue={userStreet !== '' ? userStreet : undefined}
                       />
                     </div>
                   </div>
@@ -717,6 +791,9 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('shippingPostal')
                         }}
+                        defaultValue={
+                          userStreetTwo !== '' ? userStreetTwo : undefined
+                        }
                       />
                     </div>
                   </div>
@@ -733,6 +810,7 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('shippingCity')
                         }}
+                        defaultValue={userPostal !== '' ? userPostal : undefined}
                       />
                     </div>
                   </div>
@@ -747,6 +825,7 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('shippingState')
                         }}
+                        defaultValue={userCity !== '' ? userCity : undefined}
                       />
                     </div>
                   </div>
@@ -761,6 +840,7 @@ export default function Page() {
                         onKeyUp={() => {
                           setFocusedElementID('submitButton')
                         }}
+                        defaultValue={userState !== '' ? userState : undefined}
                       />
                     </div>
                   </div>
@@ -775,6 +855,7 @@ export default function Page() {
                       className={styles.specialTextInput}
                       placeholder="Delivery instructions, special requests, etc."
                       {...customerRegister('address.special', { required: false })}
+                      defaultValue={userSpecial !== '' ? userSpecial : undefined}
                     />
                   </div>
                 </div>
