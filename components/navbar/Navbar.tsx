@@ -19,6 +19,9 @@ export default function Navbar() {
       if (user.uid === process.env.NEXT_PUBLIC_ADMIN_KERRY_SECRET_UID) {
         setIsAdmin(true)
       }
+      if (user.uid === process.env.NEXT_PUBLIC_ADMIN_KARSTON_SECRET_UID) {
+        setIsAdmin(true)
+      }
     }
   }, [user])
 
