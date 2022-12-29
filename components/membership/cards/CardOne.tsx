@@ -89,6 +89,7 @@ export default function CardOne(props: CardOneProps) {
                   placeholder="First Name"
                   {...register('firstNameCardOne', { required: true })}
                   onChange={(e) => setFirstNameCardOne(e.target.value)}
+                  autoComplete="off"
                 />
               </div>
             </div>
@@ -101,6 +102,7 @@ export default function CardOne(props: CardOneProps) {
                   placeholder="Last Name"
                   {...register('lastNameCardOne', { required: true })}
                   onChange={(e) => setLastNameCardOne(e.target.value)}
+                  autoComplete="off"
                 />
               </div>
             </div>
@@ -113,6 +115,7 @@ export default function CardOne(props: CardOneProps) {
                   placeholder="Email"
                   {...register('emailCardOne', { required: true })}
                   onChange={(e) => setEmailCardOne(e.target.value)}
+                  autoComplete="off"
                 />
               </div>
             </div>
@@ -146,6 +149,7 @@ export default function CardOne(props: CardOneProps) {
                     }
                   }}
                   onChange={(e) => setPhoneCardOne(e.target.value)}
+                  autoComplete="off"
                 />
               </div>
             </div>
