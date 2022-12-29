@@ -38,11 +38,12 @@ export default function CardOne(props: CardOneProps) {
   } = useForm<RegisterForm>({ mode: 'onChange' })
 
   const submitRegisterForm = (data: RegisterForm) => {
+    console.log(phoneCardOne.length)
     if (
       firstNameCardOne !== '' &&
       lastNameCardOne !== '' &&
       emailCardOne !== '' &&
-      phoneCardOne.length >= 9 &&
+      phoneCardOne.length >= 11 &&
       isCardOneValid === false
     ) {
       setIsCardOneValid(true)
@@ -125,11 +126,6 @@ export default function CardOne(props: CardOneProps) {
                   inputMode="numeric"
                   {...register('phoneCardOne', {
                     required: false,
-                    valueAsNumber: true,
-                    value: phoneCardOne,
-                    validate: (value) => {
-                      return phoneRegex.test(value)
-                    },
                   })}
                   onKeyDown={(e) => {
                     if (e.currentTarget.value.length === 3) {
