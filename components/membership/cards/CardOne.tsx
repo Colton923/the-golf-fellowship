@@ -76,6 +76,7 @@ export default function CardOne(props: CardOneProps) {
       <form
         onChange={handleSubmit(submitRegisterForm)}
         className={isCollapsed ? styles.cardFormTwoCollapsed : styles.cardFormTwo}
+        autoComplete="off"
       >
         <div className={styles.cardFormItem}>
           <label className={styles.cardFormItemLabel}>MEMBER</label>
