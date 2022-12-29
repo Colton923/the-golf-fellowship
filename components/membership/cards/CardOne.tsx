@@ -3,6 +3,8 @@ import styles from './Cards.module.css'
 
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { forEachChild } from 'typescript'
+import { ChangeDetectionStrategyType } from 'ag-grid-react'
 
 type RegisterForm = {
   firstNameCardOne: string
@@ -11,7 +13,7 @@ type RegisterForm = {
   phoneCardOne: string
 }
 
-const phoneRegex = new RegExp(/^[0-9\b]+$/)
+const phoneRegex = new RegExp('^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$')
 
 interface CardOneProps {
   isCardOneValid: (valid: boolean) => void
@@ -52,7 +54,6 @@ export default function CardOne(props: CardOneProps) {
       props.setUserPhone(phoneCardOne)
     }
   }
-
   const Collapse = () => {
     setIsCollapsed(!isCollapsed)
   }
@@ -121,9 +122,33 @@ export default function CardOne(props: CardOneProps) {
                   className={styles.optionInput}
                   type="text"
                   placeholder="Phone"
+                  inputMode="numeric"
                   {...register('phoneCardOne', {
                     required: false,
+                    valueAsNumber: true,
+                    value: phoneCardOne,
+                    validate: (value) => {
+                      return phoneRegex.test(value)
+                    },
                   })}
+                  onKeyDown={(e) => {
+                    if (e.currentTarget.value.length === 3) {
+                      e.currentTarget.value += '-'
+                    }
+                    if (e.currentTarget.value.length === 7) {
+                      e.currentTarget.value += '-'
+                    }
+                  }}
+                  onKeyUp={(e) => {
+                    if (e.currentTarget.value.length === 12) {
+                      if (e.currentTarget.value.match(phoneRegex) === null) {
+                        e.currentTarget.value = ''
+                      }
+                    }
+                    if (e.currentTarget.value.length > 12) {
+                      e.currentTarget.value = e.currentTarget.value.slice(0, 12)
+                    }
+                  }}
                   onChange={(e) => setPhoneCardOne(e.target.value)}
                 />
               </div>

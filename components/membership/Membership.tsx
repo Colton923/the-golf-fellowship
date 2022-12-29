@@ -539,7 +539,6 @@ export default function Membership() {
     }
   }, [showCardTwo])
 
-  console.log('collapseCity: ', collapseCity)
   return (
     <div className={styles.contentWrap}>
       <div className={styles.processWrap}>
