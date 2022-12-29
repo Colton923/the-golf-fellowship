@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
-import styles from '../membership/membership.module.css'
+import styles from '../membership/Membership.module.css'
 
 interface CheckoutFormProps {
   paymentIntent: any
