@@ -113,8 +113,9 @@ export default function Index() {
   }
 
   const displaySignupMenu = () => {
-    setShowSignupMenu(!showSignupMenu)
-    setFocus(!focus)
+    router.replace('/shop')
+    // setShowSignupMenu(!showSignupMenu)
+    // setFocus(!focus)
   }
 
   useEffect(() => {
