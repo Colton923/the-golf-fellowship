@@ -28,6 +28,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .processWrap {
@@ -169,7 +171,7 @@
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
   height: 100%;
-  margin: 80px 2vw 0 2vw;
+  margin: 60px 2vw 10px 2vw;
   padding: 1vw;
   z-index: 2;
 
@@ -226,8 +228,8 @@
 }
 
 .cardFormItem {
-  padding: 10px;
-  margin: 10px;
+  padding: 8px;
+  margin: 8px;
   width: 80vw;
 
   border: 1px solid #000;
@@ -238,6 +240,20 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: left;
+}
+
+.cardFormOne {
+  display: inline-flex;
+  flex-wrap: wrap;
+  height: 100%;
+
+  transition: all 0.5s;
+}
+
+.cardFormOneCollapsed {
+  transform: scaleY(0);
+  height: 0;
+  visibility: hidden;
 }
 
 .cardFormItemLabel {
@@ -299,11 +315,11 @@
 
 .numberOption {
   position: relative;
-  width: 100px;
-  height: 30px;
-  margin: 0 10px 10px 0;
-  padding: 10px;
+  width: 90px;
+  height: 40px;
   z-index: 1;
+  margin-top: 7px;
+  margin-left: 50%;
 }
 
 .option:hover {
@@ -335,15 +351,16 @@
   left: 0;
   top: 0;
   width: 80%;
-  height: 50%;
+  height: 40%;
   z-index: 2;
-  margin: 10px;
 
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   text-align: center;
 
-  border-radius: 3px;
+  border-radius: 5px;
+
+  moz-appearance: textfield;
 }
 
 .optionInputNumber::-webkit-inner-spin-button,
@@ -353,8 +370,8 @@
 }
 
 .checkoutButton {
-  background: #000;
-  color: #fff;
+  background: #fff;
+  color: #000;
   position: relative;
   width: 100%;
   height: 100%;
@@ -362,6 +379,7 @@
   z-index: 2;
   text-align: center;
   font-size: 1rem;
+  font-weight: 800;
 }
 
 .checkoutButton:hover {
@@ -633,4 +651,44 @@
   background-color: #000;
   color: #fff;
   opacity: 0.5;
+}
+
+.svgWrap {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  margin-left: 82%;
+  margin-top: -50px;
+  z-index: 2;
+}
+
+.svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.svg:hover {
+  cursor: pointer;
+}
+
+.svg:active {
+  cursor: pointer;
+}
+
+.svgRotateOne {
+  height: 30px;
+  width: 30px;
+  transform: rotate(180deg);
+  transition: transform 0.5s;
+}
+
+.svgRotateTwo {
+  height: 30px;
+  width: 30px;
+  transform: rotate(0deg);
+  transition: transform 0.5s;
 }

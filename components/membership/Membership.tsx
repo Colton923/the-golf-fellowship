@@ -1,18 +1,18 @@
 'use client'
-import styles from '../../styles/ProShop.module.css'
-import CheckoutForm from '../../components/stripe/CheckoutForm'
-import { auth } from '../../firebase/firebaseClient'
-import { db } from '../../firebase/firebaseClient'
-
-import Image from 'next/image'
+import styles from './Membership.module.css'
+import CheckoutForm from '../stripe/CheckoutForm'
+import { auth, db } from '../../firebase/firebaseClient'
 import productImage from '../../public/static/images/membershipImage.jpg'
+import CardOne from './cards/CardOne'
+import Image from 'next/image'
 
 import { useForm } from 'react-hook-form'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { collection, getDocs, getDoc, doc, setDoc } from 'firebase/firestore'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
+import { isNamedExports } from 'typescript'
 
 export type defaultMembership = {
   plans: {
@@ -199,10 +199,18 @@ const stripe = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 )
 
-export default function Page() {
+interface CardOneProps {
+  isCardOneValid: (valid: boolean) => void
+  setUserFirstName: (firstName: string) => void
+  setUserLastName: (lastName: string) => void
+  setUserEmail: (email: string) => void
+  setUserPhone: (phone: string) => void
+}
+
+export default function Membership() {
   const [user] = useAuthState(auth)
   const [membershipOptions, setMembershipOptions] = useState({} as defaultMembership)
-  const [showForm, setShowForm] = useState(false)
+  const [showCardTwo, setShowCardTwo] = useState(false)
   const [showSubTerm, setShowSubTerm] = useState(false)
   const [showPlan, setShowPlan] = useState(false)
   const [showTerm, setShowTerm] = useState(false)
@@ -238,6 +246,22 @@ export default function Page() {
   const [userStreet, setUserStreet] = useState('')
   const [userStreetTwo, setUserStreetTwo] = useState('')
   const [userSpecial, setUserSpecial] = useState('')
+  const [showCardOne, setShowCardOne] = useState(true)
+  const [collapseCity, setCollapseCity] = useState(false)
+  const [collapsePlan, setCollapsePlan] = useState(false)
+  const [collapseTerm, setCollapseTerm] = useState(false)
+  const [collapseSubTerm, setCollapseSubTerm] = useState(false)
+  const [collapseStatus, setCollapseStatus] = useState(false)
+
+  useEffect(() => {
+    if (city !== '') {
+      setCollapseCity(true)
+    }
+  }, [city])
+
+  const isCardOneValid = useCallback((valid: boolean) => {
+    setShowCardTwo(valid)
+  }, [])
 
   //handles the user focus on the form
   useEffect(() => {
@@ -296,12 +320,12 @@ export default function Page() {
       const data = onlyDoc.data()
       const DefaultMembership = data['plans']
       setMembershipOptions(DefaultMembership)
-      setShowForm(true)
+      setShowCardOne(true)
     }
     getMembershipOptions()
   }, [])
 
-  //FormData is 'Card One' form data
+  //FormData is 'Card Two' form data
   const {
     register,
     setValue,
@@ -309,7 +333,7 @@ export default function Page() {
     formState: { errors },
   } = useForm<FormData>()
 
-  //CustomerData is 'Card Two' form data
+  //CustomerData is 'Card Three' form data
   const {
     register: customerRegister,
     setValue: customerSetValue,
@@ -322,9 +346,10 @@ export default function Page() {
     data.amount = totalPrice * 100
     setCustomerData(data)
     setStage(2)
-    setShowForm(false)
+    setShowCardTwo(false)
     setShowCheckout(false)
     setShowStripeElement(true)
+    setShowCardOne(false)
     if (user) {
       const SetNewData = async (data: CustomerData) => {
         const memberDocRef = doc(db, 'users', user.uid)
@@ -342,10 +367,11 @@ export default function Page() {
     }
   }
 
-  //OnSubmit for 'Card One' form
+  //OnSubmit for 'Card Two' form
   const submitData = async (data: FormData) => {
     setCheckoutData(data)
-    setShowForm(false)
+    setShowCardTwo(false)
+    setShowCardOne(false)
     setShowCheckout(true)
     setIntervalPurchase('')
 
@@ -511,8 +537,9 @@ export default function Page() {
       }
       getMemberData()
     }
-  }, [showForm])
+  }, [showCardTwo])
 
+  console.log('collapseCity: ', collapseCity)
   return (
     <div className={styles.contentWrap}>
       <div className={styles.processWrap}>
@@ -524,14 +551,14 @@ export default function Page() {
                 <div>
                   <h2 className={styles.processNumber}>1</h2>
                 </div>
-                <h1 className={styles.processTitle}>Membership Type</h1>
+                <h1 className={styles.processTitle}>Join</h1>
               </div>
             ) : (
               <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
                 <div>
                   <h2 className={styles.processNumber}>1</h2>
                 </div>
-                <h1 className={styles.processTitle}>Membership Type</h1>
+                <h1 className={styles.processTitle}>Join</h1>
               </div>
             )}
           </div>
@@ -542,14 +569,14 @@ export default function Page() {
                 <div>
                   <h2 className={styles.processNumber}>2</h2>
                 </div>
-                <h1 className={styles.processTitle}>Customer Info.</h1>
+                <h1 className={styles.processTitle}>Checkout</h1>
               </div>
             ) : (
               <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
                 <div>
                   <h2 className={styles.processNumber}>2</h2>
                 </div>
-                <h1 className={styles.processTitle}>Customer Info.</h1>
+                <h1 className={styles.processTitle}>Checkout</h1>
               </div>
             )}
           </div>
@@ -560,14 +587,14 @@ export default function Page() {
                 <div>
                   <h2 className={styles.processNumber}>3</h2>
                 </div>
-                <h1 className={styles.processTitle}>Checkout</h1>
+                <h1 className={styles.processTitle}>Pay</h1>
               </div>
             ) : (
               <div className={styles.borderCircle} style={{ opacity: 0.2 }}>
                 <div>
                   <h2 className={styles.processNumber}>3</h2>
                 </div>
-                <h1 className={styles.processTitle}>Checkout</h1>
+                <h1 className={styles.processTitle}>Pay</h1>
               </div>
             )}
           </div>
@@ -591,9 +618,34 @@ export default function Page() {
         </div>
 
         {/* CARD ONE */}
-        {showForm && (
+        {showCardOne && (
+          <CardOne
+            {...{
+              isCardOneValid,
+              setUserFirstName,
+              setUserLastName,
+              setUserEmail,
+              setUserPhone,
+            }}
+          />
+        )}
+
+        {/* CARD TWO */}
+        {showCardTwo && (
           <form onSubmit={handleSubmit(submitData)} className={styles.cardForm}>
-            <div className={styles.cardFormItem}>
+            <div
+              className={
+                collapseCity ? styles.cardFormItem : styles.cardFormOneCollapsed
+              }
+            >
+              <label className={styles.cardFormItemLabel}>CITY:</label>
+              <label className={styles.cardFormItemLabel}>{city}</label>
+            </div>
+            <div
+              className={
+                collapseCity ? styles.cardFormOneCollapsed : styles.cardFormItem
+              }
+            >
               <label className={styles.cardFormItemLabel}>CITY</label>
               <div className={styles.cardFormItemGroup} id="cities">
                 {cities.map((city) => (
@@ -619,6 +671,12 @@ export default function Page() {
                           setValue('city', e.target.value)
                           setShowPlan(true)
                           setFocusedElementID('plans')
+                          setCollapseCity(true)
+                        }}
+                        onClick={() => {
+                          setShowPlan(true)
+                          setFocusedElementID('plans')
+                          setCollapseCity(true)
                         }}
                       />
                       <label>{city.toUpperCase()}</label>
@@ -627,136 +685,298 @@ export default function Page() {
                 ))}
               </div>
             </div>
+            <div className={styles.svgWrap}>
+              <div
+                className={collapseCity ? styles.svgRotateOne : styles.svgRotateTwo}
+              >
+                <svg
+                  onClick={() => setCollapseCity(!collapseCity)}
+                  className={styles.svg}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
             <div>
               {showPlan && (
-                <div className={styles.cardFormItem}>
-                  <label className={styles.cardFormItemLabel}>PLAN</label>
-                  <div className={styles.cardFormItemGroup} id="plans">
-                    {Object.keys(membershipOptions).map((plan) => (
-                      <>
-                        {(city !== 'San Antonio' && plan === 'performerPlus') ||
-                        (city !== 'San Antonio' && plan === 'playerPlus') ? null : (
-                          <div
-                            key={plan}
-                            className={
-                              plan === selectedPlan
-                                ? styles.cardFormOptionWrapSelect
-                                : styles.cardFormOptionWrap
-                            }
-                            onClick={() => {
-                              setSelectedPlan(plan)
-                            }}
-                          >
-                            <div className={styles.option}>
-                              <input
-                                className={styles.optionInput}
-                                type="radio"
-                                {...register('plan')}
-                                value={plan}
-                                onChange={(e) => {
-                                  setValue('plan', e.target.value)
-                                  setShowTerm(true)
-                                  setFocusedElementID('terms')
-                                }}
-                              />
-                              <label>{plan.toUpperCase()}</label>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    ))}
+                <>
+                  <div
+                    className={
+                      collapsePlan
+                        ? styles.cardFormItem
+                        : styles.cardFormOneCollapsed
+                    }
+                  >
+                    <label className={styles.cardFormItemLabel}>PLAN:</label>
+                    <label className={styles.cardFormItemLabel}>
+                      {selectedPlan.toUpperCase()}
+                    </label>
                   </div>
-                </div>
+                  <div
+                    className={
+                      collapsePlan
+                        ? styles.cardFormOneCollapsed
+                        : styles.cardFormItem
+                    }
+                  >
+                    <label className={styles.cardFormItemLabel}>PLAN</label>
+                    <div className={styles.cardFormItemGroup} id="plans">
+                      {Object.keys(membershipOptions).map((plan) => (
+                        <>
+                          {(city !== 'San Antonio' && plan === 'performerPlus') ||
+                          (city !== 'San Antonio' &&
+                            plan === 'playerPlus') ? null : (
+                            <div
+                              key={plan}
+                              className={
+                                plan === selectedPlan
+                                  ? styles.cardFormOptionWrapSelect
+                                  : styles.cardFormOptionWrap
+                              }
+                              onClick={() => {
+                                setSelectedPlan(plan)
+                              }}
+                            >
+                              <div className={styles.option}>
+                                <input
+                                  className={styles.optionInput}
+                                  type="radio"
+                                  {...register('plan')}
+                                  value={plan}
+                                  onChange={(e) => {
+                                    setValue('plan', e.target.value)
+                                  }}
+                                  onClick={() => {
+                                    setShowTerm(true)
+                                    setFocusedElementID('terms')
+                                    setCollapsePlan(true)
+                                  }}
+                                />
+                                <label>{plan.toUpperCase()}</label>
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.svgWrap}>
+                    <div
+                      className={
+                        collapsePlan ? styles.svgRotateOne : styles.svgRotateTwo
+                      }
+                    >
+                      <svg
+                        onClick={() => setCollapsePlan(!collapsePlan)}
+                        className={styles.svg}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </>
               )}
             </div>
             <div>
               {showTerm && (
-                <div className={styles.cardFormItem}>
-                  <label className={styles.cardFormItemLabel}>TERM</label>
-                  <div className={styles.cardFormItemGroup} id="terms">
+                <>
+                  <div
+                    className={
+                      collapseTerm
+                        ? styles.cardFormItem
+                        : styles.cardFormOneCollapsed
+                    }
+                  >
+                    <label className={styles.cardFormItemLabel}>TERM:</label>
+                    <label className={styles.cardFormItemLabel}>
+                      {selectedTerm.toUpperCase()}
+                    </label>
+                  </div>
+                  <div
+                    className={
+                      collapseTerm
+                        ? styles.cardFormOneCollapsed
+                        : styles.cardFormItem
+                    }
+                  >
+                    <label className={styles.cardFormItemLabel}>TERM</label>
+                    <div className={styles.cardFormItemGroup} id="terms">
+                      {Object.keys(
+                        /* @ts-ignore */
+                        membershipOptions['performer']
+                      ).map((term) => (
+                        <div
+                          key={term}
+                          className={
+                            term === selectedTerm
+                              ? styles.cardFormOptionWrapSelect
+                              : styles.cardFormOptionWrap
+                          }
+                          onClick={() => {
+                            setSelectedTerm(term)
+                          }}
+                        >
+                          <div className={styles.option}>
+                            <input
+                              className={styles.optionInput}
+                              type="radio"
+                              {...register('term')}
+                              value={term}
+                              onChange={(e) => {
+                                setValue('term', e.target.value), setShowStatus(true)
+                              }}
+                              onClick={() => {
+                                term === 'seasonal'
+                                  ? (setShowSubTerm(true),
+                                    setFocusedElementID('seasons'))
+                                  : (setShowSubTerm(false),
+                                    setShowQuantity(true),
+                                    setFocusedElementID('quantity'))
+                                setCollapseTerm(true), setShowStatus(true)
+                              }}
+                            />
+                            <label>{term.toUpperCase()}</label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.svgWrap}>
+                    <div
+                      className={
+                        collapseTerm ? styles.svgRotateOne : styles.svgRotateTwo
+                      }
+                    >
+                      <svg
+                        onClick={() => setCollapseTerm(!collapseTerm)}
+                        className={styles.svg}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+            {showSubTerm && (
+              <>
+                <div
+                  className={
+                    collapseSubTerm
+                      ? styles.cardFormItem
+                      : styles.cardFormOneCollapsed
+                  }
+                >
+                  <label className={styles.cardFormItemLabel}>SEASON:</label>
+                  <label className={styles.cardFormItemLabel}>
+                    {selectedSubTerm.toUpperCase()}
+                  </label>
+                </div>
+                <div
+                  className={
+                    collapseSubTerm
+                      ? styles.cardFormOneCollapsed
+                      : styles.cardFormItem
+                  }
+                  id="seasons"
+                >
+                  <label className={styles.cardFormItemLabel}>SEASON</label>
+                  <div className={styles.cardFormItemGroup}>
                     {Object.keys(
                       /* @ts-ignore */
-                      membershipOptions['performer']
-                    ).map((term) => (
+                      membershipOptions['performer']['seasonal']
+                    ).map((subTerm) => (
                       <div
-                        key={term}
+                        key={subTerm}
                         className={
-                          term === selectedTerm
+                          subTerm === selectedSubTerm
                             ? styles.cardFormOptionWrapSelect
                             : styles.cardFormOptionWrap
                         }
                         onClick={() => {
-                          setSelectedTerm(term)
+                          setSelectedSubTerm(subTerm)
                         }}
                       >
                         <div className={styles.option}>
                           <input
                             className={styles.optionInput}
                             type="radio"
-                            {...register('term')}
-                            value={term}
-                            onChange={(e) => {
-                              term === 'seasonal'
-                                ? (setShowSubTerm(true),
-                                  setFocusedElementID('seasons'))
-                                : (setShowSubTerm(false),
-                                  setShowQuantity(true),
-                                  setFocusedElementID('quantity'))
-                              setValue('term', e.target.value), setShowStatus(true)
+                            {...register('subTerm')}
+                            value={subTerm}
+                            onChange={(e) => setValue('subTerm', e.target.value)}
+                            onClick={() => {
+                              setShowStatus(true),
+                                setFocusedElementID('quantity'),
+                                setCollapseSubTerm(true),
+                                setShowQuantity(true)
                             }}
                           />
-                          <label>{term.toUpperCase()}</label>
+                          <label>{subTerm.toUpperCase()}</label>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
-            {showSubTerm && (
-              <div className={styles.cardFormItem} id="seasons">
-                <label className={styles.cardFormItemLabel}>SEASON</label>
-                <div className={styles.cardFormItemGroup}>
-                  {Object.keys(
-                    /* @ts-ignore */
-                    membershipOptions['performer']['seasonal']
-                  ).map((subTerm) => (
-                    <div
-                      key={subTerm}
-                      className={
-                        subTerm === selectedSubTerm
-                          ? styles.cardFormOptionWrapSelect
-                          : styles.cardFormOptionWrap
-                      }
-                      onClick={() => {
-                        setSelectedSubTerm(subTerm)
-                      }}
+                <div className={styles.svgWrap}>
+                  <div
+                    className={
+                      collapseSubTerm ? styles.svgRotateOne : styles.svgRotateTwo
+                    }
+                  >
+                    <svg
+                      onClick={() => setCollapseSubTerm(!collapseSubTerm)}
+                      className={styles.svg}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
-                      <div className={styles.option}>
-                        <input
-                          className={styles.optionInput}
-                          type="radio"
-                          {...register('subTerm')}
-                          value={subTerm}
-                          onChange={(e) => (
-                            setShowQuantity(true),
-                            setValue('subTerm', e.target.value),
-                            setShowStatus(true),
-                            setFocusedElementID('quantity')
-                          )}
-                        />
-                        <label>{subTerm.toUpperCase()}</label>
-                      </div>
-                    </div>
-                  ))}
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
                 </div>
-              </div>
+              </>
             )}
             {showQuantity && (
               <div className={styles.cardFormItem} id="quantity">
                 <label className={styles.cardFormItemLabel}>QUANTITY</label>
                 <div className={styles.cardFormItemGroup}>
-                  <div className={styles.cardFormOptionWrap}>
+                  <div
+                    className={styles.cardFormOptionWrap}
+                    style={{ height: '30px' }}
+                  >
                     <div className={styles.numberOption}>
                       <input
                         className={styles.optionInputNumber}
@@ -783,38 +1003,83 @@ export default function Page() {
               </div>
             )}
             {showStatus && (
-              <div className={styles.cardFormItem} id="status">
-                <label className={styles.cardFormItemLabel}>STATUS</label>
-                <div className={styles.cardFormItemGroup}>
-                  {Object.keys(status).map((statusKey) => (
-                    <div
-                      key={statusKey}
-                      className={
-                        statusKey === selectedStatus
-                          ? styles.cardFormOptionWrapSelect
-                          : styles.cardFormOptionWrap
-                      }
-                      onClick={() => {
-                        setSelectedStatus(statusKey)
-                        setFocusedElementID('checkoutButton')
-                      }}
-                    >
-                      <div className={styles.option}>
-                        <input
-                          className={styles.optionInput}
-                          type="radio"
-                          {...register('status')}
-                          value={statusKey}
-                          onChange={(e) => (
-                            setShowPrice(true), setValue('status', e.target.value)
-                          )}
-                        />
-                        <label>{statusKey.toUpperCase()}</label>
-                      </div>
-                    </div>
-                  ))}
+              <>
+                <div
+                  className={
+                    collapseStatus
+                      ? styles.cardFormItem
+                      : styles.cardFormOneCollapsed
+                  }
+                >
+                  <label className={styles.cardFormItemLabel}>STATUS:</label>
+                  <label className={styles.cardFormItemLabel}>
+                    {selectedStatus.toUpperCase()}
+                  </label>
                 </div>
-              </div>
+                <div
+                  className={
+                    collapseStatus
+                      ? styles.cardFormOneCollapsed
+                      : styles.cardFormItem
+                  }
+                  id="status"
+                >
+                  <label className={styles.cardFormItemLabel}>STATUS</label>
+                  <div className={styles.cardFormItemGroup}>
+                    {Object.keys(status).map((statusKey) => (
+                      <div
+                        key={statusKey}
+                        className={
+                          statusKey === selectedStatus
+                            ? styles.cardFormOptionWrapSelect
+                            : styles.cardFormOptionWrap
+                        }
+                        onClick={() => {
+                          setSelectedStatus(statusKey)
+                          setFocusedElementID('checkoutButton')
+                        }}
+                      >
+                        <div className={styles.option}>
+                          <input
+                            className={styles.optionInput}
+                            type="radio"
+                            {...register('status')}
+                            value={statusKey}
+                            onChange={(e) => setValue('status', e.target.value)}
+                            onClick={() => {
+                              setShowPrice(true), setCollapseStatus(true)
+                            }}
+                          />
+                          <label>{statusKey.toUpperCase()}</label>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className={styles.svgWrap}>
+                  <div
+                    className={
+                      collapseStatus ? styles.svgRotateOne : styles.svgRotateTwo
+                    }
+                  >
+                    <svg
+                      onClick={() => setCollapseStatus(!collapseStatus)}
+                      className={styles.svg}
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </div>
+                </div>
+              </>
             )}
             {showPrice && (
               <div className={styles.cardFormItemGroup}>
@@ -836,7 +1101,7 @@ export default function Page() {
           </form>
         )}
 
-        {/* CARD TWO */}
+        {/* CARD THREE */}
         {showCheckout && (
           <div className={styles.cardForm}>
             <div className={styles.cardFormItem}>
@@ -850,8 +1115,15 @@ export default function Page() {
                     className={styles.backButton}
                     onClick={() => (
                       setShowCheckout(false),
-                      setShowForm(true),
-                      setCheckoutData({} as FormData),
+                      setShowCardTwo(false),
+                      setCheckoutData({
+                        city: '',
+                        plan: '',
+                        quantity: 1,
+                        status: '',
+                        subTerm: '',
+                        term: '',
+                      } as FormData),
                       setCity(''),
                       setStage(0),
                       setSelectedPlan(''),
@@ -864,7 +1136,13 @@ export default function Page() {
                       setShowTerm(false),
                       setShowPlan(false),
                       setShowSubTerm(false),
-                      setShowPrice(false)
+                      setShowPrice(false),
+                      setShowCardOne(true),
+                      setCollapseStatus(false),
+                      setCollapseCity(false),
+                      setCollapsePlan(false),
+                      setCollapseTerm(false),
+                      setCollapseSubTerm(false)
                     )}
                   >
                     BACK
@@ -1122,7 +1400,7 @@ export default function Page() {
           </div>
         )}
 
-        {/* CARD THREE */}
+        {/* CARD FOUR */}
         {showStripeElement && clientSecret && (
           <Elements stripe={stripe} options={options}>
             <CheckoutForm paymentIntent={paymentIntent} {...customerData} />

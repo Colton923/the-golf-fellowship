@@ -29,8 +29,8 @@ export default function HomeNavbar() {
             </h1>
           </div>
           <div className={styles.navbarTextWrapper}>
-            <Link href="/proshop" className={styles.navbarLink} key={'nav3'}>
-              Pro Shop
+            <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
+              Shop
             </Link>
           </div>
         </nav>

@@ -29,8 +29,8 @@ export default function DashboardNavbar() {
             </Link>
           </div>
           <div className={styles.navbarTextWrapper} key={'nav4'}>
-            <Link href="/proshop" className={styles.navbarLink}>
-              Pro Shop
+            <Link href="/shop" className={styles.navbarLink}>
+              Shop
             </Link>
           </div>
         </nav>
