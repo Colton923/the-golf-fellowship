@@ -8,9 +8,14 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../firebase/firebaseClient'
 import { useEffect, useState } from 'react'
 
-export default function Navbar() {
+export interface NavbarProps {
+  showLogin: () => void
+}
+
+export default function Navbar(props: NavbarProps) {
   const [user] = useAuthState(auth)
   const [isAdmin, setIsAdmin] = useState(false)
+
   useEffect(() => {
     if (user) {
       if (user.uid === process.env.NEXT_PUBLIC_ADMIN_COLTON_SECRET_UID) {
@@ -26,6 +31,16 @@ export default function Navbar() {
   }, [user])
 
   return (
-    <>{user ? isAdmin ? <AdminNavbar /> : <DashboardNavbar /> : <HomeNavbar />}</>
+    <>
+      {user ? (
+        isAdmin ? (
+          <AdminNavbar />
+        ) : (
+          <DashboardNavbar />
+        )
+      ) : (
+        <HomeNavbar {...props} />
+      )}
+    </>
   )
 }

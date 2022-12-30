@@ -1,9 +1,13 @@
+'use client'
+
 import Link from 'next/link'
+
 import styles from './Navbar.module.css'
 import Image from 'next/image'
 import logo from '../../public/static/images/tgf_logo.jpg'
+import { NavbarProps } from './Navbar'
 
-export default function HomeNavbar() {
+export default function HomeNavbar(props: NavbarProps) {
   return (
     <div className={styles.navbarMain}>
       <div className={styles.navbarContainer}>
@@ -19,7 +23,7 @@ export default function HomeNavbar() {
           <div className={styles.navbarTextWrapper}>
             <h1
               onClick={() => {
-                alert('TODO: Componentualize Login Modal from ./HomePage')
+                props.showLogin()
               }}
               className={styles.navbarLink}
               key={'nav2'}

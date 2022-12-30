@@ -5,7 +5,6 @@ import styles from './Navbar.module.css'
 import Image from 'next/image'
 import logo from '../../public/static/images/tgf_logo.jpg'
 import { auth } from '../../firebase/firebaseClient'
-
 export default function AdminNavbar() {
   const signOut = () => {
     auth.signOut()

@@ -1,8 +1,8 @@
 'use client'
 
 import Navbar from '../components/navbar/Navbar'
-import { auth } from '../firebase/firebaseClient'
 import styles from '../styles/App.module.css'
+import Login from '../components/login/Login'
 
 import Image from 'next/image'
 import imgHome from '../public/static/images/tgf_home_page.jpg'
@@ -10,14 +10,13 @@ import imgCompete from '../public/static/images/tgf_home_page_compete.jpg'
 import imgGolf from '../public/static/images/tgf_home_page_golf.jpg'
 import imgImprove from '../public/static/images/tgf_home_page_improve.jpg'
 import imgNetwork from '../public/static/images/tgf_home_page_network.jpg'
-import googleLogo from '../public/static/images/googleLogo.png'
 
-import { useState, useEffect } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { getFirestore, collection, doc, setDoc } from 'firebase/firestore'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { getDocs, collection, doc } from 'firebase/firestore'
+import { auth, db } from '../firebase/firebaseClient'
 
 type FormData = {
   firstName: string
@@ -32,10 +31,85 @@ const validEmail = RegExp(
 )
 
 export default function Index() {
-  const [user, loading, error] = useAuthState(auth)
   const [showSignupMenu, setShowSignupMenu] = useState(false)
   const [focus, setFocus] = useState(false)
+  const [userSubscribed, setUserSubscribed] = useState(false)
+  const [user, loading, error] = useAuthState(auth)
+  const [loggedInUser, setLoggedInUser] = useState('')
+
   const router = useRouter()
+
+  const gotoShop = () => {
+    router.replace('/shop')
+  }
+
+  const gotoDashboard = () => {
+    router.replace('/dashboard')
+  }
+
+  const logout = () => {
+    auth.signOut()
+    showLogin()
+  }
+
+  useEffect(() => {
+    const isUserSubscribed = async () => {
+      if (loggedInUser === '') return
+      try {
+        alert('Checking subscription status...')
+        const userRef = collection(db, 'users')
+        const docRef = doc(userRef, loggedInUser)
+        const subscriptionCol = collection(docRef, 'subscriptions')
+        await getDocs(subscriptionCol)
+          .then((querySnapshot) => {
+            const data = querySnapshot.docs.map((doc) => doc.data())
+            const longest = data.reduce((a, b) =>
+              a.current_period_end > b.current_period_end ? a : b
+            )
+            if (longest.current_period_end > Date.now() / 1000) {
+              gotoDashboard()
+            } else {
+              alert('Your subscription has expired')
+            }
+          })
+          .catch(() => {
+            alert('Please register for a subscription')
+            logout()
+            gotoShop()
+          })
+      } catch (error) {
+        alert('Please register for a subscription')
+        logout()
+        gotoShop()
+      }
+    }
+    isUserSubscribed()
+  }, [loggedInUser])
+
+  const navbarRef = useRef(null)
+  const showLogin = () => {
+    setShowSignupMenu(!showSignupMenu)
+  }
+
+  //This is the system for clicking off of the login component. See the ref={} arg on div wrapping componenet.
+  const loginMain = useRef(null)
+  const handleClickOffLoginMain = (e: any) => {
+    if (
+      loginMain.current &&
+      //@ts-ignore
+      !loginMain.current.contains(e.target) &&
+      //@ts-ignore
+      !navbarRef.current.contains(e.target)
+    ) {
+      setShowSignupMenu(false)
+    }
+  }
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOffLoginMain)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOffLoginMain)
+    }
+  }, [])
 
   useEffect(() => {
     const handleFocusForm = () => {
@@ -58,98 +132,18 @@ export default function Index() {
     formState: { errors },
   } = useForm<FormData>()
 
-  const db = getFirestore()
-
-  const signInWithGoogle = async () => {
-    try {
-      const provider = new GoogleAuthProvider()
-      const result = await signInWithPopup(auth, provider)
-      const userRef = collection(db, 'users')
-      const docRef = doc(userRef, result.user.uid)
-      await setDoc(docRef, {
-        uid: result.user.uid,
-        googleAccountFirstName: result.user.displayName
-          ? result.user.displayName?.split(' ')[0]
-          : '',
-        googleAccountLastName: result.user.displayName
-          ? result.user.displayName?.split(' ')[1]
-          : '',
-        email: result.user.email,
-        photoUrl: result.user.photoURL,
-      })
-      router.push('/dashboard')
-    } catch (error) {
-      alert('Error signing in with Google')
-    }
-  }
-
-  const newSignInWithGoogle = async (data: FormData) => {
-    try {
-      const provider = new GoogleAuthProvider()
-      const result = await signInWithPopup(auth, provider)
-      const userRef = collection(db, 'users')
-      const docRef = doc(userRef, result.user.uid)
-      await setDoc(docRef, {
-        userTypedFirstName: data.firstName,
-        userTypedLastName: data.lastName,
-        userTypedEmail: data.email,
-        uid: result.user.uid,
-        googleAccountFirstName: result.user.displayName
-          ? result.user.displayName?.split(' ')[0]
-          : data.firstName,
-        googleAccountLastName: result.user.displayName
-          ? result.user.displayName?.split(' ')[1]
-          : data.lastName,
-        email: result.user.email,
-        photoUrl: result.user.photoURL,
-      })
-      router.push('/dashboard')
-    } catch (error) {
-      alert('Error signing in with Google')
-    }
-    setValue('lastName', '')
-    setValue('firstName', '')
-    setValue('email', '')
-  }
-
-  const displaySignupMenu = () => {
+  const goToShop = () => {
     router.replace('/shop')
-    // setShowSignupMenu(!showSignupMenu)
-    // setFocus(!focus)
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent | KeyboardEvent) => {
-      if (
-        showSignupMenu &&
-        event.target instanceof HTMLElement &&
-        event.target.className.includes('main')
-      ) {
-        setShowSignupMenu(false)
-      }
-    }
-    window.addEventListener('click', handleClickOutside)
-
-    return () => {
-      window.removeEventListener('click', handleClickOutside)
-    }
-  }, [showSignupMenu])
-
-  if (user) {
-    router.push('/dashboard')
-  }
-
-  if (loading) {
-    return <div>Loading...</div>
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>
   }
 
   return (
     <div className={styles.main}>
-      <Navbar />
+      <div ref={navbarRef}>
+        <Navbar showLogin={showLogin} />
+      </div>
+      <div ref={loginMain}>
+        <Login show={showSignupMenu} setLoggedInUser={setLoggedInUser} />
+      </div>
       <div className={styles.backgroundWrapper}>
         <div className={styles.backgroundImage}>
           <Image src={imgHome} alt="Home Page" quality={100} fill />
@@ -162,106 +156,10 @@ export default function Index() {
         </div>
       </div>
       <button className={styles.overlayButton}>
-        <h1 onClick={displaySignupMenu} className={styles.overlayButtonText}>
+        <h1 onClick={goToShop} className={styles.overlayButtonText}>
           Become a Member
         </h1>
       </button>
-
-      <div
-        id="showSignUpID"
-        className={
-          showSignupMenu
-            ? styles.signupMenuCardWrapper
-            : styles.signupMenuCardWrapperHidden
-        }
-      >
-        <form onSubmit={handleSubmit(newSignInWithGoogle)}>
-          <div className={styles.signupMenuCard}>
-            <h3 className={styles.signupMenuCardTitle}>
-              Welcome to The Golf Fellowship
-            </h3>
-            <div className={styles.signupMenuCardFormWrapper}>
-              <input
-                id="firstName"
-                className={styles.signupMenuCardFormInput}
-                type="text"
-                placeholder="First name"
-                {...register('firstName', {
-                  maxLength: 20,
-                  required: true,
-                  validate: (value) =>
-                    validName.test(value) || 'First name must contain only letters',
-                })}
-              />
-              <input
-                id="lastName"
-                className={styles.signupMenuCardFormInput}
-                type="text"
-                placeholder="Last name"
-                {...register('lastName', {
-                  maxLength: 20,
-                  required: true,
-                  validate: (value) =>
-                    validName.test(value) || 'Last name must contain only letters',
-                })}
-                onClick={() =>
-                  document.getElementById('lastName')?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center',
-                    inline: 'center',
-                  })
-                }
-              />
-              <input
-                id="email"
-                className={styles.signupMenuCardFormInput}
-                type="email"
-                placeholder="Email address"
-                {...register('email', {
-                  required: true,
-                  validate: (value) =>
-                    validEmail.test(value) || 'E-mail must be valid',
-                })}
-                onClick={() =>
-                  document.getElementById('email')?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center',
-                    inline: 'center',
-                  })
-                }
-              />
-              <button className={styles.signupMenuCardFormSubmit} type="submit">
-                Submit
-              </button>
-            </div>
-            <div className={styles.orWrapper}>
-              <div className={styles.lineBetweenOrDivs1234}></div>
-              <p>or</p>
-              <div className={styles.lineBetweenOrDivs5678}></div>
-            </div>
-            <button
-              onClick={signInWithGoogle}
-              className={styles.signupMenuCardFormSubmitGoogle}
-            >
-              <Image
-                src={googleLogo}
-                alt="Google Logo"
-                height={75}
-                width={75}
-                className={styles.googleLogoWrapper}
-              />
-            </button>
-            <div className={styles.signupMenuCardCloseBtnWrapper}>
-              <h4
-                onClick={displaySignupMenu}
-                className={styles.signupMenuCardCloseBtn}
-              >
-                Close
-              </h4>
-            </div>
-          </div>
-        </form>
-      </div>
       <div className={styles.whoWeAreSection}>
         <h1 className={styles.whoWeAreTitle}>WHO WE ARE</h1>
         <div className={styles.youtubeEmbedWrapper}>
@@ -335,7 +233,7 @@ export default function Index() {
               margin: '10px',
             }}
             onClick={() => {
-              displaySignupMenu()
+              goToShop()
             }}
           ></input>
         </div>

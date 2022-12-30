@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+.loginMain {
+  font-family: 'Open Sans', sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 500px;
+  z-index: 10;
+
+  backdrop-filter: blur(20px);
+  border-radius: 10px;
+  box-shadow: 0 2px 40px 2px rgba(0, 0, 0, 0.8);
+
+  opacity: 0.96;
+
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.loginContainer {
+  display: flex;
+  flex-direction: column;
+
+  margin: auto;
+
+  width: 90%;
+  height: 90%;
+}
+
+.returningUser {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 60%;
+
+  border: 1px rgba(0, 0, 0, 1) solid;
+  border-radius: 10px;
+  box-shadow: 0 2px 40px 2px rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.headerText {
+  display: flex;
+  justify-content: center;
+
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+
+  font-size: 24px;
+  font-weight: 600;
+  color: #000000;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+
+  border-bottom: 2px rgba(0, 0, 0, 0.9) solid;
+}
+
+.returningUserOptions {
+  display: flex;
+  flex-direction: column;
+}
+
+.returningUserOptionOne {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 40px;
+  margin-top: 10px;
+  margin-bottom: 0;
+
+  border-radius: 10px;
+}
+
+.returningUserInput {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 10px;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: #000000;
+
+  background-color: #ffffff;
+}
+
+.returningUserOptionTwo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 40px;
+  margin-top: 10px;
+  margin-bottom: 0;
+
+  border-radius: 10px;
+}
+
+.loginButtonWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 40px;
+  margin-top: 10px;
+
+  border-radius: 10px;
+}
+
+.loginButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 600;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.8);
+
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  color: #ffffff;
+
+  background-color: rgba(0, 0, 0, 0.85);
+  border-radius: 10px;
+}
+
+.divBetweenDivsDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 40px;
+}
+
+.orText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+  text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.divBetweenDivsOneTwoThree {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 40%;
+  margin: 2px;
+  height: 1px;
+
+  background-color: #000000;
+}
+
+.newUser {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px rgba(0, 0, 0, 1) solid;
+  border-radius: 10px;
+  box-shadow: 0 2px 40px 2px rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.1);
+
+  height: 30%;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
