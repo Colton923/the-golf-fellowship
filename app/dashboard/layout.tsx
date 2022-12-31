@@ -1,3 +1,5 @@
+'use client'
+
 import styles from '../../styles/Dashboard.module.css'
 import Navbar from '../../components/navbar/Navbar'
 
