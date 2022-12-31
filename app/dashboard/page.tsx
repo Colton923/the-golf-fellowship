@@ -24,13 +24,10 @@ export default function Page() {
 
   const router = useRouter()
 
-  if (!user) {
-    router.push('/')
-  }
-
   const initialScreenWidth = () => {
     setScreenWidth(window.innerWidth)
   }
+
   useEffect(() => {
     initialScreenWidth()
   }, [])
@@ -102,6 +99,16 @@ export default function Page() {
 
   const handlePlaceholderClick = () => {
     placeholder ? hideAllButOne('') : hideAllButOne('placeholder')
+  }
+
+  if (!user) {
+    return (
+      <>
+        <div>
+          <h1>Not logged in</h1>
+        </div>
+      </>
+    )
   }
 
   return (
