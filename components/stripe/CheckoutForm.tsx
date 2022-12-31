@@ -22,14 +22,12 @@ interface CheckoutFormProps {
     state: string
     special?: string
   }
-  membership: {
-    city: string
-    plan: string
-    term: string
-    subTerm?: string
-    status: string
-    quantity: number
-  }
+  city: string
+  plan: string
+  term: string
+  subTerm?: string
+  status: string
+  quantity: number
 }
 
 export default function CheckoutForm(props: CheckoutFormProps) {
@@ -53,12 +51,12 @@ export default function CheckoutForm(props: CheckoutFormProps) {
         uid: uid,
         address: props.address,
         membership: {
-          city: props.membership.city,
-          plan: props.membership.plan,
-          term: props.membership.term,
-          subTerm: props.membership.subTerm ? props.membership.subTerm : '',
-          status: props.membership.status,
-          quantity: props.membership.quantity,
+          city: props.city,
+          plan: props.plan,
+          term: props.term,
+          subTerm: props.subTerm ? props.subTerm : '',
+          status: props.status,
+          quantity: props.quantity,
         },
       }),
     }).then((res) => {
