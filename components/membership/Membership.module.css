@@ -268,9 +268,9 @@
   justify-content: center;
   align-items: flex-start;
   text-align: center;
-  height: 45px;
-  width: 180px;
   border-radius: 5px;
+
+  overflow: none;
 }
 
 .cardFormOptionWrapSelect {
@@ -279,8 +279,6 @@
   justify-content: center;
   align-items: flex-start;
   text-align: center;
-  height: 45px;
-  width: 180px;
   border-radius: 5px;
   background-color: #000;
   color: #fff;
@@ -290,12 +288,15 @@
   transform: scaleY(0.8);
   font-size: 1rem;
   box-shadow: 0 0 10px rgba(8, 7, 16, 0.6);
+  overflow: none;
 }
 
 .option {
   position: relative;
   width: 180px;
-  margin: 10px 5px 10px 5px;
+  height: 25px;
+
+  margin: 10px 5px 5px 5px;
   z-index: 1;
 
   border: 1px solid #000;
@@ -305,7 +306,7 @@
 .optionSelect {
   position: relative;
   width: 180px;
-  height: 30px;
+  height: 25px;
   margin: 10px 5px 10px 5px;
   z-index: 1;
 
@@ -316,7 +317,7 @@
 .numberOption {
   position: relative;
   width: 90px;
-  height: 40px;
+  height: 45px;
   z-index: 1;
   margin-top: 7px;
   margin-left: 50%;

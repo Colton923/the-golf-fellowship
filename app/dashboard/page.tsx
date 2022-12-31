@@ -6,6 +6,9 @@ import GolferSVG from '../../components/svgs/golfer'
 
 import { useEffect } from 'react'
 import { useState } from 'react'
+import { auth } from '../../firebase/firebaseClient'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { useRouter } from 'next/navigation'
 
 import { Calendar } from '../../components/calendar/Calendar'
 
@@ -17,6 +20,13 @@ export default function Page() {
   const [placeholder, setPlaceholder] = useState(false)
   const [screenWidth, setScreenWidth] = useState(0)
   const [showOptions, setShowOptions] = useState(true)
+  const [user] = useAuthState(auth)
+
+  const router = useRouter()
+
+  if (!user) {
+    router.push('/')
+  }
 
   const initialScreenWidth = () => {
     setScreenWidth(window.innerWidth)

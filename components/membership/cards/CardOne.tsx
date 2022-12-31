@@ -31,14 +31,24 @@ export default function CardOne(props: CardOneProps) {
   const [phoneCardOne, setPhoneCardOne] = useState('')
   const [isCardOneValid, setIsCardOneValid] = useState(false)
 
+  useEffect(() => {
+    if (phoneCardOne.length >= 12) {
+      const handleFormSubmit = () => {
+        //@ts-ignore
+        const form: HTMLFormElement = document.getElementById('cardOneForm')
+        form?.requestSubmit()
+      }
+      handleFormSubmit()
+    }
+  }, [phoneCardOne])
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterForm>({ mode: 'onChange' })
+  } = useForm<RegisterForm>({ mode: 'onSubmit' })
 
   const submitRegisterForm = (data: RegisterForm) => {
-    console.log(phoneCardOne.length)
     if (
       firstNameCardOne !== '' &&
       lastNameCardOne !== '' &&
@@ -74,9 +84,10 @@ export default function CardOne(props: CardOneProps) {
         </div>
       </div>
       <form
-        onChange={handleSubmit(submitRegisterForm)}
+        onSubmit={handleSubmit(submitRegisterForm)}
         className={isCollapsed ? styles.cardFormTwoCollapsed : styles.cardFormTwo}
         autoComplete="off"
+        id="cardOneForm"
       >
         <div className={styles.cardFormItem}>
           <label className={styles.cardFormItemLabel}>MEMBER</label>
@@ -89,7 +100,9 @@ export default function CardOne(props: CardOneProps) {
                   type="text"
                   placeholder="First Name"
                   {...register('firstNameCardOne', { required: true })}
-                  onChange={(e) => setFirstNameCardOne(e.target.value)}
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setFirstNameCardOne(e.target.value)
+                  }
                   autoComplete="off"
                 />
               </div>
@@ -102,7 +115,9 @@ export default function CardOne(props: CardOneProps) {
                   type="text"
                   placeholder="Last Name"
                   {...register('lastNameCardOne', { required: true })}
-                  onChange={(e) => setLastNameCardOne(e.target.value)}
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setLastNameCardOne(e.target.value)
+                  }
                   autoComplete="off"
                 />
               </div>
@@ -115,7 +130,9 @@ export default function CardOne(props: CardOneProps) {
                   type="text"
                   placeholder="Email"
                   {...register('emailCardOne', { required: true })}
-                  onChange={(e) => setEmailCardOne(e.target.value)}
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEmailCardOne(e.target.value)
+                  }
                   autoComplete="off"
                 />
               </div>
@@ -149,7 +166,9 @@ export default function CardOne(props: CardOneProps) {
                       e.currentTarget.value = e.currentTarget.value.slice(0, 12)
                     }
                   }}
-                  onChange={(e) => setPhoneCardOne(e.target.value)}
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPhoneCardOne(e.target.value)
+                  }
                   autoComplete="off"
                 />
               </div>

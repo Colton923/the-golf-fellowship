@@ -341,7 +341,7 @@ export default function Membership() {
     formState: { errors: customerErrors },
   } = useForm<CustomerData>()
 
-  //OnSubmit for 'Card Two' form
+  //OnSubmit for 'Card Three' form
   const submitCustomerForm = (data: CustomerData) => {
     data.amount = totalPrice * 100
     setCustomerData(data)
@@ -350,21 +350,6 @@ export default function Membership() {
     setShowCheckout(false)
     setShowStripeElement(true)
     setShowCardOne(false)
-    if (user) {
-      const SetNewData = async (data: CustomerData) => {
-        const memberDocRef = doc(db, 'users', user.uid)
-        const memberDoc = await getDoc(memberDocRef)
-        const memberData = memberDoc.data()
-        if (memberData) {
-          setDoc(memberDocRef, {
-            ...memberData,
-            address: data.address,
-            phone: data.phone,
-          })
-        }
-      }
-      SetNewData(data)
-    }
   }
 
   //OnSubmit for 'Card Two' form
@@ -382,6 +367,10 @@ export default function Membership() {
       if (season) {
         //@ts-ignore
         const seasonal = data.subTerm.toString().toLowerCase()
+        console.log(
+          'seasonPrice',
+          onlyDoc.data().plans[data.plan][data.term][seasonal]
+        )
         return onlyDoc.data().plans[data.plan][data.term][seasonal]
       } else {
         return onlyDoc.data().plans[data.plan][data.term]
@@ -1402,7 +1391,11 @@ export default function Membership() {
         {/* CARD FOUR */}
         {showStripeElement && clientSecret && (
           <Elements stripe={stripe} options={options}>
-            <CheckoutForm paymentIntent={paymentIntent} {...customerData} />
+            <CheckoutForm
+              paymentIntent={paymentIntent}
+              {...customerData}
+              {...checkoutData}
+            />
           </Elements>
         )}
       </div>
