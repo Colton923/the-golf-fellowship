@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from 'react'
 
 export default function ShopLayout({ children }: any) {
   const [showSignupMenu, setShowSignupMenu] = useState(false)
+  const [loggedInUser, setLoggedInUser] = useState('')
 
   const navbarRef = useRef(null)
   const showLogin = () => {
@@ -40,7 +41,7 @@ export default function ShopLayout({ children }: any) {
         <Navbar showLogin={showLogin} />
       </div>
       <div ref={loginMain}>
-        <Login show={showSignupMenu} />
+        <Login show={showSignupMenu} setLoggedInUser={setLoggedInUser} />
       </div>
       <div>{children}</div>
     </div>
