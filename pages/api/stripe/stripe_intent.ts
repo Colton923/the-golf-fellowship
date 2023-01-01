@@ -38,27 +38,28 @@ const handler = async (req: any, res: any) => {
         return
       }
     }
-  }
-
-  try {
-    // Create PaymentIntent
-    const params = {
-      amount: body.amount,
-      currency: 'usd',
-      description: 'Payment description',
-      automatic_payment_methods: {
-        enabled: true,
-      },
-      metadata: {
-        id: body.metadata.id,
-      },
+  } else {
+    try {
+      // Create PaymentIntent
+      const params = {
+        amount: body.amount,
+        currency: 'usd',
+        description: 'Payment description',
+        automatic_payment_methods: {
+          enabled: true,
+        },
+        metadata: {
+          id: body.metadata.id,
+        },
+      }
+      const payment_intent = await stripe.paymentIntents.create(params)
+      //Return the payment_intent object
+      res.status(200).json(payment_intent)
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Internal server error'
+      res.status(500).json({ statusCode: 500, message: errorMessage })
     }
-    const payment_intent = await stripe.paymentIntents.create(params)
-    //Return the payment_intent object
-    res.status(200).json(payment_intent)
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Internal server error'
-    res.status(500).json({ statusCode: 500, message: errorMessage })
   }
 }
 export default handler

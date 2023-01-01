@@ -6,7 +6,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 })
 
 const handler = async (req: any, res: any) => {
-
   if (req.method === 'GET') {
     try {
       const current_sub = await stripe.products.list({
@@ -20,11 +19,8 @@ const handler = async (req: any, res: any) => {
     } catch (e) {
       //@ts-ignore
       if (e.code !== 'resource_missing') {
-        const errorMessage =
-          e instanceof Error ? e.message : 'Internal server error'
-        res
-          .status(500)
-          .json({ statusCode: 500, message: errorMessage })
+        const errorMessage = e instanceof Error ? e.message : 'Internal server error'
+        res.status(500).json({ statusCode: 500, message: errorMessage })
         return
       }
     }

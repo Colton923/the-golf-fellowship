@@ -33,10 +33,7 @@ const handler = async (req: any, res: any) => {
       return
     }
   } catch (e) {
-    const errorMessage =
-      e instanceof Error
-        ? e.message
-        : 'Internal server error'
+    const errorMessage = e instanceof Error ? e.message : 'Internal server error'
     res.status(500).json({
       statusCode: 500,
       message: errorMessage,

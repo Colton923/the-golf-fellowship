@@ -13,10 +13,10 @@ const db = admin.firestore()
 
 export default async function isPhoneNumberInDB(req: any, res: any) {
   const phoneNumber = req.body.phoneNumber
-
+  console.log('phoneNumber: ', phoneNumber)
   const searchDocs = await db.collection('users').get()
   const searchDocsData = searchDocs.docs.map((doc) => doc.data())
-  const searchDocsDataPhoneNumbers = searchDocsData.map((doc) => doc.phoneNumber)
+  const searchDocsDataPhoneNumbers = searchDocsData.map((doc) => doc.phone)
   const isPhoneNumberInDB = searchDocsDataPhoneNumbers.includes(phoneNumber)
   res.status(200).json({ isPhoneNumberInDB: isPhoneNumberInDB })
 }

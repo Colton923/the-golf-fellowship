@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2020-08-27',
 })
 
-const admin = process.env.ADMIN_COLTON_SECRET_UID
+const admin = process.env.NEXT_PUBLIC_ADMIN_COLTON_SECRET_UID
 
 const handler = async (req: any, res: any) => {
   const newProduct = req.body
@@ -29,13 +29,8 @@ const handler = async (req: any, res: any) => {
     } catch (e) {
       //@ts-ignore
       if (e.code !== 'resource_missing') {
-        const errorMessage =
-          e instanceof Error
-            ? e.message
-            : 'Internal server error'
-        res
-          .status(500)
-          .json({ statusCode: 500, message: errorMessage })
+        const errorMessage = e instanceof Error ? e.message : 'Internal server error'
+        res.status(500).json({ statusCode: 500, message: errorMessage })
         return
       }
     }

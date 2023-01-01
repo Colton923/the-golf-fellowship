@@ -290,6 +290,7 @@ export default function Membership() {
         setClientSecret(data.client_secret), setPaymentIntent(data.id)
       })
   }, [totalPrice, stripeSubId])
+
   const options = {
     clientSecret: clientSecret,
     // Fully customizable with appearance API.
@@ -341,7 +342,7 @@ export default function Membership() {
     formState: { errors: customerErrors },
   } = useForm<CustomerData>()
 
-  //OnSubmit for 'Card Three' form
+  //OnSubmit for 'Card Three' form. This sends user to stripe checkout.
   const submitCustomerForm = (data: CustomerData) => {
     data.amount = totalPrice * 100
     setCustomerData(data)
@@ -352,7 +353,7 @@ export default function Membership() {
     setShowCardOne(false)
   }
 
-  //OnSubmit for 'Card Two' form
+  //OnSubmit for 'Card Two' form. This calculates the price
   const submitData = async (data: FormData) => {
     setCheckoutData(data)
     setShowCardTwo(false)
@@ -367,10 +368,6 @@ export default function Membership() {
       if (season) {
         //@ts-ignore
         const seasonal = data.subTerm.toString().toLowerCase()
-        console.log(
-          'seasonPrice',
-          onlyDoc.data().plans[data.plan][data.term][seasonal]
-        )
         return onlyDoc.data().plans[data.plan][data.term][seasonal]
       } else {
         return onlyDoc.data().plans[data.plan][data.term]
@@ -404,7 +401,7 @@ export default function Membership() {
 
   //Dynamically creates stripe products based on the membership schema
   useEffect(() => {
-    if (user && intervalPurchase !== '') {
+    if (intervalPurchase !== '') {
       const purchaseItem: body = {
         sub: {
           name: selectedPlan + ' ' + selectedTerm,
@@ -418,7 +415,6 @@ export default function Membership() {
             interval: intervalPurchase,
           },
         },
-        uid: user.uid,
       }
       const stripeSubscriptionID: CreateNewSubscription = {
         requestData: purchaseItem,
@@ -482,51 +478,6 @@ export default function Membership() {
       NewSubscription(stripeSubscriptionID)
     }
   }, [intervalPurchase])
-
-  //Handles auto filling the customer data form if the user is logged in
-  useEffect(() => {
-    if (user) {
-      const memberDocRef = doc(db, 'users', user.uid)
-      const getMemberData = async () => {
-        const memberDoc = await getDoc(memberDocRef)
-        if (memberDoc.exists()) {
-          const memberData = memberDoc.data()
-
-          if (memberData?.googleAccountFirstName) {
-            setUserFirstName(memberData.googleAccountFirstName)
-          }
-          if (memberData?.googleAccountLastName) {
-            setUserLastName(memberData.googleAccountLastName)
-          }
-          if (memberData?.email) {
-            setUserEmail(memberData.email)
-          }
-          if (memberData?.phone) {
-            setUserPhone(memberData.phone)
-          }
-          if (memberData?.address?.city) {
-            setUserCity(memberData.address.city)
-          }
-          if (memberData?.address?.postalCode) {
-            setUserPostal(memberData.address.postalCode)
-          }
-          if (memberData?.address?.state) {
-            setUserState(memberData.address.state)
-          }
-          if (memberData?.address?.street) {
-            setUserStreet(memberData.address.street)
-          }
-          if (memberData?.address?.opt) {
-            setUserStreetTwo(memberData.address.opt)
-          }
-          if (memberData?.address?.special) {
-            setUserSpecial(memberData.address.special)
-          }
-        }
-      }
-      getMemberData()
-    }
-  }, [showCardTwo])
 
   return (
     <div className={styles.contentWrap}>
@@ -718,43 +669,40 @@ export default function Membership() {
                   >
                     <label className={styles.cardFormItemLabel}>PLAN</label>
                     <div className={styles.cardFormItemGroup} id="plans">
-                      {Object.keys(membershipOptions).map((plan) => (
-                        <>
-                          {(city !== 'San Antonio' && plan === 'performerPlus') ||
-                          (city !== 'San Antonio' &&
-                            plan === 'playerPlus') ? null : (
-                            <div
-                              key={plan}
-                              className={
-                                plan === selectedPlan
-                                  ? styles.cardFormOptionWrapSelect
-                                  : styles.cardFormOptionWrap
-                              }
-                              onClick={() => {
-                                setSelectedPlan(plan)
-                              }}
-                            >
-                              <div className={styles.option}>
-                                <input
-                                  className={styles.optionInput}
-                                  type="radio"
-                                  {...register('plan')}
-                                  value={plan}
-                                  onChange={(e) => {
-                                    setValue('plan', e.target.value)
-                                  }}
-                                  onClick={() => {
-                                    setShowTerm(true)
-                                    setFocusedElementID('terms')
-                                    setCollapsePlan(true)
-                                  }}
-                                />
-                                <label>{plan.toUpperCase()}</label>
-                              </div>
+                      {Object.keys(membershipOptions).map((plan) =>
+                        (city !== 'San Antonio' && plan === 'performerPlus') ||
+                        (city !== 'San Antonio' && plan === 'playerPlus') ? null : (
+                          <div
+                            key={plan}
+                            className={
+                              plan === selectedPlan
+                                ? styles.cardFormOptionWrapSelect
+                                : styles.cardFormOptionWrap
+                            }
+                            onClick={() => {
+                              setSelectedPlan(plan)
+                            }}
+                          >
+                            <div className={styles.option}>
+                              <input
+                                className={styles.optionInput}
+                                type="radio"
+                                {...register('plan')}
+                                value={plan}
+                                onChange={(e) => {
+                                  setValue('plan', e.target.value)
+                                }}
+                                onClick={() => {
+                                  setShowTerm(true)
+                                  setFocusedElementID('terms')
+                                  setCollapsePlan(true)
+                                }}
+                              />
+                              <label>{plan.toUpperCase()}</label>
                             </div>
-                          )}
-                        </>
-                      ))}
+                          </div>
+                        )
+                      )}
                     </div>
                   </div>
                   <div className={styles.svgWrap}>
@@ -1392,7 +1340,8 @@ export default function Membership() {
         {showStripeElement && clientSecret && (
           <Elements stripe={stripe} options={options}>
             <CheckoutForm
-              paymentIntent={paymentIntent}
+              stripeSubId={stripeSubId}
+              paymentIntentId={paymentIntent}
               {...customerData}
               {...checkoutData}
             />

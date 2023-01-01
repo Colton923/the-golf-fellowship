@@ -1,5 +1,10 @@
 import * as admin from 'firebase-admin'
-import { collection, doc, setDoc, addDoc } from 'firebase/firestore'
+import Stripe from 'stripe'
+
+//@ts-ignore
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2020-08-27',
+})
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY as string)
 
@@ -20,27 +25,44 @@ export default async function firstTimeUserLogin(req: any, res: any) {
   const uid = req.body.uid
   const address = req.body.address
   const membership = req.body.membership
+  const stripeSubId = req.body.stripeSubId
+  console.log('stripeSubId', stripeSubId)
+
+  const newTimeNow = new Date().getTime()
 
   const userDoc = db.doc(`users/${uid}`)
-  console.log('adding')
+
   await db.runTransaction(async (t) => {
-    t.set(
-      userDoc,
-      {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone,
-        uid: uid,
-        address: address,
-        membership: membership,
-      },
-      {
-        merge: true,
-      }
-    )
+    try {
+      t.set(
+        userDoc,
+        {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phone: phone,
+          uid: uid,
+          address: address,
+          membership: membership,
+          dateAdded: newTimeNow,
+        },
+        {
+          merge: true,
+        }
+      )
+
+      // t.set(db.doc(`users/${uid}/checkout_sessions/${paymentIntent}`), {
+      //   paymentIntentObject: paymentIntentObject,
+      // })
+
+      return
+    } catch (e) {
+      console.log('error', e)
+      res.status(500).json({ success: false, error: e })
+
+      return
+    }
   })
 
-  console.log('added')
   res.status(200).json({ success: true })
 }

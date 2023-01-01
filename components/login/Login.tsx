@@ -23,27 +23,34 @@ export default function Login(props: LoginProps) {
     router.replace('/shop')
   }
 
+  //handles logging in with phone.
   const auth = getAuth()
-
   const checkIfNumberInDB = async () => {
     await fetch('/api/firebase/isPhoneNumberInDB', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ phoneNumber: phone }),
-    }).then((res) => {
-      res.json().then((data) => {
-        setIsNumberInDB(data.isPhoneNumberInDB)
-        setChecked(true)
-      })
+      body: JSON.stringify({ phoneNumber: phone.trim() }),
     })
+      .then((res) => {
+        res
+          .json()
+          .then((data) => {
+            setIsNumberInDB(data.isPhoneNumberInDB)
+            setChecked(true)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
-
   useEffect(() => {
     submitPhoneLogin && checkIfNumberInDB()
   }, [submitPhoneLogin])
-
   useEffect(() => {
     const submitPhone = async () => {
       if (submitPhoneLogin === false) return
@@ -113,6 +120,9 @@ export default function Login(props: LoginProps) {
                   className={styles.returningUserInput}
                   onChange={(e) => {
                     setPhone('+1' + e.target.value)
+                  }}
+                  onClick={() => {
+                    setSubmitPhoneLogin(false)
                   }}
                 />
               </div>

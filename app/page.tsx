@@ -52,6 +52,25 @@ export default function Index() {
     showLogin()
   }
 
+  // const consoleLogMyOrders = async () => {
+  //   const customer = 'Colton923@gmail.com'
+  //   await fetch('/api/stripe/customer_invoices', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ customerId: customer }),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data)
+  //     })
+  //     .catch((error) => {
+  //       console.log(error)
+  //     })
+  // }
+  // consoleLogMyOrders()
+
   useEffect(() => {
     const isUserSubscribed = async () => {
       if (loggedInUser === '') return

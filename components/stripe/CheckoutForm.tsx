@@ -7,7 +7,8 @@ import { getAuth } from 'firebase/auth'
 import styles from '../membership/Membership.module.css'
 
 interface CheckoutFormProps {
-  paymentIntent: any
+  stripeSubId: string
+  paymentIntentId: string
   email: string
   phone: string
   firstName: string
@@ -44,27 +45,36 @@ export default function CheckoutForm(props: CheckoutFormProps) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        firstName: props.firstName,
-        lastName: props.lastName,
-        email: props.email,
-        phone: props.phone,
-        uid: uid,
-        address: props.address,
+        firstName: props.firstName ? props.firstName : '',
+        lastName: props.lastName ? props.lastName : '',
+        email: props.email ? props.email : '',
+        phone: props.phone ? props.phone : '',
+        uid: uid ? uid : '',
+        address: props.address ? props.address : '',
         membership: {
-          city: props.city,
-          plan: props.plan,
-          term: props.term,
+          city: props.city ? props.city : '',
+          plan: props.plan ? props.plan : '',
+          term: props.term ? props.term : '',
           subTerm: props.subTerm ? props.subTerm : '',
-          status: props.status,
-          quantity: props.quantity,
+          status: props.status ? props.status : '',
+          quantity: props.quantity ? props.quantity : 0,
         },
+        stripeSubId: props.stripeSubId ? props.stripeSubId : '',
       }),
-    }).then((res) => {
-      res.json().then((data) => {
-        console.log(data)
-        router.replace('/dashboard')
-      })
     })
+      .then((res) => {
+        res
+          .json()
+          .then((data) => {
+            router.replace('/dashboard')
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   const NewUserSignIn = () => {
@@ -94,8 +104,11 @@ export default function CheckoutForm(props: CheckoutFormProps) {
           })
       })
       .catch((error) => {
-        console.log('error: ', error)
-        alert('Error validating phone. Payment processed. Please login.')
+        if (error.message.includes('auth/too-many-requests')) {
+          alert('Too many requests from your IP. Blocked for 1 hour.')
+        } else {
+          alert('Error validating phone. Payment processed. Please login.')
+        }
         router.replace('/')
       })
   }
@@ -134,23 +147,18 @@ export default function CheckoutForm(props: CheckoutFormProps) {
   }, [stripe])
 
   useEffect(() => {
-    fetch('api/stripe_intent', {
+    fetch('api/stripe/stripe_intent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount: props.amount,
-        payment_intent_id: props.paymentIntent,
+        payment_intent_id: props.paymentIntentId,
+        metadata: {
+          id: props.stripeSubId,
+        },
       }),
     })
-  }, [
-    props.amount,
-    props.email,
-    props.phone,
-    props.firstName,
-    props.lastName,
-    props.address,
-    props.paymentIntent,
-  ])
+  }, [props.amount, props.stripeSubId, props.paymentIntentId])
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
