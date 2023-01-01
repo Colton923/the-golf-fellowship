@@ -26,7 +26,6 @@ export default async function firstTimeUserLogin(req: any, res: any) {
   const address = req.body.address
   const membership = req.body.membership
   const stripeSubId = req.body.stripeSubId
-  console.log('stripeSubId', stripeSubId)
 
   const newTimeNow = new Date().getTime()
 
@@ -50,11 +49,11 @@ export default async function firstTimeUserLogin(req: any, res: any) {
           merge: true,
         }
       )
-
-      // t.set(db.doc(`users/${uid}/checkout_sessions/${paymentIntent}`), {
-      //   paymentIntentObject: paymentIntentObject,
-      // })
-
+      if (stripeSubId !== '') {
+        t.set(db.doc(`users/${uid}/checkout_sessions/${stripeSubId}`), {
+          stripeSubscriptionId: stripeSubId,
+        })
+      }
       return
     } catch (e) {
       console.log('error', e)

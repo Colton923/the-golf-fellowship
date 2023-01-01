@@ -37,7 +37,7 @@ export default function CheckoutForm(props: CheckoutFormProps) {
   const stripe = useStripe()
   const elements = useElements()
   const router = useRouter()
-
+  console.log('props.email', props.email)
   const firstTimeUserLogin = async (uid: string) => {
     await fetch('/api/firebase/firstTimeUserLogin', {
       method: 'POST',
@@ -88,6 +88,11 @@ export default function CheckoutForm(props: CheckoutFormProps) {
     )
     const appVerifier = reCaptchaVerifier
     const phoneNumber = '+1' + props.phone
+
+    //FOR TESTING ONLY: Replace '+16505551234' with phoneNumber, and uncomment
+    //const code = window.prompt('Verify Phone Number for Membership Login:')
+    //also replace '123456' with code
+
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
       .then((confirmationResult) => {
         const code = window.prompt('Verify Phone Number for Membership Login:')
@@ -174,6 +179,7 @@ export default function CheckoutForm(props: CheckoutFormProps) {
       elements,
       confirmParams: {
         receipt_email: props.email,
+        return_url: 'https://www.kerryniester.com/dashboard',
       },
       redirect: 'if_required',
     })
