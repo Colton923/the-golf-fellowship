@@ -25,7 +25,9 @@ export default async function firstTimeUserLogin(req: any, res: any) {
   const uid = req.body.uid
   const address = req.body.address
   const membership = req.body.membership
-  const stripeSubId = req.body.stripeSubId
+  const priceID = req.body.priceID
+  const success_url = req.body.success_url
+  const cancel_url = req.body.cancel_url
 
   const newTimeNow = new Date().getTime()
 
@@ -49,9 +51,11 @@ export default async function firstTimeUserLogin(req: any, res: any) {
           merge: true,
         }
       )
-      if (stripeSubId !== '') {
-        t.set(db.doc(`users/${uid}/checkout_sessions/${stripeSubId}`), {
-          stripeSubscriptionId: stripeSubId,
+      if (priceID !== '') {
+        t.set(db.doc(`users/${uid}/checkout_sessions/${priceID}`), {
+          price: priceID,
+          success_url: success_url,
+          cancel_url: cancel_url,
         })
       }
       return

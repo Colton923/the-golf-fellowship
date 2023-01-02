@@ -34,10 +34,31 @@ interface CheckoutFormProps {
 export default function CheckoutForm(props: CheckoutFormProps) {
   const [message, setMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [priceID, setPriceID] = useState('')
   const stripe = useStripe()
   const elements = useElements()
   const router = useRouter()
-  console.log('props.email', props.email)
+
+  useEffect(() => {
+    const fetchPriceId = async () => {
+      await fetch('/api/stripe/prodId_to_priceId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prodId: props.stripeSubId ? props.stripeSubId : '',
+        }),
+      }).then((res) => {
+        res.json().then((data) => {
+          //@ts-ignore
+          setPriceID(data.price)
+        })
+      })
+    }
+    fetchPriceId()
+  }, [props.stripeSubId])
+
   const firstTimeUserLogin = async (uid: string) => {
     await fetch('/api/firebase/firstTimeUserLogin', {
       method: 'POST',
@@ -59,7 +80,9 @@ export default function CheckoutForm(props: CheckoutFormProps) {
           status: props.status ? props.status : '',
           quantity: props.quantity ? props.quantity : 0,
         },
-        stripeSubId: props.stripeSubId ? props.stripeSubId : '',
+        priceID: priceID ? priceID : '',
+        success_url: window.location.origin,
+        cancel_url: window.location.origin,
       }),
     })
       .then((res) => {
