@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { forEachChild } from 'typescript'
 import { ChangeDetectionStrategyType } from 'ag-grid-react'
+import { calculateSizeAdjustValues } from 'next/dist/server/font-utils'
 
 type RegisterForm = {
   firstNameCardOne: string
@@ -32,41 +33,67 @@ export default function CardOne(props: CardOneProps) {
   const [isCardOneValid, setIsCardOneValid] = useState(false)
 
   useEffect(() => {
-    if (phoneCardOne.length >= 12) {
-      const handleFormSubmit = () => {
-        //@ts-ignore
-        const form: HTMLFormElement = document.getElementById('cardOneForm')
-        form?.requestSubmit()
+    if (phoneCardOne.length >= 10) {
+      const test = standardizePhone(phoneCardOne)
+      if (test !== false) {
+        setValue('phoneCardOne', test)
+        const handleFormSubmit = () => {
+          //@ts-ignore
+          const form: HTMLFormElement = document.getElementById('cardOneForm')
+          form?.requestSubmit()
+        }
+        handleFormSubmit()
       }
-      handleFormSubmit()
     }
   }, [phoneCardOne])
+
+  const standardizePhone = (phone: string) => {
+    //###-###-####
+    let newPhone = phone.replace(/[^0-9]/g, '')
+    if (newPhone.length === 10) {
+      newPhone = newPhone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
+    } else {
+      return false
+    }
+    return newPhone
+  }
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<RegisterForm>({ mode: 'onSubmit' })
 
   const submitRegisterForm = (data: RegisterForm) => {
     if (
-      firstNameCardOne !== '' &&
-      lastNameCardOne !== '' &&
-      emailCardOne !== '' &&
-      phoneCardOne.length >= 11 &&
+      data.firstNameCardOne !== '' &&
+      data.lastNameCardOne !== '' &&
+      data.emailCardOne !== '' &&
+      data.phoneCardOne.length >= 10 &&
       isCardOneValid === false
     ) {
+      const newPhone = standardizePhone(data.phoneCardOne)
+      if (newPhone !== false) {
+        setPhoneCardOne(newPhone)
+        props.setUserPhone(newPhone)
+      } else {
+        props.setUserPhone(data.phoneCardOne)
+      }
       setIsCardOneValid(true)
       Collapse()
       props.isCardOneValid(true)
-      props.setUserFirstName(firstNameCardOne)
-      props.setUserLastName(lastNameCardOne)
-      props.setUserEmail(emailCardOne)
-      props.setUserPhone(phoneCardOne)
+      props.setUserFirstName(data.firstNameCardOne)
+      props.setUserLastName(data.lastNameCardOne)
+      props.setUserEmail(data.emailCardOne)
     }
   }
   const Collapse = () => {
     setIsCollapsed(!isCollapsed)
+    if (isCollapsed) {
+      setIsCardOneValid(false)
+      props.isCardOneValid(false)
+    }
   }
 
   return (
@@ -77,16 +104,21 @@ export default function CardOne(props: CardOneProps) {
         <div className={styles.cardFormItem}>
           <label className={styles.cardFormItemLabel}>
             MEMBER:
-            {' ' + firstNameCardOne} {lastNameCardOne}
+            <small>
+              {' ' + firstNameCardOne} {lastNameCardOne}
+            </small>
           </label>
-          <label className={styles.cardFormItemLabel}>EMAIL: {emailCardOne}</label>
-          <label className={styles.cardFormItemLabel}>PHONE: {phoneCardOne}</label>
+          <label className={styles.cardFormItemLabel}>
+            EMAIL: <small>{emailCardOne}</small>
+          </label>
+          <label className={styles.cardFormItemLabel}>
+            PHONE: <small>{phoneCardOne}</small>
+          </label>
         </div>
       </div>
       <form
         onSubmit={handleSubmit(submitRegisterForm)}
         className={isCollapsed ? styles.cardFormTwoCollapsed : styles.cardFormTwo}
-        autoComplete="off"
         id="cardOneForm"
       >
         <div className={styles.cardFormItem}>
@@ -100,10 +132,10 @@ export default function CardOne(props: CardOneProps) {
                   type="text"
                   placeholder="First Name"
                   {...register('firstNameCardOne', { required: true })}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setFirstNameCardOne(e.target.value)
-                  }
-                  autoComplete="off"
+                    setValue('firstNameCardOne', e.target.value)
+                  }}
                 />
               </div>
             </div>
@@ -115,9 +147,10 @@ export default function CardOne(props: CardOneProps) {
                   type="text"
                   placeholder="Last Name"
                   {...register('lastNameCardOne', { required: true })}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setLastNameCardOne(e.target.value)
-                  }
+                    setValue('lastNameCardOne', e.target.value)
+                  }}
                   autoComplete="off"
                 />
               </div>
@@ -130,9 +163,10 @@ export default function CardOne(props: CardOneProps) {
                   type="text"
                   placeholder="Email"
                   {...register('emailCardOne', { required: true })}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setEmailCardOne(e.target.value)
-                  }
+                    setValue('emailCardOne', e.target.value)
+                  }}
                   autoComplete="off"
                 />
               </div>
@@ -148,27 +182,10 @@ export default function CardOne(props: CardOneProps) {
                   {...register('phoneCardOne', {
                     required: false,
                   })}
-                  onKeyDown={(e) => {
-                    if (e.currentTarget.value.length === 3) {
-                      e.currentTarget.value += '-'
-                    }
-                    if (e.currentTarget.value.length === 7) {
-                      e.currentTarget.value += '-'
-                    }
-                  }}
-                  onKeyUp={(e) => {
-                    if (e.currentTarget.value.length === 12) {
-                      if (e.currentTarget.value.match(phoneRegex) === null) {
-                        e.currentTarget.value = ''
-                      }
-                    }
-                    if (e.currentTarget.value.length > 12) {
-                      e.currentTarget.value = e.currentTarget.value.slice(0, 12)
-                    }
-                  }}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setPhoneCardOne(e.target.value)
-                  }
+                    setValue('phoneCardOne', e.target.value)
+                  }}
                   autoComplete="off"
                 />
               </div>

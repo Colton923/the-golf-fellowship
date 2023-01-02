@@ -345,6 +345,7 @@ export default function Membership() {
   //OnSubmit for 'Card Three' form. This sends user to stripe checkout.
   const submitCustomerForm = (data: CustomerData) => {
     data.amount = totalPrice * 100
+    data.phone = userPhone
     setCustomerData(data)
     setStage(2)
     setShowCardTwo(false)
@@ -1162,14 +1163,11 @@ export default function Membership() {
                         id="phoneNumber"
                         className={styles.optionInputShipping}
                         type="text"
-                        placeholder="Phone"
-                        {...customerRegister('phone', {
-                          required: true,
-                        })}
+                        placeholder="123-456-7890"
                         onKeyUp={() => {
                           setFocusedElementID('shippingFirst')
                         }}
-                        defaultValue={userPhone !== '' ? userPhone : undefined}
+                        defaultValue={userPhone}
                       />
                     </div>
                   </div>
