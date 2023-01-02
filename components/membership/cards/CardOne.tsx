@@ -11,8 +11,6 @@ type RegisterForm = {
   phoneCardOne: string
 }
 
-const phoneRegex = new RegExp('^(\\([0-9]{3}\\)|[0-9]{3}-)[0-9]{3}-[0-9]{4}$')
-
 interface CardOneProps {
   isCardOneValid: (valid: boolean) => void
   setUserFirstName: (firstName: string) => void
@@ -27,7 +25,6 @@ export default function CardOne(props: CardOneProps) {
   const [lastNameCardOne, setLastNameCardOne] = useState('')
   const [emailCardOne, setEmailCardOne] = useState('')
   const [phoneCardOne, setPhoneCardOne] = useState('')
-  const [isCardOneValid, setIsCardOneValid] = useState(false)
 
   useEffect(() => {
     if (phoneCardOne.length >= 10) {
@@ -35,7 +32,12 @@ export default function CardOne(props: CardOneProps) {
       if (test !== false) {
         setValue('phoneCardOne', test)
         const handleFormSubmit = () => {
-          document.querySelector('form')?.requestSubmit()
+          submitRegisterForm({
+            firstNameCardOne: firstNameCardOne,
+            lastNameCardOne: lastNameCardOne,
+            emailCardOne: emailCardOne,
+            phoneCardOne: test,
+          })
         }
         handleFormSubmit()
       }
@@ -62,33 +64,27 @@ export default function CardOne(props: CardOneProps) {
 
   const submitRegisterForm = (data: RegisterForm) => {
     if (
-      data.firstNameCardOne !== '' &&
-      data.lastNameCardOne !== '' &&
-      data.emailCardOne !== '' &&
-      data.phoneCardOne.length >= 10 &&
-      isCardOneValid === false
+      firstNameCardOne !== '' &&
+      lastNameCardOne !== '' &&
+      emailCardOne !== '' &&
+      phoneCardOne.length >= 10
     ) {
-      const newPhone = standardizePhone(data.phoneCardOne)
+      const newPhone = standardizePhone(phoneCardOne)
       if (newPhone !== false) {
         setPhoneCardOne(newPhone)
         props.setUserPhone(newPhone)
       } else {
-        props.setUserPhone(data.phoneCardOne)
+        props.setUserPhone(phoneCardOne)
       }
-      setIsCardOneValid(true)
-      Collapse()
+      setIsCollapsed(true)
       props.isCardOneValid(true)
-      props.setUserFirstName(data.firstNameCardOne)
-      props.setUserLastName(data.lastNameCardOne)
-      props.setUserEmail(data.emailCardOne)
+      props.setUserFirstName(firstNameCardOne)
+      props.setUserLastName(lastNameCardOne)
+      props.setUserEmail(emailCardOne)
     }
   }
   const Collapse = () => {
     setIsCollapsed(!isCollapsed)
-    if (isCollapsed) {
-      setIsCardOneValid(false)
-      props.isCardOneValid(false)
-    }
   }
 
   return (
