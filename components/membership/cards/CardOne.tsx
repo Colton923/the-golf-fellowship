@@ -3,9 +3,6 @@ import styles from './Cards.module.css'
 
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { forEachChild } from 'typescript'
-import { ChangeDetectionStrategyType } from 'ag-grid-react'
-import { calculateSizeAdjustValues } from 'next/dist/server/font-utils'
 
 type RegisterForm = {
   firstNameCardOne: string
@@ -38,9 +35,7 @@ export default function CardOne(props: CardOneProps) {
       if (test !== false) {
         setValue('phoneCardOne', test)
         const handleFormSubmit = () => {
-          //@ts-ignore
-          const form: HTMLFormElement = document.getElementById('cardOneForm')
-          form?.requestSubmit()
+          document.querySelector('form')?.requestSubmit()
         }
         handleFormSubmit()
       }
