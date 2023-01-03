@@ -142,7 +142,6 @@ export default function CardOne(props: CardOneProps) {
                     setLastNameCardOne(e.target.value)
                     setValue('lastNameCardOne', e.target.value)
                   }}
-                  autoComplete="off"
                 />
               </div>
             </div>
@@ -158,7 +157,6 @@ export default function CardOne(props: CardOneProps) {
                     setEmailCardOne(e.target.value)
                     setValue('emailCardOne', e.target.value)
                   }}
-                  autoComplete="off"
                 />
               </div>
             </div>
@@ -177,7 +175,6 @@ export default function CardOne(props: CardOneProps) {
                     setPhoneCardOne(e.target.value)
                     setValue('phoneCardOne', e.target.value)
                   }}
-                  autoComplete="off"
                 />
               </div>
             </div>

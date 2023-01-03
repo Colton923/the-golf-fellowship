@@ -16,6 +16,7 @@ export default async function isPhoneNumberInDB(req: any, res: any) {
   const searchDocs = await db.collection('users').get()
   const searchDocsData = searchDocs.docs.map((doc) => doc.data())
   const searchDocsDataPhoneNumbers = searchDocsData.map((doc) => doc.phone)
+  console.log(searchDocsDataPhoneNumbers)
   const isPhoneNumberInDB = searchDocsDataPhoneNumbers.includes(phoneNumber)
   res.status(200).json({ isPhoneNumberInDB: isPhoneNumberInDB })
 }

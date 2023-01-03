@@ -17,6 +17,7 @@ export default function Login(props: LoginProps) {
   const [isNumberInDB, setIsNumberInDB] = useState(false)
   const [checked, setChecked] = useState(false)
 
+  console.log(phone)
   const router = useRouter()
 
   const gotoShop = () => {

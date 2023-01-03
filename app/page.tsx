@@ -15,7 +15,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { getDocs, collection, doc } from 'firebase/firestore'
+import { getDocs, getDoc, collection, doc } from 'firebase/firestore'
 import { auth, db } from '../firebase/firebaseClient'
 
 type FormData = {
@@ -76,26 +76,38 @@ export default function Index() {
       if (loggedInUser === '') return
       try {
         alert('Checking subscription status...')
-        const userRef = collection(db, 'users')
-        const docRef = doc(userRef, loggedInUser)
-        const subscriptionCol = collection(docRef, 'subscriptions')
-        await getDocs(subscriptionCol)
-          .then((querySnapshot) => {
-            const data = querySnapshot.docs.map((doc) => doc.data())
-            const longest = data.reduce((a, b) =>
-              a.current_period_end > b.current_period_end ? a : b
-            )
-            if (longest.current_period_end > Date.now() / 1000) {
-              gotoDashboard()
-            } else {
-              alert('Your subscription has expired')
-            }
-          })
-          .catch(() => {
-            alert('Please register for a subscription')
-            logout()
-            gotoShop()
-          })
+
+        //temporary fix for subscription check
+        if (loggedInUser !== '') {
+          gotoDashboard()
+        } else {
+          alert('Please register for a subscription')
+          logout()
+          gotoShop()
+        }
+
+        //end temporary fix
+
+        // const userRef = collection(db, 'users')
+        // const docRef = doc(userRef, loggedInUser)
+        // const subscriptionCol = collection(docRef, 'subscriptions')
+        // await getDocs(subscriptionCol)
+        //   .then((querySnapshot) => {
+        //     const data = querySnapshot.docs.map((doc) => doc.data())
+        //     const longest = data.reduce((a, b) =>
+        //       a.current_period_end > b.current_period_end ? a : b
+        //     )
+        //     if (longest.current_period_end > Date.now() / 1000) {
+        //       gotoDashboard()
+        //     } else {
+        //       alert('Your subscription has expired')
+        //     }
+        //   })
+        // .catch(() => {
+        //   alert('Please register for a subscription')
+        //   logout()
+        //   gotoShop()
+        // })}
       } catch (error) {
         alert('Please register for a subscription')
         logout()
