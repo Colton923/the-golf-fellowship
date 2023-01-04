@@ -16,9 +16,14 @@ export async function checkoutSession(
   })
   const itemNames = names.join(', ')
 
+  const userRef = collection(db, 'users')
+  const docRef = doc(userRef, uid)
+  const userData = await getDoc(docRef)
+  const myData = userData.data()
   const params: any = {
     success_url: window.location.origin + '/dashboard',
     cancel_url: window.location.origin + '/dashboard',
+    customerEmail: myData ? (myData.email ? myData?.email : '') : '',
     line_items: lineItems,
     metadata: {
       firebaseUID: uid,
@@ -26,10 +31,6 @@ export async function checkoutSession(
     },
     mode: 'payment',
   }
-  const userRef = collection(db, 'users')
-  const docRef = doc(userRef, uid)
-  const userData = await getDoc(docRef)
-  const myData = userData.data()
   const checkoutRef = collection(docRef, 'checkout_sessions')
   const checkoutSessionRef = await addDoc(checkoutRef, params)
 
@@ -40,7 +41,6 @@ export async function checkoutSession(
         const stripe = await initializeStripe()
         stripe?.redirectToCheckout({
           sessionId: data.sessionId,
-          customerEmail: myData ? (myData.email ? myData?.email : '') : '',
         })
       } else {
         console.log('No sessionId')
