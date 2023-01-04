@@ -22,21 +22,23 @@ export default function CreateEvents() {
   } = useForm<eventBody>()
 
   const onSubmit = async (formData: eventBody) => {
-    const res = await fetch('/api/golfGenius/createAnEvent', {
+    const res = await fetch('/api/golfGenius/post/createAnEvent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
     })
 
-    const data = await res.json()
-    setEvent(data)
+    const data = await res.json().then((data) => {
+      setEvent(data)
 
-    console.log('data', data)
+      console.log('data', data)
+    })
+
     const stripeRes = await fetch('/api/stripe/stripe_newEvent', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: data.name,
+        name: formData.name,
         amount: eventCost,
         eventLocation: eventLocation,
         uid: user?.uid,

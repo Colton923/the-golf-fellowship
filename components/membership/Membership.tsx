@@ -12,7 +12,6 @@ import { useEffect, useState, useCallback } from 'react'
 import { collection, getDocs, getDoc, doc, setDoc } from 'firebase/firestore'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
-import { isNamedExports } from 'typescript'
 
 export type defaultMembership = {
   plans: {

@@ -15,6 +15,9 @@ const handler = async (req: any, res: any) => {
       const current_sub = await stripe.products.create({
         name: newProduct.name,
         description: newProduct.eventLocation,
+        metadata: {
+          eventType: 'event',
+        },
       })
 
       if (current_sub) {
