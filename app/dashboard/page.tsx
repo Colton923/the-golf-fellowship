@@ -11,6 +11,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { useRouter } from 'next/navigation'
 
 import { Calendar } from '../../components/calendar/Calendar'
+import { Account } from '../../components/account/Account'
 
 export default function Page() {
   const [events, setEvents] = useState(false)
@@ -101,15 +102,15 @@ export default function Page() {
     placeholder ? hideAllButOne('') : hideAllButOne('placeholder')
   }
 
-  if (!user) {
-    return (
-      <>
-        <div>
-          <h1>Not logged in</h1>
-        </div>
-      </>
-    )
-  }
+  // if (!user) {
+  //   return (
+  //     <>
+  //       <div>
+  //         <h1>Not logged in</h1>
+  //       </div>
+  //     </>
+  //   )
+  // }
 
   return (
     <>
@@ -144,7 +145,7 @@ export default function Page() {
               <div className={events ? styles.card : styles.hidden}>events card</div>
               <div className={stats ? styles.card : styles.hidden}>stats card</div>
               <div className={account ? styles.card : styles.hidden}>
-                account card
+                <Account />
               </div>
               <div className={calendar ? styles.card : styles.hidden}>
                 <Calendar />

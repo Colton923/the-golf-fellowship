@@ -36,7 +36,10 @@ export default function Navbar(props: NavbarProps) {
         isAdmin ? (
           <AdminNavbar />
         ) : (
-          <DashboardNavbar />
+          <>
+            {/* <h1>Welcome Back:{user.displayName}</h1> */}
+            <DashboardNavbar />
+          </>
         )
       ) : (
         <HomeNavbar {...props} />
