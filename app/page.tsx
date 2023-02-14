@@ -39,7 +39,7 @@ export default function Index() {
   const [user, loading, error] = useAuthState(auth)
   const [loggedInUser, setLoggedInUser] = useState('')
 
-  const homePageVideo = '/videos/membershipVideo.mp4'
+  const homePageVideo = '/public/videos/membershipVideo.mp4'
   const videoProps: Props.VideoProps = {
     source: homePageVideo,
   }
