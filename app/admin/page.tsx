@@ -1,6 +1,6 @@
 'use client'
-import styles from '../../styles/Admin.module.css'
-import CreateEvents from '../../components/golfGenius/CreateEvents'
+import styles from '@styles/Admin.module.css'
+import CreateEvents from '@components/golfGenius/CreateEvents'
 
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'

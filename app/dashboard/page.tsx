@@ -1,8 +1,8 @@
 'use client'
 import Image from 'next/image'
-import imgBackground from '../../public/static/images/tgf_dashboard_background.png'
-import styles from '../../styles/Dashboard.module.css'
-import GolferSVG from '../../components/svgs/golfer'
+import imgBackground from '@public/static/images/tgf_dashboard_background.png'
+import styles from '@styles/Dashboard.module.css'
+import GolferSVG from '@components/svgs/golfer'
 
 import { useEffect } from 'react'
 import { useState } from 'react'
@@ -10,8 +10,8 @@ import { auth } from '../../firebase/firebaseClient'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useRouter } from 'next/navigation'
 
-import { Calendar } from '../../components/calendar/Calendar'
-import { Account } from '../../components/account/Account'
+import { Calendar } from '@components/calendar/Calendar'
+import { Account } from '@components/account/Account'
 
 export default function Page() {
   const [events, setEvents] = useState(false)

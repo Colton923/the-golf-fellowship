@@ -1,15 +1,17 @@
 'use client'
 
-import Navbar from '../components/navbar/Navbar'
-import styles from '../styles/App.module.css'
-import Login from '../components/login/Login'
+import Navbar from '@components/navbar/Navbar'
+import styles from '@styles/App.module.css'
+import Login from '@components/login/Login'
+import Video from '@components/video/Video'
+import * as Props from '../types/props'
 
 import Image from 'next/image'
-import imgHome from '../public/static/images/tgf_home_page.jpg'
-import imgCompete from '../public/static/images/tgf_home_page_compete.jpg'
-import imgGolf from '../public/static/images/tgf_home_page_golf.jpg'
-import imgImprove from '../public/static/images/tgf_home_page_improve.jpg'
-import imgNetwork from '../public/static/images/tgf_home_page_network.jpg'
+import imgHome from '@public/static/images/tgf_home_page.jpg'
+import imgCompete from '@public/static/images/tgf_home_page_compete.jpg'
+import imgGolf from '@public/static/images/tgf_home_page_golf.jpg'
+import imgImprove from '@public/static/images/tgf_home_page_improve.jpg'
+import imgNetwork from '@public/static/images/tgf_home_page_network.jpg'
 
 import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
@@ -37,6 +39,10 @@ export default function Index() {
   const [user, loading, error] = useAuthState(auth)
   const [loggedInUser, setLoggedInUser] = useState('')
 
+  const homePageVideo = '/videos/membershipVideo.mp4'
+  const videoProps: Props.VideoProps = {
+    source: homePageVideo,
+  }
   const router = useRouter()
 
   const gotoShop = () => {
@@ -175,33 +181,12 @@ export default function Index() {
       <div ref={loginMain}>
         <Login show={showSignupMenu} setLoggedInUser={setLoggedInUser} />
       </div>
-      <div className={styles.backgroundWrapper}>
-        <div className={styles.backgroundImage}>
-          <Image src={imgHome} alt="Home Page" quality={100} fill />
-        </div>
-        <div className={styles.backgroundOverlay}>
-          <h1 className={styles.overlayTitle}>PLAY + COMPETE + CONNECT </h1>
-          <h2 className={styles.overlaySubTitle}>
-            San Antonio, Austin, Houston & Dallas-Fort Worth
-          </h2>
-        </div>
-      </div>
+      <Video {...videoProps} />
       <button className={styles.overlayButton}>
         <h1 onClick={goToShop} className={styles.overlayButtonText}>
           Become a Member
         </h1>
       </button>
-      <div className={styles.whoWeAreSection}>
-        <h1 className={styles.whoWeAreTitle}>WHO WE ARE</h1>
-        <div className={styles.youtubeEmbedWrapper}>
-          <iframe
-            className={styles.youtubeEmbed}
-            src="https://www.youtube.com/embed/-wYJnzg6NHo"
-            title="Membership Announcement"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          ></iframe>
-        </div>
-      </div>
       <div className={styles.whatWeDoSection}>
         {/* <div className={styles.backgroundImageDallE}>
           <Image src={imgBack} fill alt="tgfBackground" />

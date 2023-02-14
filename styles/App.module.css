@@ -23,12 +23,12 @@
   display: none;
 }
 
-.backgroundWrapper {
+.videoWrapper {
   z-index: -1;
 
   position: relative;
-
-  background-color: #000000;
+  margin-top: 75px;
+  width: 100vw;
 }
 
 .backgroundImage {

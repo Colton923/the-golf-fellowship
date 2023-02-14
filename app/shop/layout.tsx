@@ -1,8 +1,8 @@
 'use client'
 
-import Navbar from '../../components/navbar/Navbar'
-import styles from '../../styles/Shop.module.css'
-import Login from '../../components/login/Login'
+import Navbar from '@components/navbar/Navbar'
+import styles from '@styles/Shop.module.css'
+import Login from '@components/login/Login'
 
 import { useState, useEffect, useRef } from 'react'
 

@@ -1,7 +1,7 @@
 'use client'
 
-import styles from '../../styles/Dashboard.module.css'
-import Navbar from '../../components/navbar/Navbar'
+import styles from '@styles/Dashboard.module.css'
+import Navbar from '@components/navbar/Navbar'
 
 import { useState } from 'react'
 

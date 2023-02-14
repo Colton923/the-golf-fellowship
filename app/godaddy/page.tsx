@@ -1,6 +1,6 @@
 'use client'
 
-import { Receipts } from '../../components/data/Receipts'
+import { Receipts } from '@components/data/Receipts'
 
 export default function Page() {
   return (
