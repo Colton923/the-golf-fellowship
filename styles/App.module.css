@@ -23,6 +23,14 @@
   display: none;
 }
 
+.main::-o-scrollbar {
+  display: none;
+}
+
+.main::-scrollbar {
+  display: none;
+}
+
 .videoWrapper {
   z-index: -1;
 

@@ -40,7 +40,7 @@ export default function Index() {
   const [loggedInUser, setLoggedInUser] = useState('')
 
   const videoProps: Props.VideoProps = {
-    source: '/videos/membershipVideo.mp4',
+    source: 'https://www.youtube.com/embed/-wYJnzg6NHo',
   }
   const router = useRouter()
 

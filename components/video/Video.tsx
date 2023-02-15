@@ -16,13 +16,16 @@ const Video = (videoProps: VideoProps) => {
   }, [source])
 
   if (!videoLoaded) {
-    return <div>Loading...</div>
+    return <div></div>
   }
   return (
     <div className={styles.videoWrapper}>
-      <video className={styles.video} muted={true} controls={true}>
-        <source src={videoSource} />
-      </video>
+      <iframe
+        className={styles.video}
+        src={videoSource + '?autoplay=1&mute=1&controls=0&loop=1&vq=hd1080'}
+        title="TGF Membership"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; controls=0; mute=1"
+      ></iframe>
     </div>
   )
 }
