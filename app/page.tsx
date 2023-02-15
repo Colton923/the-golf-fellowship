@@ -268,7 +268,8 @@ export default function Index() {
             className={styles.whatWeDoTitle}
             style={{
               backgroundColor: 'transparent',
-              border: 'none',
+              border: '1px solid white',
+              borderRadius: '100px',
               color: 'white',
               fontSize: '2rem',
               fontWeight: 'bold',
