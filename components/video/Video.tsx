@@ -1,5 +1,6 @@
 import { VideoProps } from '../../types/props'
 import styles from './Video.module.css'
+
 const Video = (videoProps: VideoProps) => {
   const { source } = { ...videoProps }
 
