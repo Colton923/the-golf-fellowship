@@ -1,3 +1,5 @@
+'use client'
+
 import { VideoProps } from '../../types/props'
 import styles from './Video.module.css'
 
