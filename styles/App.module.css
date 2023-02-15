@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap,400,700');
 
 .main {
   width: 100vw;
@@ -9,26 +9,13 @@
   flex-direction: column;
 
   font-family: 'Open Sans', sans-serif;
-}
 
-.main::-webkit-scrollbar {
-  display: none;
-}
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-x: hidden;
+  overflow-y: scroll;
 
-.main::-ms-scrollbar {
-  display: none;
-}
-
-.main::-moz-scrollbar {
-  display: none;
-}
-
-.main::-o-scrollbar {
-  display: none;
-}
-
-.main::-scrollbar {
-  display: none;
+  background-color: #ffffff;
 }
 
 .videoWrapper {
@@ -86,14 +73,14 @@
 }
 
 .overlayButton {
-  background: #000000;
-  color: #ffffff;
-  opacity: 0.5;
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.4);
+  background-image: linear-gradient(315deg, #000000 0%, #414141 74%);
+  mix-blend-mode: screen;
+  color: #000000;
   width: 60%;
-  margin-top: -20vw;
-  margin-bottom: 15vw;
-  border-radius: 10px;
+  border-radius: 100px;
+  margin-top: -5%;
+  z-index: 10;
   box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
   border: 1px solid #ffffff;
 
@@ -108,6 +95,7 @@
 
 .overlayButton:hover {
   background: #ffffff;
+  background-image: linear-gradient(315deg, #414141 0%, #ffffff 74%);
   color: #000000;
   opacity: 0.6;
   box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
@@ -126,7 +114,8 @@
 .overlayButtonText {
   height: 100%;
   margin: 0;
-  padding: 0;
+  padding: 2px;
+  font-weight: 700;
 
   display: flex;
   justify-content: center;
@@ -334,16 +323,22 @@
 }
 
 .whatWeDoSection {
+  background-color: rgba(255, 255, 255, 0.8);
+  mix-blend-mode: unset;
   width: 100%;
-
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  margin-top: 50px;
 }
 
 .whatWeDoTitle {
+  z-index: 1;
+  height: 50px;
   width: 100vw;
-  padding: 2vw 0 0 2vw;
+  margin: 10px;
 
   border-bottom: 0.2rem solid #000000;
   text-shadow: 5px 0 10px rgba(0, 0, 0, 0.5);
@@ -354,10 +349,12 @@
 }
 
 .cardWrapper {
-  background: #000000;
+  background: rgb(0, 0, 0);
   width: 100vw;
 
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+
+  padding: 50px 0 0 0;
 
   display: flex;
   flex-direction: row;
@@ -367,11 +364,12 @@
 
 .card {
   color: #ffffff;
+  text-shadow: 5px 5px 5px rgba(0, 0, 0, 1);
   position: relative;
   width: 320px;
   height: 320px;
 
-  border: 0.2rem solid #000000;
+  margin: 3px;
 
   display: flex;
   flex-direction: column;
@@ -384,14 +382,19 @@
   position: absolute;
   top: 0;
   left: 0;
+  opacity: 0.8;
+  z-index: 5;
   height: 100%;
   width: 100%;
-  opacity: 0.4;
-  z-index: 5;
 
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+}
+
+.image {
+  position: relative;
 }
 
 .cardTitle {
@@ -404,8 +407,7 @@
 }
 
 .cardSubTitle {
-  margin-left: 10px;
-  margin-top: 0;
+  margin: 0px 25px 0px 25px;
   z-index: 7;
 
   font-size: 4vw;

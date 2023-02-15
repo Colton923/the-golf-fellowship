@@ -31,6 +31,7 @@
   justify-content: center;
   position: relative;
 }
+
 .navbarImage {
   margin-left: 2px;
   display: flex;
@@ -39,7 +40,8 @@
 }
 
 .navbar {
-  width: 100%;
+  width: 90%;
+  margin-right: 57px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -49,7 +51,7 @@
 .navbarTextWrapper {
   height: 80px;
   align-items: center;
-  margin: 0px;
+  margin: 0px 10px 0px 10px;
   display: flex;
 }
 

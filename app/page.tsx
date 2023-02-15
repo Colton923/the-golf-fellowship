@@ -187,14 +187,18 @@ export default function Index() {
         </h1>
       </button>
       <div className={styles.whatWeDoSection}>
-        {/* <div className={styles.backgroundImageDallE}>
-          <Image src={imgBack} fill alt="tgfBackground" />
-        </div> */}
         <h1 className={styles.whatWeDoTitle}>WHAT WE DO</h1>
         <div className={styles.cardWrapper}>
           <div className={styles.card}>
             <div className={styles.cardBackgroundImage}>
-              <Image src={imgGolf} alt="Golf" quality={100} fill />
+              <Image
+                src={imgGolf}
+                alt="Golf"
+                height={780}
+                width={973}
+                className={styles.image}
+                style={{ transform: 'scale(0.42)' }}
+              />
             </div>
             <h2 className={styles.cardTitle}>GOLF</h2>
             <h3 className={styles.cardSubTitle}>
@@ -204,7 +208,15 @@ export default function Index() {
           </div>
           <div className={styles.card}>
             <div className={styles.cardBackgroundImage}>
-              <Image src={imgNetwork} alt="Network" quality={100} fill />
+              <Image
+                src={imgNetwork}
+                alt="Network"
+                quality={100}
+                height={1609}
+                width={1609}
+                className={styles.image}
+                style={{ transform: 'scale(0.2)' }}
+              />
             </div>
             <h2 className={styles.cardTitle}>NETWORK</h2>
             <h3 className={styles.cardSubTitle}>
@@ -214,7 +226,15 @@ export default function Index() {
           </div>
           <div className={styles.card}>
             <div className={styles.cardBackgroundImage}>
-              <Image src={imgCompete} alt="Compete" quality={100} fill />
+              <Image
+                src={imgCompete}
+                alt="Compete"
+                quality={100}
+                height={811}
+                width={1440}
+                className={styles.image}
+                style={{ transform: 'scale(0.4)' }}
+              />
             </div>
             <h2 className={styles.cardTitle}>COMPETE</h2>
             <h3 className={styles.cardSubTitle}>
@@ -224,7 +244,15 @@ export default function Index() {
           </div>
           <div className={styles.card}>
             <div className={styles.cardBackgroundImage}>
-              <Image src={imgImprove} alt="Improve" quality={100} fill />
+              <Image
+                src={imgImprove}
+                alt="Improve"
+                quality={100}
+                height={1213}
+                width={1920}
+                className={styles.image}
+                style={{ transform: 'scale(0.3)' }}
+              />
             </div>
             <h2 className={styles.cardTitle}>IMPROVE</h2>
             <h3 className={styles.cardSubTitle}>

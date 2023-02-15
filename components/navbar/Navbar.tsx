@@ -67,16 +67,9 @@ export default function Navbar(props: NavbarProps) {
                 </h1>
               </div>
               <div className={styles.navbarTextWrapper}>
-                <h1
-                  onClick={() => {
-                    if (props.showLogin) props.showLogin()
-                  }}
-                  className={styles.navbarLink}
-                  key={'nav2'}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Become a Member
-                </h1>
+                <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
+                  Shop
+                </Link>
               </div>
             </>
           ) : (
@@ -91,13 +84,13 @@ export default function Navbar(props: NavbarProps) {
                   Logout
                 </Link>
               </div>
+              <div className={styles.navbarTextWrapper}>
+                <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
+                  Shop
+                </Link>
+              </div>
             </>
           )}
-          <div className={styles.navbarTextWrapper}>
-            <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
-              Shop
-            </Link>
-          </div>
         </nav>
       </div>
       {isAdmin && (
