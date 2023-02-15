@@ -6,7 +6,13 @@ const Video = (videoProps: VideoProps) => {
 
   return (
     <div className={styles.videoWrapper}>
-      <video className={styles.video} autoPlay loop muted playsInline controls>
+      <video
+        className={styles.video}
+        autoPlay={true}
+        loop={true}
+        muted={true}
+        controls={true}
+      >
         <source src={source} type="video/mp4" />
       </video>
     </div>
