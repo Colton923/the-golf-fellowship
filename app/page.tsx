@@ -4,7 +4,7 @@ import Navbar from '@components/navbar/Navbar'
 import styles from '@styles/App.module.css'
 import Login from '@components/login/Login'
 import Video from '@components/video/Video'
-import * as Props from '../types/props'
+import * as Props from '../types/props/VideoProps'
 
 import Image from 'next/image'
 import imgHome from '@public/static/images/tgf_home_page.jpg'

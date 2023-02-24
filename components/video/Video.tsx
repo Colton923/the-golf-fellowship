@@ -1,6 +1,6 @@
 'use client'
 
-import { VideoProps } from '../../types/props'
+import { VideoProps } from '../../types/props/VideoProps'
 import styles from './Video.module.css'
 
 import { useState, useEffect } from 'react'
