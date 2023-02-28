@@ -13,11 +13,11 @@ import CardOne from './cards/CardOne/CardOne'
 import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import ProgressBar from '@components/progressBar/ProgressBar'
+import CardTwo from './cards/CardTwo/CardTwo'
 
 import type { DefaultMembership } from '../../types/data/DefaultMembership'
 import type { CustomerData } from '../../types/data/CustomerData'
 import type { FormData } from '../../types/data/FormData'
-import type { CardTwoSubmitProps } from '../../types/props/CardTwoSubmitProps'
 type CreateNewSubscription = {
   requestData: body
 }
@@ -138,17 +138,6 @@ export default function Membership() {
 
   //Convert this to a dynamic data read when the membership schema is finalized
   const membershipRef = collection(db, 'membership')
-  const cities = ['San Antonio', 'Austin', 'DFW', 'Houston', 'Hill Country']
-  const status = {
-    returning: {
-      title: 'Returning',
-      price: 0,
-    },
-    new: {
-      title: 'New',
-      price: 2500,
-    },
-  }
 
   //Dynamic read of membership schema for pricing
   useEffect(() => {
@@ -162,14 +151,6 @@ export default function Membership() {
     }
     getMembershipOptions()
   }, [])
-
-  //FormData is 'Card Two' form data
-  const {
-    register,
-    setValue,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>()
 
   //CustomerData is 'Card Three' form data
   const {
@@ -296,6 +277,60 @@ export default function Membership() {
               setUserLastName,
               setUserEmail,
               setUserPhone,
+            }}
+          />
+        )}
+        {showCardTwo && (
+          <CardTwo
+            {...{
+              setCheckoutData,
+              setShowCardTwo,
+              setShowCardOne,
+              setShowCheckout,
+              setIntervalPurchase,
+              setTotalPrice,
+              setLineItemPrice,
+              setStage,
+              setCity,
+              setSelectedPlan,
+              setSelectedTerm,
+              setSelectedCity,
+              setFocusedElementID,
+              setShowPlan,
+              setShowTerm,
+              setCollapseCity,
+              setCollapsePlan,
+              setCollapseTerm,
+              membershipRef,
+              city,
+              selectedCity,
+              selectedTerm,
+              selectedPlan,
+              showPlan,
+              showTerm,
+              collapsePlan,
+              collapseTerm,
+              collapseCity,
+              membershipOptions,
+              setSelectedSubTerm,
+              setShowStatus,
+              setShowSubTerm,
+              setCollapseSubTerm,
+              setShowQuantity,
+              showSubTerm,
+              selectedSubTerm,
+              showQuantity,
+              showStatus,
+              collapseStatus,
+              selectedStatus,
+              collapseSubTerm,
+              setSelectedStatus,
+              setShowPrice,
+              setCollapseStatus,
+              showPrice,
+              totalPrice,
+              lineItemPrice,
+              intervalPurchase,
             }}
           />
         )}

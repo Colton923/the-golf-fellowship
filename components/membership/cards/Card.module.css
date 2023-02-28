@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+.cardForm {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.cardFormOne {
+  display: inline-flex;
+  flex-wrap: wrap;
+  height: 100%;
+
+  transition: all 0.5s;
+}
+
+.cardFormOneCollapsed {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+
+.cardFormTwo {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.cardFormTwoCollapsed {
+  height: 0;
+  visibility: hidden;
+}
+
+.cardFormItem {
+  border: 1px solid #000;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(8, 7, 16, 0.6);
+
+  padding: 8px;
+  margin: 8px;
+  width: 80vw;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  position: relative;
+  animation: appear 0.5s forwards;
+}
+
+.cardFormItemLabel {
+  color: rgb(0, 0, 0, 0.08);
+  font-size: 2.4rem;
+  font-weight: bold;
+  margin: -10px 50px -10px -10px;
+  padding: 0 10px 0 10px;
+
+  text-transform: full-width;
+}
+
+.cardFormItemGroup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: appear 0.5s forwards;
+}
+
+.cardFormOptionWrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  text-align: center;
+
+  position: relative;
+  margin: 0 5px 5px 0;
+  padding: 5px;
+}
+
+.cardFormOptionWrapCollapsed {
+  height: 0;
+  width: 0;
+}
+
+.option {
+  position: relative;
+  z-index: 1;
+
+  border: 1px solid #000;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(8, 7, 16, 0.6);
+}
+
+.optionInput {
+  color: #000000;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  position: relative;
+  height: 45px;
+  width: 240px;
+  padding: 0;
+  z-index: 1;
+
+  border: 0;
+  border-radius: 5px;
+
+  text-indent: 10px;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+}
+
+.optionInput::-webkit-inner-spin-button,
+.optionInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.optionInput:focus {
+  outline: none;
+}
+
+.optionLabel {
+  color: #000000;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 10px;
+  height: 20px;
+  width: 240px;
+}
+
+.cardFormOptionWrap:hover {
+  animation: downPress 2s forwards;
+}
+
+.cardFormOptionWrap:active {
+  mix-blend-mode: difference;
+}
+
+.selectWrap {
+  display: inline-flex;
+  justify-content: space-between;
+  text-align: right;
+  flex-wrap: wrap;
+}
+
+.selectOption {
+  z-index: 1;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin: 10px 10px 0;
+  padding: 10px 10px 0;
+  letter-spacing: 0.3rem;
+}
+
+@keyframes downPress {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    mix-blend-mode: difference;
+  }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

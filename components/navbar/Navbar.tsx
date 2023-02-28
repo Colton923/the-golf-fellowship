@@ -40,16 +40,22 @@ export default function Navbar(props: NavbarProps) {
     <div className={styles.navbarMain}>
       <div className={styles.navbarContainer}>
         <div className={styles.navbarImageWrapper}>
-          <Image
-            src={logo}
-            alt="TGF Logo"
-            fill
+          {/* SVG Hamburger Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
             className={styles.navbarImage}
+            viewBox="0 0 20 20"
+            fill="currentColor"
             onClick={() => {
-              window.location.href = '/'
+              if (props.showLogin) props.showLogin()
             }}
-            style={{ cursor: 'pointer' }}
-          />
+          >
+            <path
+              fillRule="evenodd"
+              d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
         </div>
         <nav className={styles.navbar}>
           {!user ? (

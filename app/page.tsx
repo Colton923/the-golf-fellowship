@@ -178,7 +178,11 @@ export default function Index() {
         <Navbar showLogin={showLogin} />
       </div>
       <div ref={loginMain}>
-        <Login show={showSignupMenu} setLoggedInUser={setLoggedInUser} />
+        <Login
+          show={showSignupMenu}
+          setLoggedInUser={setLoggedInUser}
+          setShow={setShowSignupMenu}
+        />
       </div>
       <Video {...videoProps} />
       <button className={styles.overlayButton}>
