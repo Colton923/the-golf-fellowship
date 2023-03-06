@@ -29,6 +29,7 @@
   text-shadow: 5px 0 10px rgba(255, 255, 255, 0.9);
 
   width: 60%;
+  max-width: 450px;
   margin-top: -5%;
   z-index: 4;
 
@@ -48,7 +49,7 @@
   background-size: 200%;
   transition: all 0.5s ease-in-out;
   cursor: pointer;
-
+  border-radius: 20px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
 
@@ -74,7 +75,7 @@
   justify-content: center;
   align-items: center;
 
-  font-size: 4vw;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.1rem;
   cursor: pointer;
@@ -83,21 +84,18 @@
 .whatWeDoSection {
   background-color: rgba(255, 255, 255, 0.8);
   mix-blend-mode: unset;
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 20vw;
 }
 
 .whatWeDoTitle {
   z-index: 1;
   height: 50px;
   width: 100vw;
-  margin: 1px;
-
+  margin: 10px;
+  text-indent: 20px;
   border-bottom: 0.2rem solid #000000;
   text-shadow: 5px 0 10px rgba(0, 0, 0, 0.5);
 
