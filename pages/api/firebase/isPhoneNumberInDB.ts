@@ -19,9 +19,24 @@ export default async function isPhoneNumberInDB(req: any, res: any) {
   if (phoneNumber.charAt(0) === '1') {
     phoneNumber = phoneNumber.slice(1)
   }
-  const searchDocs = await db.collection('users').get()
-  const searchDocsData = searchDocs.docs.map((doc) => doc.data())
-  const searchDocsDataPhoneNumbers = searchDocsData.map((doc) => doc.phone)
-  const isPhoneNumberInDB = searchDocsDataPhoneNumbers.includes(phoneNumber)
-  res.status(200).json({ isPhoneNumberInDB: isPhoneNumberInDB })
+  await db
+    .collection('users')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        if (doc.data().phone === phoneNumber) {
+          res.status(200).json({ isPhoneNumberInDB: true })
+          return
+        }
+      })
+    })
+    .then(() => {
+      res.status(200).json({ isPhoneNumberInDB: false })
+      return
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(500).json({ isPhoneNumberInDB: false })
+      return
+    })
 }
