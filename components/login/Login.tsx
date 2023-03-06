@@ -138,6 +138,16 @@ export default function Login(props: LoginProps) {
                       if (e.target.value.length > 12) {
                         e.target.value = e.target.value.slice(0, 12)
                       }
+                      if (e.target.value.length === 3) {
+                        if (e.target.value[2] !== '-') {
+                          e.target.value = e.target.value + '-'
+                        }
+                      }
+                      if (e.target.value.length === 7) {
+                        if (e.target.value[6] !== '-') {
+                          e.target.value = e.target.value + '-'
+                        }
+                      }
                       setPhone('+1' + e.target.value)
                     }}
                     onClick={() => {

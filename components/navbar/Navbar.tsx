@@ -100,8 +100,27 @@ export default function Navbar(props: NavbarProps) {
         </nav>
       </div>
       {isAdmin && (
-        <div className={styles.navbarContainer}>
-          <nav className={styles.navbar}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            width: '100%',
+            margin: '0',
+            backgroundImage:
+              'linear-gradient(45deg, rgba(255, 255, 255, 0.01) 1%, rgba(255, 255, 255, 0.1) 70%)',
+            backgroundSize: '3px',
+            backdropFilter: 'blur(15px)',
+            boxShadow: ' 0 4px 10px 2px rgba(0, 0, 0, 0.6)',
+          }}
+        >
+          <nav
+            className={styles.navbar}
+            style={{
+              justifyContent: 'space-evenly',
+              marginLeft: '5%',
+            }}
+          >
             <div className={styles.navbarTextWrapper} key={'nav3'}>
               <Link href="/admin" className={styles.navbarLink}>
                 Admin

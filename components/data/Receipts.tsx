@@ -187,7 +187,7 @@ export const Receipts = () => {
   const defaultColDef = useMemo(() => {
     return {
       flex: 1,
-      minWidth: 100,
+      minWidth: 150,
       resizable: true,
       sortable: true,
       filter: true,
@@ -318,6 +318,8 @@ export const Receipts = () => {
                 height: screenHeight,
                 boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.2)',
                 border: '1px solid rgba(0,0,0,0.2)',
+                overflowX: 'scroll',
+                whiteSpace: 'nowrap',
               }}
             >
               <AgGridReact

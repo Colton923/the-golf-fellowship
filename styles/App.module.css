@@ -8,6 +8,7 @@
   font-family: 'Open Sans', sans-serif;
 
   -ms-overflow-style: none;
+  -webkit-appearance: none;
   scrollbar-width: none;
   overflow-x: hidden;
   overflow-y: scroll;
