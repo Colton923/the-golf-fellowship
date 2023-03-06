@@ -20,7 +20,8 @@ export const Receipts = () => {
   const [totalSubtotal, setTotalSubtotal] = useState(0)
   const [screenWidth, setScreenWidth] = useState(365)
   const [screenHeight, setScreenHeight] = useState(500)
-
+  const [gridApi, setGridApi] = useState(null)
+  const [gridColumnApi, setGridColumnApi] = useState(null)
   const [totalsColumnDefs, setTotalsColumnDefs] = useState([
     { field: 'totalSubtotal' },
     { field: 'totalTax' },
@@ -29,20 +30,158 @@ export const Receipts = () => {
   const [totalsData, setTotalsData] = useState([] as any)
   const gridRef = useRef<AgGridReact>(null)
 
-  //need to create a filter to sort the sales tax and sub total and order total
+  const valueGetter = (params: any) => {
+    return params.data[params.colDef.field]
+  }
+
+  const valueSetter = (params: any) => {
+    params.data[params.colDef.field] = params.newValue
+    UpdateDB(params.data, params.newValue)
+    return true
+  }
+
+  const UpdateDB = (data: any, newValue: any) => {
+    try {
+      fetch('/api/firebase/updateGoDaddyData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderNumber: data.orderNumber,
+          orderTotal: data.orderTotal,
+          sku: data.sku,
+          status: data.status,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          shippingAddress: data.shippingAddress,
+          billingAddress: data.billingAddress,
+          date: data.date,
+          subTotal: data.subTotal,
+          salesTax: data.salesTax,
+          term: data.term,
+          club: data.club,
+          plan: data.plan,
+        }),
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const [columnDefs, setColumnDefs] = useState([
-    { field: 'date', filter: 'agDateColumnFilter' },
-    { field: 'name', filter: 'agTextColumnFilter' },
-    { field: 'city', filter: 'agTextColumnFilter' },
-    { field: 'club', filter: 'agTextColumnFilter' },
-    { field: 'plan', filter: 'agTextColumnFilter' },
-    { field: 'term', filter: 'agTextColumnFilter' },
-    { field: 'status', filter: 'agTextColumnFilter' },
-    { field: 'sku', filter: 'agTextColumnFilter' },
-    { field: 'subTotal', filter: 'agNumberColumnFilter' },
-    { field: 'salesTax', filter: 'agNumberColumnFilter' },
-    { field: 'orderTotal', filter: 'agNumberColumnFilter' },
+    {
+      field: 'date',
+      filter: 'agDateColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+      valueFormatter: (params: any) => {
+        if (params.value === undefined) return
+        if (params.value === null) return
+        if (params.value === '') return
+        if (params.value.includes('/')) return params.value
+        if (params.value.includes('-'))
+          params.value = params.value.replace(/-/g, '/')
+
+        return new Date(params.value).toLocaleDateString()
+      },
+      comparator: (valueA: any, valueB: any, nodeA: any, nodeB: any) => {
+        if (valueA === undefined || valueB === undefined) return
+        if (valueA === null || valueB === null) return
+        if (valueA === '' || valueB === '') return
+        if (valueA.includes('/')) return
+        if (valueA.includes('-')) valueA = valueA.replace(/-/g, '/')
+        if (valueB.includes('-')) valueB = valueB.replace(/-/g, '/')
+        const dateA = new Date(valueA)
+        const dateB = new Date(valueB)
+        return dateA.getTime() - dateB.getTime()
+      },
+    },
+    {
+      field: 'name',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+    },
+    {
+      field: 'city',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+    },
+    {
+      field: 'club',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+    },
+    {
+      field: 'plan',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+    },
+    {
+      field: 'term',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+    },
+    {
+      field: 'status',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+    },
+    {
+      field: 'sku',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+    },
+    {
+      field: 'subTotal',
+      filter: 'agNumberColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+      comparator: (valueA: any, valueB: any, nodeA: any, nodeB: any) => {
+        if (valueA === undefined || valueB === undefined) return
+        if (valueA === null || valueB === null) return
+        if (valueA === '' || valueB === '') return
+        const numA = valueA.replace(/[^0-9.-]+/g, '')
+        const numB = valueB.replace(/[^0-9.-]+/g, '')
+        return numA - numB
+      },
+    },
+    {
+      field: 'salesTax',
+      filter: 'agNumberColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+      comparator: (valueA: any, valueB: any, nodeA: any, nodeB: any) => {
+        if (valueA === undefined || valueB === undefined) return
+        if (valueA === null || valueB === null) return
+        if (valueA === '' || valueB === '') return
+        const numA = valueA.replace(/[^0-9.-]+/g, '')
+        const numB = valueB.replace(/[^0-9.-]+/g, '')
+        return numA - numB
+      },
+    },
+    {
+      field: 'orderTotal',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+      comparator: (valueA: any, valueB: any, nodeA: any, nodeB: any) => {
+        if (valueA === undefined || valueB === undefined) return
+        if (valueA === null || valueB === null) return
+        if (valueA === '' || valueB === '') return
+        const numA = valueA.replace(/[^0-9.-]+/g, '')
+        const numB = valueB.replace(/[^0-9.-]+/g, '')
+        return numA - numB
+      },
+    },
   ])
 
   const defaultColDef = useMemo(() => {
@@ -52,6 +191,7 @@ export const Receipts = () => {
       resizable: true,
       sortable: true,
       filter: true,
+      editable: true,
     }
   }, [])
 
@@ -144,6 +284,14 @@ export const Receipts = () => {
     }
   }, [user])
 
+  const onGridReady = (params: any) => {
+    setGridApi(params.api)
+    setGridColumnApi(params.columnApi)
+
+    params.api.sizeColumnsToFit()
+    params.api.setRowData(data)
+  }
+
   return (
     <>
       {loading || data.length === 0 || totalsData.length === 0 ? (
@@ -173,8 +321,10 @@ export const Receipts = () => {
               }}
             >
               <AgGridReact
+                onGridReady={onGridReady}
                 ref={gridRef}
                 rowData={data}
+                //@ts-ignore
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
               />
