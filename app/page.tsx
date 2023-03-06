@@ -184,7 +184,10 @@ export default function Index() {
           setShow={setShowSignupMenu}
         />
       </div>
-      <Video {...videoProps} />
+      <div className={styles.videoWrapper}>
+        <Video {...videoProps} />
+      </div>
+
       <button className={styles.overlayButton}>
         <h1 onClick={goToShop} className={styles.overlayButtonText}>
           Become a Member
