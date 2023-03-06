@@ -24,7 +24,7 @@ export default function Page() {
   }, [user])
 
   if (error || loading) {
-    return <div> Loading...</div>
+    return <div> Loading..</div>
   }
 
   if (isAdmin) {
