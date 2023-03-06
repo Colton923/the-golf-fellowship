@@ -30,10 +30,6 @@ export default async function isPhoneNumberInDB(req: any, res: any) {
         }
       })
     })
-    .then(() => {
-      res.status(200).json({ isPhoneNumberInDB: false })
-      return
-    })
     .catch((error) => {
       console.log(error)
       res.status(500).json({ isPhoneNumberInDB: false })
