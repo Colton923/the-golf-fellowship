@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap,400,700');
 
 .main {
-  width: 100vw;
-  height: 100vh;
-
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -51,6 +48,8 @@
   cursor: pointer;
   border-radius: 20px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+
+  position: relative;
 }
 
 .overlayButton:hover {
@@ -88,6 +87,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .whatWeDoTitle {
