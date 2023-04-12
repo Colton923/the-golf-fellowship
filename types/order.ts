@@ -15,4 +15,15 @@ export type Order = {
   status: string
   subTotal: string
   term: string
+  metaData?: {
+    link?: string
+    productName?: string
+    selects?: {
+      [key: string]: string
+    }
+    qs?: {
+      [key: string]: string
+    }
+    coupon?: string
+  }
 }

@@ -34,6 +34,27 @@ export const Receipts = () => {
     return params.data[params.colDef.field]
   }
 
+  const valueGetterMetaData = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    return params.data.metaData[params.colDef.field]
+  }
+
+  const valueGetterMetaDataArr = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any[] = params.data.metaData[params.colDef.field]
+    if (arr === undefined) return
+    if (arr === null) return
+    const str = arr.map((item: Record<string, string>) => {
+      const key = Object.keys(item)[0]
+      return `${key}: ${item[key]}`
+    })
+    return str.join(', ')
+  }
+
   const valueSetter = (params: any) => {
     params.data[params.colDef.field] = params.newValue
     UpdateDB(params.data, params.newValue)
@@ -63,6 +84,7 @@ export const Receipts = () => {
           term: data.term,
           club: data.club,
           plan: data.plan,
+          metaData: data.metaData ? data.metaData : '',
         }),
       })
     } catch (error) {
@@ -182,8 +204,46 @@ export const Receipts = () => {
         return numA - numB
       },
     },
+    {
+      field: 'metadata',
+      headerName: 'Metadata',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetter,
+      valueSetter: valueSetter,
+      children: [
+        {
+          field: 'link',
+          filter: 'agTextColumnFilter',
+          valueGetter: valueGetterMetaData,
+          valueSetter: valueSetter,
+        },
+        {
+          field: 'productName',
+          filter: 'agTextColumnFilter',
+          valueGetter: valueGetterMetaData,
+          valueSetter: valueSetter,
+        },
+        {
+          field: 'selects',
+          filter: 'agTextColumnFilter',
+          valueGetter: valueGetterMetaDataArr,
+          valueSetter: valueSetter,
+        },
+        {
+          field: 'qs',
+          filter: 'agTextColumnFilter',
+          valueGetter: valueGetterMetaDataArr,
+          valueSetter: valueSetter,
+        },
+        {
+          field: 'coupon',
+          filter: 'agTextColumnFilter',
+          valueGetter: valueGetterMetaData,
+          valueSetter: valueSetter,
+        },
+      ],
+    },
   ])
-
   const defaultColDef = useMemo(() => {
     return {
       flex: 1,
