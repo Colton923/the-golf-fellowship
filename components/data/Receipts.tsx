@@ -30,6 +30,12 @@ export const Receipts = () => {
   const [totalsData, setTotalsData] = useState([] as any)
   const gridRef = useRef<AgGridReact>(null)
 
+  const isKeyInArr = (arr: any, key: any) => {
+    return arr.find((item: any) => {
+      if (Object.keys(item).includes(key) === true) return item
+    })
+  }
+
   const valueGetter = (params: any) => {
     return params.data[params.colDef.field]
   }
@@ -40,7 +46,6 @@ export const Receipts = () => {
     if (params.data.metaData === '') return
     return params.data.metaData[params.colDef.field]
   }
-
   const valueGetterMetaDataArr = (params: any) => {
     if (params.data.metaData === undefined) return
     if (params.data.metaData === null) return
@@ -53,6 +58,93 @@ export const Receipts = () => {
       return `${key}: ${item[key]}`
     })
     return str.join(', ')
+  }
+  const valueGetterMetaDataSelects = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.selects
+    if (arr === undefined) return
+    if (arr === null) return
+    if (arr === '') return
+    const str = arr.map((item: Record<string, string>) => {
+      const key = Object.keys(item)[0]
+      return `${key}: ${item[key]}`
+    })
+    return str.join(', ')
+  }
+
+  const valueGetterMetaDataQs = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.qs
+    if (arr === undefined) return
+    if (arr === null) return
+    if (arr === '') return
+    const str = arr.map((item: Record<string, string>) => {
+      const key = Object.keys(item)[0]
+      return `${key}: ${item[key]}`
+    })
+    return str.join(', ')
+  }
+
+  const valueGetterSideGames = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.selects
+    const find = isKeyInArr(arr, 'sidegames')
+
+    return find ? find.sidegames : ''
+  }
+
+  const valueGetterTeeChoice = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.selects
+    const find = isKeyInArr(arr, 'teechoice')
+
+    return find ? find.teechoice : ''
+  }
+
+  const valueGetterTeeTime = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.selects
+    const find = isKeyInArr(arr, 'teetime')
+
+    return find ? find.teetime : ''
+  }
+
+  const valueGetterSkins = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.selects
+    const find = isKeyInArr(arr, 'skins')
+
+    return find ? find.skins : ''
+  }
+  const valueGetterPlayingPartnerRequest = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.selects
+    const find = isKeyInArr(arr, 'playingpartnerrequest')
+
+    return find ? find.playingpartnerrequest : ''
+  }
+  const valueGetterRideOrWalk = (params: any) => {
+    if (params.data.metaData === undefined) return
+    if (params.data.metaData === null) return
+    if (params.data.metaData === '') return
+    const arr: any = params.data.metaData.selects
+    const find = isKeyInArr(arr, 'rideorwalk')
+
+    return find ? find.rideorwalk : ''
   }
 
   const valueSetter = (params: any) => {
@@ -94,6 +186,7 @@ export const Receipts = () => {
 
   const [columnDefs, setColumnDefs] = useState([
     {
+      headerName: 'Date',
       field: 'date',
       filter: 'agDateColumnFilter',
       valueGetter: valueGetter,
@@ -121,48 +214,76 @@ export const Receipts = () => {
       },
     },
     {
+      headerName: 'Name',
       field: 'name',
       filter: 'agTextColumnFilter',
       valueGetter: valueGetter,
       valueSetter: valueSetter,
     },
     {
-      field: 'city',
+      field: 'productName',
       filter: 'agTextColumnFilter',
-      valueGetter: valueGetter,
+      valueGetter: valueGetterMetaData,
       valueSetter: valueSetter,
     },
     {
-      field: 'club',
+      headerName: 'Side Games',
+      field: 'sidegames',
       filter: 'agTextColumnFilter',
-      valueGetter: valueGetter,
+      valueGetter: valueGetterSideGames,
       valueSetter: valueSetter,
     },
     {
-      field: 'plan',
+      headerName: 'Tee Choice',
+      field: 'teechoice',
       filter: 'agTextColumnFilter',
-      valueGetter: valueGetter,
+      valueGetter: valueGetterTeeChoice,
       valueSetter: valueSetter,
     },
     {
-      field: 'term',
+      headerName: 'Tee Time',
+      field: 'teetime',
       filter: 'agTextColumnFilter',
-      valueGetter: valueGetter,
+      valueGetter: valueGetterTeeTime,
       valueSetter: valueSetter,
     },
     {
+      headerName: 'Skins',
+      field: 'skins',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetterSkins,
+      valueSetter: valueSetter,
+    },
+    {
+      headerName: 'Playing Partner Request',
+      field: 'playingpartnerrequest',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetterPlayingPartnerRequest,
+      valueSetter: valueSetter,
+    },
+    {
+      headerName: 'Ride / Walk',
+      field: 'rideorwalk',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetterRideOrWalk,
+      valueSetter: valueSetter,
+    },
+    {
+      headerName: 'Status',
       field: 'status',
       filter: 'agTextColumnFilter',
       valueGetter: valueGetter,
       valueSetter: valueSetter,
     },
     {
+      headerName: 'SKU',
       field: 'sku',
       filter: 'agTextColumnFilter',
       valueGetter: valueGetter,
       valueSetter: valueSetter,
     },
     {
+      headerName: 'Sub Total',
       field: 'subTotal',
       filter: 'agNumberColumnFilter',
       valueGetter: valueGetter,
@@ -177,6 +298,7 @@ export const Receipts = () => {
       },
     },
     {
+      headerName: 'Sales Tax',
       field: 'salesTax',
       filter: 'agNumberColumnFilter',
       valueGetter: valueGetter,
@@ -191,6 +313,7 @@ export const Receipts = () => {
       },
     },
     {
+      headerName: 'Order Total',
       field: 'orderTotal',
       filter: 'agTextColumnFilter',
       valueGetter: valueGetter,
@@ -205,43 +328,25 @@ export const Receipts = () => {
       },
     },
     {
-      field: 'metadata',
-      headerName: 'Metadata',
+      headerName: 'Coupon',
+      field: 'coupon',
       filter: 'agTextColumnFilter',
-      valueGetter: valueGetter,
+      valueGetter: valueGetterMetaData,
       valueSetter: valueSetter,
-      children: [
-        {
-          field: 'link',
-          filter: 'agTextColumnFilter',
-          valueGetter: valueGetterMetaData,
-          valueSetter: valueSetter,
-        },
-        {
-          field: 'productName',
-          filter: 'agTextColumnFilter',
-          valueGetter: valueGetterMetaData,
-          valueSetter: valueSetter,
-        },
-        {
-          field: 'selects',
-          filter: 'agTextColumnFilter',
-          valueGetter: valueGetterMetaDataArr,
-          valueSetter: valueSetter,
-        },
-        {
-          field: 'qs',
-          filter: 'agTextColumnFilter',
-          valueGetter: valueGetterMetaDataArr,
-          valueSetter: valueSetter,
-        },
-        {
-          field: 'coupon',
-          filter: 'agTextColumnFilter',
-          valueGetter: valueGetterMetaData,
-          valueSetter: valueSetter,
-        },
-      ],
+    },
+    {
+      headerName: 'Form Options',
+      field: 'selects',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetterMetaDataSelects,
+      valueSetter: valueSetter,
+    },
+    {
+      headerName: 'Form Questions',
+      field: 'qs',
+      filter: 'agTextColumnFilter',
+      valueGetter: valueGetterMetaDataQs,
+      valueSetter: valueSetter,
     },
   ])
   const defaultColDef = useMemo(() => {
@@ -348,7 +453,7 @@ export const Receipts = () => {
     setGridApi(params.api)
     setGridColumnApi(params.columnApi)
 
-    params.api.sizeColumnsToFit()
+    params.columnApi.autoSizeAllColumns()
     params.api.setRowData(data)
   }
 
