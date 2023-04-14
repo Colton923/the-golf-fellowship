@@ -37,7 +37,12 @@ export const Receipts = () => {
   }
 
   const valueGetter = (params: any) => {
-    return params.data[params.colDef.field]
+    const val = params.data[params.colDef.field]
+    if (val === undefined) return
+    if (val === null) return
+    if (val === '') return
+    if (val.length === 0) return
+    return val.trim()
   }
 
   const valueGetterMetaData = (params: any) => {
@@ -45,19 +50,6 @@ export const Receipts = () => {
     if (params.data.metaData === null) return
     if (params.data.metaData === '') return
     return params.data.metaData[params.colDef.field]
-  }
-  const valueGetterMetaDataArr = (params: any) => {
-    if (params.data.metaData === undefined) return
-    if (params.data.metaData === null) return
-    if (params.data.metaData === '') return
-    const arr: any[] = params.data.metaData[params.colDef.field]
-    if (arr === undefined) return
-    if (arr === null) return
-    const str = arr.map((item: Record<string, string>) => {
-      const key = Object.keys(item)[0]
-      return `${key}: ${item[key]}`
-    })
-    return str.join(', ')
   }
   const valueGetterMetaDataSelects = (params: any) => {
     if (params.data.metaData === undefined) return
@@ -189,6 +181,31 @@ export const Receipts = () => {
       headerName: 'Date',
       field: 'date',
       filter: 'agDateColumnFilter',
+      filterParams: {
+        comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
+          if (cellValue === undefined) return
+          if (cellValue === null) return
+          if (cellValue === '') return
+          if (cellValue.includes('/')) return
+          if (cellValue.includes('-')) cellValue = cellValue.replace(/-/g, '/')
+          const dateParts = cellValue.split('/')
+          const cellDate = new Date(
+            Number(dateParts[2]),
+            Number(dateParts[0]) - 1,
+            Number(dateParts[1])
+          )
+          if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+            return 0
+          }
+          if (cellDate < filterLocalDateAtMidnight) {
+            return -1
+          }
+          if (cellDate > filterLocalDateAtMidnight) {
+            return 1
+          }
+        },
+      },
+
       valueGetter: valueGetter,
       valueSetter: valueSetter,
       valueFormatter: (params: any) => {
