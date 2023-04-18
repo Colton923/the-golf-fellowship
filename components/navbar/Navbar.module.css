@@ -9,7 +9,7 @@
   backdrop-filter: blur(5px);
   background-image: linear-gradient(
     45deg,
-    rgba(0, 255, 0, 0.1),
+    rgba(255, 255, 255, 0.01),
     rgba(255, 255, 255, 0.1)
   );
   background-size: 5px;
@@ -28,17 +28,17 @@
   margin: 0;
   background-image: linear-gradient(
     45deg,
-    rgba(3, 240, 1, 0.1) 1%,
-    rgba(255, 255, 255, 0.3) 70%
+    rgba(255, 255, 255, 0.01) 1%,
+    rgba(255, 255, 255, 0.1) 70%
   );
   background-size: 3px;
-  background-filter: blur(15px);
+  backdrop-filter: blur(15px);
   box-shadow: 0 4px 10px 2px rgba(0, 0, 0, 0.6);
 }
 
 .navbarContainer:before {
   background-image: url('/static/images/tgf_logo.jpg'),
-    linear-gradient(45deg, rgba(0, 255, 0, 0.1), rgba(255, 255, 255, 0.1));
+    linear-gradient(45deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.1));
   background-size: cover;
   background-position: center;
 
@@ -49,7 +49,6 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  box-shadow: -150px 60vw 45vw 20vw rgba(255, 255, 255, 0.4);
 
   border: 1px solid rgba(0, 0, 0, 0.1);
   z-index: 100;
@@ -71,26 +70,6 @@
   transition-all: 3s;
 }
 
-.navbarContainer:active {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-.navbarContainer:nth-of-type(1) {
-  animation: show 0.2s 1.2s ease 1 both;
-}
-.navbarContainer:nth-of-type(2) {
-  animation: show 0.2s 1.4s ease 1 both;
-}
-.navbarContainer:nth-of-type(3) {
-  animation: show 0.2s 1.6s ease 1 both;
-}
-.navbarContainer:nth-of-type(4) {
-  animation: show 0.2s 1.8s ease 1 both;
-}
-.navbarContainer:nth-of-type(5) {
-  animation: show 0.2s 2s ease 1 both;
-}
-
 .navbarImageWrapper {
   height: 75%;
   aspect-ratio: 1/1;
@@ -105,6 +84,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.navbarImage:hover {
+  transform: scaleY(1.3);
+  opacity: 0.8;
+  transition-duration: 0.2s;
+  cursor: pointer;
 }
 
 .navbar {
@@ -142,48 +128,35 @@
   margin-right: 2vw;
 }
 
-.navbarLink:before {
-  content: '';
-  border-radius: 50%;
-  border-color: rgba(0, 0, 0, 0.3);
-
-  z-index: 10;
-
-  animation: out 0.6s cubic-bezier(1, 0, 0.58, 0.97) 1 both;
-}
-
 .navbarLink:hover:before {
-  animation: in 0.6s cubic-bezier(1, 0, 0.58, 0.97) 1 both;
+  content: '';
+  position: absolute;
+  height: 3px;
+  top: 50%;
+  left: 0;
+
+  background-color: rgba(0, 0, 0, 0.2);
+
+  z-index: -1;
+  animation: LineIn 0.5s cubic-bezier(1, 0, 0.58, 0.97) 1 both;
 }
 
-.navbarLink:hover {
-  transition-duration: 0.2s;
-  font-weight: 500;
-  text-shadow: 1px 0px 0px rgba(255, 255, 255, 1);
+@keyframes LineIn {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
 }
 
-.navbarLink:after {
-  transition-all: 3s;
-}
-
-.navbarLink:active {
-  color: rgba(0, 0, 0, 0.5);
-}
-
-.navbarLink:nth-of-type(1) {
-  animation: show 0.2s 1.2s ease 1 both;
-}
-.navbarLink:nth-of-type(2) {
-  animation: show 0.2s 1.4s ease 1 both;
-}
-.navbarLink:nth-of-type(3) {
-  animation: show 0.2s 1.6s ease 1 both;
-}
-.navbarLink:nth-of-type(4) {
-  animation: show 0.2s 1.8s ease 1 both;
-}
-.navbarLink:nth-of-type(5) {
-  animation: show 0.2s 2s ease 1 both;
+@keyframes LineOut {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -476,7 +449,7 @@
 @keyframes show {
   0% {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-3px);
   }
   100% {
     opacity: 1;

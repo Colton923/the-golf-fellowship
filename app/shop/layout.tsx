@@ -41,7 +41,11 @@ export default function ShopLayout({ children }: any) {
         <Navbar showLogin={showLogin} />
       </div>
       <div ref={loginMain}>
-        <Login show={showSignupMenu} setLoggedInUser={setLoggedInUser} />
+        <Login
+          show={showSignupMenu}
+          setLoggedInUser={setLoggedInUser}
+          setShow={setShowSignupMenu}
+        />
       </div>
       <div>{children}</div>
     </div>

@@ -20,13 +20,13 @@ export default function Navbar(props: NavbarProps) {
 
   useEffect(() => {
     if (user) {
-      if (user.uid === process.env.NEXT_PUBLIC_ADMIN_COLTON_SECRET_UID) {
-        setIsAdmin(true)
-      }
-      if (user.uid === process.env.NEXT_PUBLIC_ADMIN_KERRY_SECRET_UID) {
-        setIsAdmin(true)
-      }
-      if (user.uid === process.env.NEXT_PUBLIC_ADMIN_KARSTON_SECRET_UID) {
+      if (
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_COLTON_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_KERRY_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_PAUL_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_JOURDAN_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_RAIMOND_SECRET_UID
+      ) {
         setIsAdmin(true)
       }
     }
@@ -40,16 +40,22 @@ export default function Navbar(props: NavbarProps) {
     <div className={styles.navbarMain}>
       <div className={styles.navbarContainer}>
         <div className={styles.navbarImageWrapper}>
-          <Image
-            src={logo}
-            alt="TGF Logo"
-            fill
+          {/* SVG Hamburger Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
             className={styles.navbarImage}
+            viewBox="0 0 20 20"
+            fill="currentColor"
             onClick={() => {
-              window.location.href = '/'
+              if (props.showLogin) props.showLogin()
             }}
-            style={{ cursor: 'pointer' }}
-          />
+          >
+            <path
+              fillRule="evenodd"
+              d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+              clipRule="evenodd"
+            />
+          </svg>
         </div>
         <nav className={styles.navbar}>
           {!user ? (
@@ -94,8 +100,27 @@ export default function Navbar(props: NavbarProps) {
         </nav>
       </div>
       {isAdmin && (
-        <div className={styles.navbarContainer}>
-          <nav className={styles.navbar}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            width: '100%',
+            margin: '0',
+            backgroundImage:
+              'linear-gradient(45deg, rgba(255, 255, 255, 0.01) 1%, rgba(255, 255, 255, 0.1) 70%)',
+            backgroundSize: '3px',
+            backdropFilter: 'blur(15px)',
+            boxShadow: ' 0 4px 10px 2px rgba(0, 0, 0, 0.6)',
+          }}
+        >
+          <nav
+            className={styles.navbar}
+            style={{
+              justifyContent: 'space-evenly',
+              marginLeft: '5%',
+            }}
+          >
             <div className={styles.navbarTextWrapper} key={'nav3'}>
               <Link href="/admin" className={styles.navbarLink}>
                 Admin

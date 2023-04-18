@@ -178,9 +178,16 @@ export default function Index() {
         <Navbar showLogin={showLogin} />
       </div>
       <div ref={loginMain}>
-        <Login show={showSignupMenu} setLoggedInUser={setLoggedInUser} />
+        <Login
+          show={showSignupMenu}
+          setLoggedInUser={setLoggedInUser}
+          setShow={setShowSignupMenu}
+        />
       </div>
-      <Video {...videoProps} />
+      <div className={styles.videoWrapper}>
+        <Video {...videoProps} />
+      </div>
+
       <button className={styles.overlayButton}>
         <h1 onClick={goToShop} className={styles.overlayButtonText}>
           Become a Member

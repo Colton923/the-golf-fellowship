@@ -1,0 +1,39 @@
+.svgWrap {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  z-index: 100;
+  right: 0px;
+  top: 0px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  height: 30px;
+  width: 30px;
+}
+
+.svg:hover {
+  cursor: pointer;
+}
+
+.svg:active {
+  cursor: pointer;
+}
+
+.svgRotateOne {
+  transform: rotate(180deg) translateY(0px) scale(1.3);
+  transition: transform 0.5s;
+}
+
+.svgRotateTwo {
+  transform: rotate(0deg) translateY(0px);
+  transition: transform 0.5s;
+}

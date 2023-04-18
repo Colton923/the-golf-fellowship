@@ -1,8 +1,10 @@
 'use client'
-import styles from './Cards.module.css'
+import styles from '../Card.module.css'
 
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+
+import Chevron from '../Chevron/Chevron'
 
 type RegisterForm = {
   firstNameCardOne: string
@@ -88,118 +90,102 @@ export default function CardOne(props: CardOneProps) {
   }
 
   return (
-    <div className={styles.cardForm}>
-      <div
-        className={isCollapsed ? styles.cardFormOne : styles.cardFormOneCollapsed}
-      >
-        <div className={styles.cardFormItem}>
-          <label className={styles.cardFormItemLabel}>
-            MEMBER:
-            <small>
-              {' ' + firstNameCardOne} {lastNameCardOne}
-            </small>
-          </label>
-          <label className={styles.cardFormItemLabel}>
-            EMAIL: <small>{emailCardOne}</small>
-          </label>
-          <label className={styles.cardFormItemLabel}>
-            PHONE: <small>{phoneCardOne}</small>
-          </label>
-        </div>
-      </div>
-      <form
-        onSubmit={handleSubmit(submitRegisterForm)}
-        className={isCollapsed ? styles.cardFormTwoCollapsed : styles.cardFormTwo}
-        id="cardOneForm"
-      >
-        <div className={styles.cardFormItem}>
-          <label className={styles.cardFormItemLabel}>MEMBER</label>
-          <div className={styles.cardFormItemGroup}>
-            <div className={styles.cardFormOptionWrap}>
-              <div className={styles.option}>
-                <input
-                  id="firstNameCardOne"
-                  className={styles.optionInput}
-                  type="text"
-                  placeholder="First Name"
-                  {...register('firstNameCardOne', { required: true })}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setFirstNameCardOne(e.target.value)
-                    setValue('firstNameCardOne', e.target.value)
-                  }}
-                />
-              </div>
-            </div>
-            <div className={styles.cardFormOptionWrap}>
-              <div className={styles.option}>
-                <input
-                  id="lastNameCardOne"
-                  className={styles.optionInput}
-                  type="text"
-                  placeholder="Last Name"
-                  {...register('lastNameCardOne', { required: true })}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setLastNameCardOne(e.target.value)
-                    setValue('lastNameCardOne', e.target.value)
-                  }}
-                />
-              </div>
-            </div>
-            <div className={styles.cardFormOptionWrap}>
-              <div className={styles.option}>
-                <input
-                  id="emailCardOne"
-                  className={styles.optionInput}
-                  type="text"
-                  placeholder="Email"
-                  {...register('emailCardOne', { required: true })}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setEmailCardOne(e.target.value)
-                    setValue('emailCardOne', e.target.value)
-                  }}
-                />
-              </div>
-            </div>
-            <div className={styles.cardFormOptionWrap}>
-              <div className={styles.option}>
-                <input
-                  id="phoneCardOne"
-                  className={styles.optionInput}
-                  type="text"
-                  placeholder="Phone"
-                  inputMode="numeric"
-                  {...register('phoneCardOne', {
-                    required: false,
-                  })}
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setPhoneCardOne(e.target.value)
-                    setValue('phoneCardOne', e.target.value)
-                  }}
-                />
-              </div>
-            </div>
+    <form
+      onSubmit={handleSubmit(submitRegisterForm)}
+      className={styles.cardForm}
+      id="cardOneForm"
+    >
+      <div className={styles.cardFormItem}>
+        {isCollapsed ? (
+          <div className={styles.selectWrap}>
+            <label className={styles.cardFormItemLabel}>MEMBER: </label>
+            <label className={styles.selectOption}>
+              {firstNameCardOne +
+                ' ' +
+                lastNameCardOne +
+                ' ' +
+                emailCardOne +
+                ' ' +
+                phoneCardOne}
+            </label>
           </div>
-        </div>
-      </form>
-      <div className={styles.svgWrap}>
-        <div className={isCollapsed ? styles.svgRotateOne : styles.svgRotateTwo}>
-          <svg
-            onClick={Collapse}
-            className={styles.svg}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </div>
+        ) : (
+          <>
+            <label className={styles.cardFormItemLabel}>MEMBER: </label>
+            <div className={styles.cardFormItemGroup}>
+              <div className={styles.cardFormOptionWrap}>
+                <div className={styles.option}>
+                  <input
+                    id="firstNameCardOne"
+                    className={styles.optionInput}
+                    type="text"
+                    placeholder="First Name"
+                    {...register('firstNameCardOne', { required: true })}
+                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setFirstNameCardOne(e.target.value)
+                      setValue('firstNameCardOne', e.target.value)
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={styles.cardFormOptionWrap}>
+                <div className={styles.option}>
+                  <input
+                    id="lastNameCardOne"
+                    className={styles.optionInput}
+                    type="text"
+                    placeholder="Last Name"
+                    {...register('lastNameCardOne', { required: true })}
+                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setLastNameCardOne(e.target.value)
+                      setValue('lastNameCardOne', e.target.value)
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={styles.cardFormOptionWrap}>
+                <div className={styles.option}>
+                  <input
+                    id="emailCardOne"
+                    className={styles.optionInput}
+                    type="email"
+                    placeholder="Email"
+                    {...register('emailCardOne', { required: true })}
+                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setEmailCardOne(e.target.value)
+                      setValue('emailCardOne', e.target.value)
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={styles.cardFormOptionWrap}>
+                <div className={styles.option}>
+                  <input
+                    id="phoneCardOne"
+                    className={styles.optionInput}
+                    type="tel"
+                    placeholder="Phone"
+                    inputMode="numeric"
+                    {...register('phoneCardOne', {
+                      required: false,
+                    })}
+                    onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setPhoneCardOne(e.target.value)
+                      setValue('phoneCardOne', e.target.value)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+        <Chevron
+          {...{
+            setCollapse: Collapse,
+            collapse: isCollapsed,
+          }}
+        />
       </div>
-    </div>
+    </form>
   )
 }

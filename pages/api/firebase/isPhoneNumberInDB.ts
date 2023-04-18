@@ -12,11 +12,27 @@ if (!admin.apps.length) {
 const db = admin.firestore()
 
 export default async function isPhoneNumberInDB(req: any, res: any) {
-  const phoneNumber = req.body.phoneNumber
-  const searchDocs = await db.collection('users').get()
-  const searchDocsData = searchDocs.docs.map((doc) => doc.data())
-  const searchDocsDataPhoneNumbers = searchDocsData.map((doc) => doc.phone)
-  console.log(searchDocsDataPhoneNumbers)
-  const isPhoneNumberInDB = searchDocsDataPhoneNumbers.includes(phoneNumber)
-  res.status(200).json({ isPhoneNumberInDB: isPhoneNumberInDB })
+  let phoneNumber: string = req.body.phoneNumber
+  if (phoneNumber.charAt(0) === '+') {
+    phoneNumber = phoneNumber.slice(1)
+  }
+  if (phoneNumber.charAt(0) === '1') {
+    phoneNumber = phoneNumber.slice(1)
+  }
+  await db
+    .collection('users')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        if (doc.data().phone === phoneNumber) {
+          res.status(200).json({ isPhoneNumberInDB: true })
+          return
+        }
+      })
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(500).json({ isPhoneNumberInDB: false })
+      return
+    })
 }
