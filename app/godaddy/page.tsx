@@ -11,13 +11,13 @@ export default function Page() {
 
   useEffect(() => {
     if (user) {
-      if (user.uid === process.env.NEXT_PUBLIC_ADMIN_COLTON_SECRET_UID) {
-        setIsAdmin(true)
-      }
-      if (user.uid === process.env.NEXT_PUBLIC_ADMIN_KERRY_SECRET_UID) {
-        setIsAdmin(true)
-      }
-      if (user.uid === process.env.NEXT_PUBLIC_ADMIN_RAIMOND_SECRET_UID) {
+      if (
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_COLTON_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_KERRY_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_PAUL_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_JOURDAN_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_RAIMOND_SECRET_UID
+      ) {
         setIsAdmin(true)
       }
     }
