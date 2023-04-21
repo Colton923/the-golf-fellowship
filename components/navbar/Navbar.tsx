@@ -27,7 +27,8 @@ export default function Navbar(props: NavbarProps) {
         user.uid === process.env.NEXT_PUBLIC_ADMIN_JOURDAN_SECRET_UID ||
         user.uid === process.env.NEXT_PUBLIC_ADMIN_RAIMOND_SECRET_UID ||
         user.uid === process.env.NEXT_PUBLIC_ADMIN_JAMES_SECRET_UID ||
-        user.uid === process.env.NEXT_PUBLIC_ADMIN_AARON_SECRET_UID
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_AARON_SECRET_UID ||
+        user.uid === process.env.NEXT_PUBLIC_ADMIN_OMAR_UID
       ) {
         setIsAdmin(true)
       }
