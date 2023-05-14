@@ -110,8 +110,7 @@ export default function CheckoutForm(props: CheckoutFormProps) {
       auth
     )
     const appVerifier = reCaptchaVerifier
-    const phoneNumber = '+1' + props.phone
-
+    const phoneNumber = '+1' + props.phone.replace('+1', '').replace(/-/g, '')
     //FOR TESTING ONLY: Replace '+16505551234' with phoneNumber, and uncomment
     //const code = window.prompt('Verify Phone Number for Membership Login:')
     //also replace '123456' with code
