@@ -34,7 +34,7 @@ export default function Page() {
   if (isAdmin) {
     return (
       <div>
-        <input
+        {/* <input
           type="button"
           value="Clean"
           onClick={() => {
@@ -59,7 +59,7 @@ export default function Page() {
                 })
             })
           }}
-        />
+        /> */}
         <Receipts />
       </div>
     )
