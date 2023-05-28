@@ -138,7 +138,8 @@ export const Receipts = () => {
       resizable: true,
       sortable: true,
       filter: true,
-      editable: true,
+      autoHeight: true,
+      editable: false,
       cellStyle: (params: any) => {
         if (params.data !== undefined && params.data !== null) {
           if (params.data.shippingAddress !== undefined) {
@@ -509,10 +510,10 @@ export const Receipts = () => {
           colId: 'date',
           field: key,
           headerName: 'Date',
-          editable: true,
           sortable: true,
           filter: true,
           resizable: true,
+          autoHeight: true,
           valueFormatter: (params) => {
             const seconds = params.value.toString().match(/seconds=(\d*)/)
             const date = new Date(Number(seconds[1]) * 1000)
@@ -526,6 +527,8 @@ export const Receipts = () => {
           headerName: 'Products',
           resizable: true,
           field: 'products',
+          editable: true,
+          autoHeight: true,
           cellRenderer: ExpandCollapseCellRenderer,
         }
       }
