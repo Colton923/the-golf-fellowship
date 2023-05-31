@@ -13,20 +13,17 @@ export default async function updateGoDaddyData(req: any, res: any) {
   const {
     orderNumber,
     orderTotal,
-    sku,
-    status,
-    name,
-    email,
-    phone,
-    shippingAddress,
     billingAddress,
     date,
-    subTotal,
+    firstName,
+    lastName,
+    phone,
     salesTax,
-    term,
-    club,
-    plan,
-  } = req.body
+    shippingAddress,
+    subTotal,
+    products,
+    email,
+  } = req.body.data
   const db = admin.firestore()
   const colRef = db.collection('goDaddy')
   const UpdateSingleDocument = async (search: string) => {
@@ -38,25 +35,26 @@ export default async function updateGoDaddyData(req: any, res: any) {
     if (doc.size > 1) {
       return
     }
-    doc.forEach((doc) => {
-      doc.ref.update({
+    doc.forEach(async (doc) => {
+      console.log('updating', orderNumber)
+      await doc.ref.set({
+        orderNumber,
         orderTotal,
-        sku,
-        status,
-        name,
-        email,
-        phone,
-        shippingAddress,
         billingAddress,
         date,
-        subTotal,
+        firstName,
+        lastName,
+        phone,
         salesTax,
-        term,
-        club,
-        plan,
+        shippingAddress,
+        subTotal,
+        products,
+        email,
       })
     })
+    return
   }
+
   await UpdateSingleDocument(orderNumber).then(() => {
     res.status(200).json({ success: true })
   })

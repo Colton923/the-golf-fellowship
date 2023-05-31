@@ -16,7 +16,6 @@ const ExpandCollapseCellRenderer = (props: any) => {
     }
   }
 
-  console.log(data.products)
   return (
     <div onClick={toggleExpand}>
       {isExpanded ? (

@@ -7,10 +7,9 @@ import {
   where,
   query,
   Timestamp,
-  doc,
-  getDoc,
-  updateDoc,
   QueryConstraint,
+  updateDoc,
+  orderBy,
 } from 'firebase/firestore'
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import styles from '../../styles/GoDaddy.module.css'
@@ -22,7 +21,7 @@ import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 import FormQuery from './Query'
 import type { FormData } from './Query'
-import { ColDef, GridApi } from 'ag-grid-community'
+import { ColDef } from 'ag-grid-community'
 import ExpandCollapseCellRenderer from './ExpandCollapseCellRenderer'
 
 type GoDaddyProduct = Record<string, string>
@@ -58,16 +57,53 @@ export const Receipts = () => {
   const [screenWidth, setScreenWidth] = useState(365)
   const [screenHeight, setScreenHeight] = useState(500)
   const [gridApi, setGridApi] = useState<any>(null)
-  const [totalsColumnDefs, setTotalsColumnDefs] = useState([
-    { field: 'totalSubtotal' },
-    { field: 'totalTax' },
-    { field: 'totalSales' },
-  ])
-  const [totalsData, setTotalsData] = useState([] as any)
   const gridRef = useRef<AgGridReact>(null)
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
   const [queryObj, setQueryObj] = useState<FormData>({})
   const [uniqueProds, setUniqueProds] = useState<string[]>(['sku'])
+
+  const FixCamelCaseName = (name: string) => {
+    const isCamelCase = (str: string) => {
+      return /^[a-z][a-zA-Z0-9]+$/.test(str)
+    }
+    if (!name) return
+    if (name.length === 0) return
+    if (isCamelCase(name)) {
+      const splitName = name.split(/(?=[A-Z])/)
+      return {
+        firstName: splitName[0],
+        lastName: splitName[1],
+      }
+    } else {
+      return {
+        firstName: name,
+        lastName: name,
+      }
+    }
+  }
+  const FixQueryDate = (date: string) => {
+    if (!date) return
+    if (date.length === 0) return
+    if (date.includes('/')) {
+      const splitDate = date.split('/')
+      const tempdate = new Date(
+        Number(splitDate[2]),
+        Number(splitDate[0]) - 1,
+        Number(splitDate[1])
+      )
+      const from = Timestamp.fromDate(tempdate)
+      return from
+    } else {
+      const splitDate = date.split('-')
+      const tempdate = new Date(
+        Number(splitDate[2]),
+        Number(splitDate[0]) - 1,
+        Number(splitDate[1])
+      )
+      const from = Timestamp.fromDate(tempdate)
+      return from
+    }
+  }
 
   const onGridReady = useCallback((params: any) => {
     if (!params.api) return
@@ -102,34 +138,25 @@ export const Receipts = () => {
     if (uniqueProds.includes(newProduct)) return
 
     if (newProduct.length === 0) return
-    if (newProduct.includes('\n')) {
-      newProduct.replace('\n', ' ')
-    }
-    if (newProduct.includes('\r')) {
-      newProduct.replace('\r', ' ')
-    }
-    if (newProduct.includes('\t')) {
-      newProduct.replace('\t', ' ')
-    }
     uniqueProds.push(newProduct)
     setUniqueProds(uniqueProds)
   }
 
-  // const UpdateDB = (data: any, newValue: any) => {
-  //   try {
-  //     fetch('/api/firebase/updateGoDaddyData', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         data,
-  //       }),
-  //     })
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
+  const UpdateDB = (data: any) => {
+    try {
+      fetch('/api/firebase/updateGoDaddyData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data,
+        }),
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const defaultColDef = useMemo(() => {
     return {
@@ -139,7 +166,7 @@ export const Receipts = () => {
       sortable: true,
       filter: true,
       autoHeight: true,
-      editable: false,
+      editable: true,
       cellStyle: (params: any) => {
         if (params.data !== undefined && params.data !== null) {
           if (params.data.shippingAddress !== undefined) {
@@ -215,48 +242,6 @@ export const Receipts = () => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const FixCamelCaseName = (name: string) => {
-    const isCamelCase = (str: string) => {
-      return /^[a-z][a-zA-Z0-9]+$/.test(str)
-    }
-    if (!name) return
-    if (name.length === 0) return
-    if (isCamelCase(name)) {
-      const splitName = name.split(/(?=[A-Z])/)
-      return {
-        firstName: splitName[0],
-        lastName: splitName[1],
-      }
-    } else {
-      return {
-        firstName: name,
-        lastName: name,
-      }
-    }
-  }
-  const FixQueryDate = (date: string) => {
-    if (!date) return
-    if (date.length === 0) return
-    if (date.includes('/')) {
-      const splitDate = date.split('/')
-      const tempdate = new Date(
-        Number(splitDate[2]),
-        Number(splitDate[0]) - 1,
-        Number(splitDate[1])
-      )
-      const from = Timestamp.fromDate(tempdate)
-      return from
-    } else {
-      const splitDate = date.split('-')
-      const tempdate = new Date(
-        Number(splitDate[2]),
-        Number(splitDate[0]) - 1,
-        Number(splitDate[1])
-      )
-      const from = Timestamp.fromDate(tempdate)
-      return from
-    }
-  }
   useEffect(() => {
     if (user) {
       const getOrdersFromFirebase = async () => {
@@ -267,11 +252,12 @@ export const Receipts = () => {
         const newFromDate = FixQueryDate(queryObj.fromDate.toString())
         const newToDate = FixQueryDate(queryObj.toDate.toString())
         const queryConstraints: QueryConstraint[] = []
-        if (newFromDate) {
-          queryConstraints.push(where('date', '>=', newFromDate))
-        }
-        if (newToDate) {
-          queryConstraints.push(where('date', '<=', newToDate))
+        if (newFromDate && newToDate) {
+          queryConstraints.push(
+            where('date', '>=', newFromDate),
+            where('date', '<=', newToDate),
+            orderBy('date', 'desc')
+          )
         }
         if (queryConstraints.length === 0) return
         if (queryObj.lastName) {
@@ -285,11 +271,11 @@ export const Receipts = () => {
           )
         }
         if (queryObj.sku) {
-          queryConstraints.push(where('sku', '==', queryObj.sku.toString()))
+          queryConstraints.push(where('products.sku', '==', queryObj.sku.toString()))
         }
         if (queryObj.productName) {
           queryConstraints.push(
-            where('products', 'array-contains', queryObj.productName.toString())
+            where('products.name', '==', queryObj.productName.toString())
           )
         }
         if (queryObj.orderNumber) {
@@ -307,186 +293,69 @@ export const Receipts = () => {
             )
           )
         }
-
         const queryRef = query(colRef, ...queryConstraints)
         const querySnap = await getDocs(queryRef)
-        querySnap.forEach(async (doc) => {
-          const receipt = doc.data()
-          const receiptOrder = receipt as any
-          const fixedName = FixCamelCaseName(receiptOrder.name)
-          const fixedProduct = {}
-          if (!receiptOrder.products) {
-            // a function that pushes each key to the fixedProduct object
-            if (receiptOrder.metaData) {
-              Object.keys(receiptOrder.metaData).forEach((key) => {
-                if (key !== 'qs' && key !== 'selects') {
-                  UniqueProducts(key.toString().replace(/\r|\n/g, ''))
-
-                  if (
-                    //@ts-ignore
-                    receiptOrder.metaData[key] !== undefined &&
-                    //@ts-ignore
-                    receiptOrder.metaData[key] !== null &&
-                    //@ts-ignore
-                    receiptOrder.metaData[key] !== ''
-                  ) {
-                    if (key === 'productName') {
-                      //@ts-ignore
-                      fixedProduct['name'] = receiptOrder.metaData[key].replace(
-                        /\r|\n/g,
-                        ''
-                      )
-                    } else {
-                      //@ts-ignore
-                      fixedProduct[key] = receiptOrder.metaData[key]
+        querySnap.forEach((doc) => {
+          const receiptOrder = doc.data()
+          let newProduct: any = {}
+          let baseProduct: any = {}
+          Object.keys(receiptOrder).forEach((key) => {
+            if (key !== 'products') {
+              if (key === 'orderNumber') {
+                baseProduct[key] = receiptOrder[key]
+                  .toString()
+                  .replace(/\r|\n/g, '')
+                  .replace(/\|/g, '')
+                  .replace(/\*/g, '')
+              } else if (
+                key === 'subTotal' ||
+                key === 'salesTax' ||
+                key === 'orderTotal'
+              ) {
+                const amount = receiptOrder[key].toString().replace(/\r|\n/g, '')
+                if (amount === '') {
+                  baseProduct[key] = '$0.00'
+                } else if (!amount.includes('$')) {
+                  baseProduct[key] = `$${amount}`
+                } else {
+                  baseProduct[key] = amount
+                }
+              } else if (key === '') {
+                baseProduct[key] = receiptOrder[key].toString().replace(/\r|\n/g, '')
+              } else {
+                baseProduct[key] = receiptOrder[key].toString().replace(/\r|\n/g, '')
+              }
+            }
+          })
+          Object.keys(receiptOrder).forEach((key) => {
+            if (key === 'products') {
+              const obj = receiptOrder.products
+              obj.forEach((prod: any) => {
+                Object.keys(prod).forEach((pro) => {
+                  if (pro === 'price') {
+                    const amount = prod[pro].toString().replace(/\r|\n/g, '')
+                    if (amount === '') {
+                      newProduct[pro] = '$0.00'
+                    } else if (!amount.includes('$')) {
+                      newProduct[pro] = `$${amount}`
                     }
+                  } else {
+                    newProduct[pro] = prod[pro].toString().replace(/\r|\n/g, '')
                   }
-                } else if (key === 'selects') {
-                  const arr = receiptOrder.metaData[key]
-
-                  //@ts-ignore
-                  arr.map((val) => {
-                    //@ts-ignore
-                    Object.keys(val).forEach((item) => {
-                      if (val[item] === '' || val[item] === undefined) {
-                        return
-                      } else {
-                        //@ts-ignore
-                        fixedProduct[item] = val[item].replace(/\r|\n/g, '')
-                        UniqueProducts(item.toString().replace(/\r|\n/g, ''))
-                      }
-                    })
-                  })
-                }
-              })
-              if (receiptOrder.plan) {
-                //@ts-ignore
-                fixedProduct['plan'] = receiptOrder.plan
-              }
-              if (receiptOrder.subTotal) {
-                //@ts-ignore
-                fixedProduct['price'] = receiptOrder.subTotal
-              }
-              if (receiptOrder.sku) {
-                //@ts-ignore
-                fixedProduct['sku'] = receiptOrder.sku
-              }
-              if (receiptOrder.status) {
-                //@ts-ignore
-                fixedProduct['status'] = receiptOrder.status
-              }
-              if (receiptOrder.term) {
-                //@ts-ignore
-                fixedProduct['term'] = receiptOrder.term
-              }
-            }
-            if (receiptOrder.billingAddress?.includes('ShippingMethod')) {
-              const splitAddress =
-                receiptOrder.billingAddress.split('ShippingMethod')
-              const billingAddress = splitAddress[0]
-              receiptOrder.billingAddress = billingAddress
-            }
-            if (fixedName?.firstName === fixedName?.lastName) {
-              if (fixedName?.firstName) {
-                const numCaps = (fixedName.firstName.match(/[A-Z]/g) || []).length
-                if (numCaps === 2) {
-                  // index of second capital letter in string example: 'JohnSmith'
-                  const splitIndex = fixedName.firstName
-                    .split('')
-                    .slice(1)
-                    .findIndex((char) => char === char.toUpperCase())
-                  // split string at index of second capital letter
-                  const splitName = [
-                    fixedName.firstName.slice(0, splitIndex + 1),
-                    fixedName.firstName.slice(splitIndex + 1),
-                  ]
-                  if (splitName[0] && splitName[1]) {
-                    fixedName.firstName = splitName[0]
-                    fixedName.lastName = splitName[1]
-                  }
-                }
-              }
-            }
-            const newOrder: OrderWithMetaData = {
-              billingAddress: receiptOrder.billingAddress
-                ? receiptOrder.billingAddress.toString().replace(/\n|\r/g, '')
-                : '',
-              date: receiptOrder.date
-                ? receiptOrder.date.toString().replace(/\n|\r/g, '')
-                : '',
-              email: receiptOrder.email
-                ? receiptOrder.email.toString().replace(/\n|\r/g, '')
-                : '',
-              firstName: fixedName?.firstName
-                ? fixedName.firstName.toString().replace(/\n|\r/g, '')
-                : '',
-              lastName: fixedName?.lastName
-                ? fixedName.lastName.toString().replace(/\n|\r/g, '')
-                : '',
-              orderNumber: receiptOrder.orderNumber
-                ? receiptOrder.orderNumber.toString().replace(/\|/g, '')
-                : '',
-              orderTotal: receiptOrder.orderTotal
-                ? receiptOrder.orderTotal.toString().replace(/\n|\r/g, '')
-                : '',
-              phone: receiptOrder.phone
-                ? receiptOrder.phone.toString().replace(/\n|\r/g, '')
-                : '',
-              products: [{ ...fixedProduct }],
-              salesTax: receiptOrder.salesTax
-                ? receiptOrder.salesTax.toString().replace(/\n|\r/g, '')
-                : '',
-              shippingAddress: receiptOrder.shippingAddress
-                ? receiptOrder.shippingAddress.toString().replace(/\n|\r/g, '')
-                : '',
-              subTotal: receiptOrder.subTotal
-                ? receiptOrder.subTotal.toString().replace(/\n|\r/g, '')
-                : '',
-            }
-
-            const CleanOrder = (order: OrderWithMetaData) => {
-              const newOrder = { ...order }
-              const keys = Object.keys(newOrder)
-              keys.forEach((key) => {
-                //@ts-ignore
-                if (newOrder[key] === undefined || newOrder[key] === null) {
-                  //@ts-ignore
-                  delete newOrder[key]
-                }
-              })
-              // remove all \r and \n from all values
-              const keys2 = Object.keys(newOrder)
-              keys2.forEach((key) => {
-                //@ts-ignore
-                if (typeof newOrder[key] === 'string') {
-                  //@ts-ignore
-                  newOrder[key] = newOrder[key].replace(/\r|\n/gm, '')
-                }
-              })
-
-              return newOrder
-            }
-            data.push(CleanOrder(newOrder))
-          } else {
-            Object.keys(receiptOrder.products).forEach((key) => {
-              UniqueProducts(key.toString().replace(/\r|\n/g, ''))
-            })
-            if (receiptOrder.products.length > 0) {
-              receiptOrder.products.forEach((product: any) => {
-                const newProduct = {}
-                Object.keys(product).forEach((key) => {
-                  //@ts-ignore
-                  newProduct[key] = product[key].toString().replace(/\r|\n/g, '')
-                  UniqueProducts(key.toString().replace(/\r|\n/g, ''))
+                  UniqueProducts(pro.toString().replace(/\r|\n/g, ''))
                 })
               })
+              data.push({ ...baseProduct, ...newProduct })
+              newProduct = {}
             }
-            data.push(receiptOrder)
-          }
+          })
+          baseProduct = {}
         })
+
         generateColumnDefs(data)
         setData(data)
       }
+
       if (queryObj.fromDate && queryObj.toDate) {
         getOrdersFromFirebase()
       }
@@ -504,36 +373,85 @@ export const Receipts = () => {
 
       return true
     })
-    const newColumnDefs: ColDef[] = keys.map((key) => {
-      if (key === 'date') {
-        return {
-          colId: 'date',
-          field: key,
-          headerName: 'Date',
-          sortable: true,
-          filter: true,
-          resizable: true,
-          autoHeight: true,
-          valueFormatter: (params) => {
-            const seconds = params.value.toString().match(/seconds=(\d*)/)
-            const date = new Date(Number(seconds[1]) * 1000)
-            const dateString = date.toLocaleDateString('en-US').replace(/\//g, '-')
-            return dateString
-          },
-        }
-      }
-      if (key === 'products') {
-        return {
-          headerName: 'Products',
-          resizable: true,
-          field: 'products',
-          editable: true,
-          autoHeight: true,
-          cellRenderer: ExpandCollapseCellRenderer,
-        }
-      }
+    keys.map((key) => {
+      UniqueProducts(key)
+    })
 
-      return { field: key }
+    const newColumnDefs: ColDef[] = uniqueProds.map((key) => {
+      switch (key) {
+        case 'date':
+          return {
+            colId: 'date',
+            field: key,
+            headerName: 'Date',
+            sortable: true,
+            filter: true,
+            resizable: true,
+            autoHeight: true,
+            valueFormatter: (params: any) => {
+              const seconds = params.value.toString().match(/seconds=(\d*)/)
+                ? params.value.toString().match(/seconds=(\d*)/)
+                : ['seconds=0', '0']
+              const date = new Date(Number(seconds[1]) * 1000)
+              const dateString = date.toLocaleDateString('en-US').replace(/\//g, '-')
+              return dateString
+            },
+          }
+        case 'name':
+          return {
+            field: key,
+            headerName: 'Product Name',
+            sortable: true,
+            filter: true,
+            resizable: true,
+            autoHeight: true,
+          }
+        case 'subTotal':
+        case 'salesTax':
+        case 'orderTotal':
+        case 'price':
+          return {
+            field: key,
+            headerName: key,
+            sortable: true,
+            resizable: true,
+            autoHeight: true,
+            filter: 'agNumberColumnFilter',
+            comparator: (valueA: any, valueB: any, nodeA: any, nodeB: any) => {
+              if (valueA === undefined || valueB === undefined) return 0
+              if (valueA === null || valueB === null) return 0
+              if (valueA === '' || valueB === '') return 0
+              const numA = valueA.replace(/[^0-9.-]+/g, '')
+              const numB = valueB.replace(/[^0-9.-]+/g, '')
+              return Number(numA) - Number(numB)
+            },
+          }
+        case 'link':
+          return {
+            field: key,
+            headerName: 'Link',
+            sortable: true,
+            resizable: true,
+            autoHeight: true,
+            filter: true,
+            editable: false,
+            cellRenderer: function (params: any) {
+              return (
+                <a href={params.value} target={'_blank'} rel={'noopener noreferrer'}>
+                  {params.value}
+                </a>
+              )
+            },
+          }
+        default:
+          return {
+            field: key,
+            sortable: true,
+            filter: true,
+            resizable: true,
+            autoHeight: true,
+          }
+      }
     })
 
     const ReOrderColumnDefs = (columnDefs: ColDef[]) => {
@@ -550,12 +468,18 @@ export const Receipts = () => {
       ]
       const newColumnDefs2 = newColumnDefs.sort((a, b) => {
         if (!a.field || !b.field) return 0
-        if (!order.includes(a.field) || !order.includes(b.field)) return 0
+        if (!order.includes(a.field) || !order.includes(b.field)) return 1
 
         const aIndex = order.indexOf(a.field)
         const bIndex = order.indexOf(b.field)
 
-        return aIndex - bIndex
+        if (aIndex < bIndex) {
+          return -1
+        } else if (aIndex > bIndex) {
+          return 1
+        } else {
+          return 0
+        }
       })
 
       return newColumnDefs2
@@ -609,16 +533,6 @@ export const Receipts = () => {
   return (
     <div className={styles.container}>
       <FormQuery submitHandler={QuerySubmit} />
-
-      <div className={styles.totalsGridWrapper}>
-        <div className="ag-theme-alpine" style={{ width: screenWidth, height: 100 }}>
-          <AgGridReact
-            rowData={totalsData}
-            columnDefs={totalsColumnDefs}
-            defaultColDef={defaultColDef}
-          />
-        </div>
-      </div>
       <div className={styles.totalsGridWrapper}>
         <input
           type="button"

@@ -38,7 +38,7 @@ const FormQuery = (props: QueryProps) => {
           },
           required: true,
         })}
-        defaultValue={new Date(new Date().setDate(new Date().getDate() - 14))
+        defaultValue={new Date(new Date().setDate(new Date().getDate() - 28))
           .toLocaleDateString('en-US', {
             day: '2-digit',
             month: '2-digit',
