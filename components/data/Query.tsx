@@ -69,11 +69,19 @@ const FormQuery = (props: QueryProps) => {
           .replace(/\//g, '-')}
         placeholder="03-02-2020"
       />
-      <input {...register('sku')} placeholder="SKU" />
-      <input {...register('productName')} placeholder="Product Name" />
+      <input {...register('sku')} placeholder="upcoming feature" disabled={true} />
+      <input
+        {...register('productName')}
+        placeholder="upcoming feature"
+        disabled={true}
+      />
       <input {...register('firstName')} placeholder="First Name" />
       <input {...register('lastName')} placeholder="Last Name" />
-      <input {...register('orderNumber')} placeholder="Order Number" />
+      <input
+        {...register('orderNumber')}
+        placeholder="upcoming feature"
+        disabled={true}
+      />
       {additionalQueryParams && (
         <input
           {...register('additionalQueryParams')}
