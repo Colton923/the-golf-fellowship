@@ -110,11 +110,32 @@ export const Receipts = () => {
     setGridApi(params.api)
   }, [])
 
-  const onFirstDataRendered = useCallback((params: any) => {
-    const { columnApi } = params
-    columnApi.autoSizeAllColumns()
-    columnApi.setColumnGroupOpened('products', false)
-  }, [])
+  const onFirstDataRendered = useCallback(
+    (params: any) => {
+      params.columnApi.autoSizeAllColumns()
+    },
+    [columnDefs]
+  )
+
+  const onRowDataUpdated = useCallback(
+    (params: any) => {
+      const columns = params.columnApi.getAllColumns()
+      const rowNodes = params.api.getRenderedNodes()
+      if (!rowNodes) return
+      columns.forEach((column: any) => {
+        const isColumnEmpty = !rowNodes.some((node: any) => {
+          const value = params.api.getValue(column, node)
+          return typeof value !== 'undefined' && value !== null && value !== ''
+        })
+        if (isColumnEmpty) {
+          params.columnApi.setColumnVisible(column, false)
+        } else {
+          params.columnApi.setColumnVisible(column, true)
+        }
+      })
+    },
+    [columnDefs]
+  )
 
   const UniqueProducts = (products: any) => {
     const newProduct = products
@@ -478,9 +499,9 @@ export const Receipts = () => {
         if (aIndex < bIndex) {
           return -1
         } else if (aIndex > bIndex) {
-          return 1
-        } else {
           return 0
+        } else {
+          return 1
         }
       })
 
@@ -565,6 +586,7 @@ export const Receipts = () => {
             defaultColDef={defaultColDef}
             onFirstDataRendered={onFirstDataRendered}
             rowHeight={75}
+            onRowDataUpdated={onRowDataUpdated}
           />
         </div>
       </div>
