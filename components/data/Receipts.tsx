@@ -62,21 +62,21 @@ export const Receipts = () => {
   const [queryObj, setQueryObj] = useState<FormData>({})
   const [uniqueProds, setUniqueProds] = useState<string[]>(['sku'])
 
+  const order = [
+    'date',
+    'firstName',
+    'lastName',
+    'products',
+    'orderNumber',
+    'subTotal',
+    'salesTax',
+    'orderTotal',
+  ]
+
   const ReOrderColumnDefs = (columnDefs: ColDef[]) => {
-    const newColumnDefs = [...columnDefs]
-    const order = [
-      'date',
-      'firstName',
-      'lastName',
-      'products',
-      'orderNumber',
-      'subTotal',
-      'salesTax',
-      'orderTotal',
-    ]
-    const newColumnDefs2 = newColumnDefs.sort((a, b) => {
-      if (!a.field || !b.field) return 0
-      if (!order.includes(a.field) || !order.includes(b.field)) return 1
+    return columnDefs.sort((a, b) => {
+      if (!a.field || !b.field) return -1
+      if (!order.includes(a.field) || !order.includes(b.field)) return -1
 
       const aIndex = order.indexOf(a.field)
       const bIndex = order.indexOf(b.field)
@@ -84,12 +84,11 @@ export const Receipts = () => {
       if (aIndex < bIndex) {
         return -1
       } else if (aIndex > bIndex) {
-        return 0
-      } else {
         return 1
+      } else {
+        return 0
       }
     })
-    return newColumnDefs2
   }
 
   const FixCamelCaseName = (name: string) => {
@@ -149,7 +148,7 @@ export const Receipts = () => {
 
   const onRowDataUpdated = useCallback(
     (params: any) => {
-      const columns = params.columnApi.getAllColumns()
+      const columns = params.columnApi.getColumns()
       const rowNodes = params.api.getRenderedNodes()
       if (!rowNodes) return
       columns.forEach((column: any) => {
@@ -506,6 +505,7 @@ export const Receipts = () => {
           }
       }
     })
+
     const newDefs = ReOrderColumnDefs(newColumnDefs)
     setColumnDefs(newDefs)
     gridApi?.setRowData(data)
