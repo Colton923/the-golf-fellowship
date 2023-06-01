@@ -62,6 +62,36 @@ export const Receipts = () => {
   const [queryObj, setQueryObj] = useState<FormData>({})
   const [uniqueProds, setUniqueProds] = useState<string[]>(['sku'])
 
+  const ReOrderColumnDefs = (columnDefs: ColDef[]) => {
+    const newColumnDefs = [...columnDefs]
+    const order = [
+      'date',
+      'firstName',
+      'lastName',
+      'products',
+      'orderNumber',
+      'subTotal',
+      'salesTax',
+      'orderTotal',
+    ]
+    const newColumnDefs2 = newColumnDefs.sort((a, b) => {
+      if (!a.field || !b.field) return 0
+      if (!order.includes(a.field) || !order.includes(b.field)) return 1
+
+      const aIndex = order.indexOf(a.field)
+      const bIndex = order.indexOf(b.field)
+
+      if (aIndex < bIndex) {
+        return -1
+      } else if (aIndex > bIndex) {
+        return 0
+      } else {
+        return 1
+      }
+    })
+    return newColumnDefs2
+  }
+
   const FixCamelCaseName = (name: string) => {
     const isCamelCase = (str: string) => {
       return /^[a-z][a-zA-Z0-9]+$/.test(str)
@@ -476,40 +506,8 @@ export const Receipts = () => {
           }
       }
     })
-
-    const ReOrderColumnDefs = (columnDefs: ColDef[]) => {
-      const newColumnDefs = [...columnDefs]
-      const order = [
-        'date',
-        'firstName',
-        'lastName',
-        'products',
-        'orderNumber',
-        'subTotal',
-        'salesTax',
-        'orderTotal',
-      ]
-      const newColumnDefs2 = newColumnDefs.sort((a, b) => {
-        if (!a.field || !b.field) return 0
-        if (!order.includes(a.field) || !order.includes(b.field)) return 1
-
-        const aIndex = order.indexOf(a.field)
-        const bIndex = order.indexOf(b.field)
-
-        if (aIndex < bIndex) {
-          return -1
-        } else if (aIndex > bIndex) {
-          return 0
-        } else {
-          return 1
-        }
-      })
-
-      return newColumnDefs2
-    }
-
-    // update grid api row data
-    setColumnDefs(ReOrderColumnDefs(newColumnDefs))
+    const newDefs = ReOrderColumnDefs(newColumnDefs)
+    setColumnDefs(newDefs)
     gridApi?.setRowData(data)
   }
 
