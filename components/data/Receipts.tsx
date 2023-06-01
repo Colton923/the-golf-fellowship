@@ -271,11 +271,13 @@ export const Receipts = () => {
           )
         }
         if (queryObj.sku) {
-          queryConstraints.push(where('products.sku', '==', queryObj.sku.toString()))
+          queryConstraints.push(
+            where('products', 'array-contains', queryObj.sku.toString())
+          )
         }
         if (queryObj.productName) {
           queryConstraints.push(
-            where('products.name', '==', queryObj.productName.toString())
+            where('products', 'array-contains', queryObj.productName.toString())
           )
         }
         if (queryObj.orderNumber) {
