@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from 'react-hook-form'
-
+import styles from './Query.module.scss'
 export type FormData = {
   fromDate?: string // xx-xx-xxxx
   toDate?: string // xx-xx-xxxx
@@ -25,8 +25,9 @@ const FormQuery = (props: QueryProps) => {
   const dateRegex = /^(\d{1,2}-\d{0,2}-\d{0,4}|\d{1,2}-\d{0,2}|\d{1,2})$/g
 
   return (
-    <form onSubmit={handleSubmit(submitHandler)}>
+    <form onSubmit={handleSubmit(submitHandler)} className={styles.form}>
       <input
+        className={styles.input}
         type="text"
         {...register('fromDate', {
           onChange: (e) => {
@@ -49,6 +50,7 @@ const FormQuery = (props: QueryProps) => {
       />
 
       <input
+        className={styles.input}
         {...register('toDate', {
           onChange: (e) => {
             if (e.target.value.match(dateRegex)) {
@@ -67,28 +69,36 @@ const FormQuery = (props: QueryProps) => {
             year: 'numeric',
           })
           .replace(/\//g, '-')}
-        placeholder="03-02-2020"
       />
-      <input {...register('sku')} placeholder="upcoming feature" disabled={true} />
+      {/* <input {...register('sku')} placeholder="upcoming feature" disabled={true} />
       <input
         {...register('productName')}
         placeholder="upcoming feature"
         disabled={true}
-      />
-      <input {...register('firstName')} placeholder="First Name" />
-      <input {...register('lastName')} placeholder="Last Name" />
+      /> */}
       <input
+        className={styles.input}
+        {...register('firstName')}
+        placeholder="First Name"
+      />
+      <input
+        className={styles.input}
+        {...register('lastName')}
+        placeholder="Last Name"
+      />
+      {/* <input
         {...register('orderNumber')}
         placeholder="upcoming feature"
         disabled={true}
-      />
+      /> */}
       {additionalQueryParams && (
         <input
+          className={styles.input}
           {...register('additionalQueryParams')}
           placeholder={additionalQueryParams}
         />
       )}
-      <input type="submit" />
+      <input className={styles.input} type="submit" />
     </form>
   )
 }

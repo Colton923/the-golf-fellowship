@@ -8,8 +8,8 @@ import {
   query,
   Timestamp,
   QueryConstraint,
-  updateDoc,
   orderBy,
+  limit,
 } from 'firebase/firestore'
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import styles from '../../styles/GoDaddy.module.css'
@@ -22,7 +22,6 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 import FormQuery from './Query'
 import type { FormData } from './Query'
 import { ColDef } from 'ag-grid-community'
-import ExpandCollapseCellRenderer from './ExpandCollapseCellRenderer'
 
 type GoDaddyProduct = Record<string, string>
 export type GoDaddyDoc = {
@@ -64,31 +63,48 @@ export const Receipts = () => {
 
   const order = [
     'date',
+    'name',
     'firstName',
     'lastName',
-    'products',
+    'sidegames',
+    'SIDE GAMES',
+    'teechoice',
+    'TEE CHOICE',
+    'teetime',
+    'TEE TIME',
+    'PLAYING PARTNER REQUEST',
+    'playingpartner request',
+    'playingPartnerRequest',
     'orderNumber',
     'subTotal',
     'salesTax',
     'orderTotal',
+    'price',
   ]
 
   const ReOrderColumnDefs = (columnDefs: ColDef[]) => {
-    return columnDefs.sort((a, b) => {
-      if (!a.field || !b.field) return -1
-      if (!order.includes(a.field) || !order.includes(b.field)) return -1
-
-      const aIndex = order.indexOf(a.field)
-      const bIndex = order.indexOf(b.field)
-
-      if (aIndex < bIndex) {
-        return -1
-      } else if (aIndex > bIndex) {
-        return 1
-      } else {
-        return 0
-      }
+    const firstDefs = columnDefs.filter((col) => {
+      //@ts-ignore
+      return order.includes(col.field)
     })
+    const lastDefs = columnDefs.filter((col) => {
+      //@ts-ignore
+      return !order.includes(col.field)
+    })
+
+    const sortedFirstDefs = firstDefs.sort((a, b) => {
+      //@ts-ignore
+      if (order.indexOf(a.field) < order.indexOf(b.field)) {
+        return -1
+      }
+      //@ts-ignore
+      if (order.indexOf(a.field) > order.indexOf(b.field)) {
+        return 1
+      }
+      return 0
+    })
+
+    return [...sortedFirstDefs, ...lastDefs]
   }
 
   const FixCamelCaseName = (name: string) => {
@@ -296,7 +312,6 @@ export const Receipts = () => {
     if (user) {
       const getOrdersFromFirebase = async () => {
         const colRef = collection(db, 'goDaddy')
-
         if (!queryObj.fromDate) return
         if (!queryObj.toDate) return
         const newFromDate = FixQueryDate(queryObj.fromDate.toString())
@@ -345,6 +360,8 @@ export const Receipts = () => {
             )
           )
         }
+        queryConstraints.push(limit(500))
+
         const queryRef = query(colRef, ...queryConstraints)
         const querySnap = await getDocs(queryRef)
         querySnap.forEach((doc) => {

@@ -32,6 +32,8 @@
     "react-dom": "^18.2.0",
     "react-firebase-hooks": "^5.1.1",
     "react-hook-form": "^7.40.0",
+    "sass": "^1.62.1",
+    "scss": "^0.2.4",
     "stripe": "^11.1.0",
     "typescript": "^4.9.3",
     "vercel": "^19.2.0"
