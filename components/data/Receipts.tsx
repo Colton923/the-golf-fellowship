@@ -60,6 +60,7 @@ export const Receipts = () => {
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([])
   const [queryObj, setQueryObj] = useState<FormData>({})
   const [uniqueProds, setUniqueProds] = useState<string[]>(['sku'])
+  const [pointRaces, setPointRaces] = useState<string[]>([])
 
   const order = [
     'date',
@@ -88,23 +89,49 @@ export const Receipts = () => {
       return order.includes(col.field)
     })
     const lastDefs = columnDefs.filter((col) => {
+      if (pointRaces.includes(col.field as string)) {
+        return true
+      }
+
       //@ts-ignore
       return !order.includes(col.field)
     })
 
     const sortedFirstDefs = firstDefs.sort((a, b) => {
-      //@ts-ignore
-      if (order.indexOf(a.field) < order.indexOf(b.field)) {
+      if (
+        //@ts-ignore
+        order.indexOf(a.field) < order.indexOf(b.field)
+      ) {
         return -1
       }
-      //@ts-ignore
-      if (order.indexOf(a.field) > order.indexOf(b.field)) {
+      if (
+        //@ts-ignore
+        order.indexOf(a.field) > order.indexOf(b.field)
+      ) {
         return 1
       }
+
       return 0
     })
 
-    return [...sortedFirstDefs, ...lastDefs]
+    const sortedLastDefs = lastDefs.sort((a, b) => {
+      if (
+        //@ts-ignore
+        pointRaces.includes(a.field)
+      ) {
+        return -1
+      }
+      if (
+        //@ts-ignore
+        pointRaces.includes(b.field)
+      ) {
+        return 1
+      }
+
+      return 0
+    })
+
+    return [...sortedFirstDefs, ...sortedLastDefs]
   }
 
   const FixCamelCaseName = (name: string) => {
@@ -447,6 +474,37 @@ export const Receipts = () => {
     })
 
     const newColumnDefs: ColDef[] = uniqueProds.map((key) => {
+      const months = [
+        'january',
+        'february',
+        'march',
+        'april',
+        'may',
+        'june',
+        'july',
+        'august',
+        'september',
+        'october',
+        'november',
+        'december',
+      ]
+      const monthKey = months.reduce((acc, month) => {
+        if (key.toLowerCase().includes(month)) {
+          return key
+        }
+        return acc
+      }, '')
+      if (monthKey !== '') {
+        setPointRaces((prev) => [...prev, monthKey])
+        return {
+          field: monthKey,
+          headerName: monthKey,
+          sortable: true,
+          filter: true,
+          resizable: true,
+          autoHeight: true,
+        }
+      }
       switch (key) {
         case 'date':
           return {
