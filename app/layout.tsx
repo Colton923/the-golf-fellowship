@@ -1,3 +1,7 @@
+import Navbar from '@components/navbar/Navbar'
+import styles from '@styles/App.module.css'
+import Login from '@components/login/Login'
+import '@styles/global.css'
 interface Props {
   children: React.ReactNode
 }
@@ -15,7 +19,13 @@ export default async function RootLayout({ children }: Props) {
       <body style={{ margin: 0 }}>
         <div>
           <div>
-            <main>{children}</main>
+            <main>
+              <div className={styles.main}>
+                <Navbar />
+                <Login />
+              </div>
+              {children}
+            </main>
           </div>
         </div>
       </body>

@@ -1,11 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap,400,700');
-
 .main {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-
-  font-family: 'Open Sans', sans-serif;
 
   -ms-overflow-style: none;
   -webkit-appearance: none;
@@ -68,17 +64,21 @@
 .overlayButtonText {
   height: 100%;
   margin: 0;
+  position: relative;
+
   padding: 2px;
   font-weight: 700;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.1rem;
   cursor: pointer;
+
+  border: none;
+  outline: none;
+  background: none;
+
+  z-index: 1;
 }
 
 .whatWeDoSection {

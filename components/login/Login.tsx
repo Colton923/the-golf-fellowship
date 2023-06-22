@@ -2,23 +2,17 @@
 
 import styles from './Login.module.css'
 
-import { useRouter } from 'next/navigation'
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 import { useState, useEffect } from 'react'
+import { useSiteContext } from '@components/context/Context'
 
-interface LoginProps {
-  show: boolean
-  setLoggedInUser: (user: string) => void
-  setShow: (show: boolean) => void
-}
-
-export default function Login(props: LoginProps) {
+export default function Login() {
   const [phone, setPhone] = useState('')
   const [submitPhoneLogin, setSubmitPhoneLogin] = useState(false)
   const [isNumberInDB, setIsNumberInDB] = useState(false)
   const [checked, setChecked] = useState(false)
-
-  const router = useRouter()
+  const { showSignUp, loginMain, setLoggedInUser, setShowSignUp, router } =
+    useSiteContext()
 
   const gotoShop = () => {
     router.replace('/shop')
@@ -72,16 +66,16 @@ export default function Login(props: LoginProps) {
               //@ts-ignore
               .confirm(code)
               .then((result) => {
-                props.setLoggedInUser(result.user.uid)
+                if (setLoggedInUser) setLoggedInUser(result.user.uid)
               })
               .catch(() => {
-                props.setLoggedInUser('')
+                if (setLoggedInUser) setLoggedInUser('')
                 alert('Error confirming code')
               })
           })
           .catch((error) => {
             alert('Error sending SMS')
-            props.setLoggedInUser('')
+            if (setLoggedInUser) setLoggedInUser('')
           })
       }
     }
@@ -91,7 +85,7 @@ export default function Login(props: LoginProps) {
   useEffect(() => {
     const HandleClickBackgroundCover = (e: any) => {
       if (e.target.className === styles.backgroundCover) {
-        props.setShow(false)
+        if (setShowSignUp) setShowSignUp(false)
       }
     }
     window.addEventListener('click', HandleClickBackgroundCover)
@@ -100,13 +94,13 @@ export default function Login(props: LoginProps) {
     }
   }, [])
 
-  if (!props.show) {
-    return <div> </div>
+  if (!showSignUp) {
+    return null
   } else {
     return (
       <>
         <div className={styles.backgroundCover} />
-        <div className={styles.loginMain}>
+        <div className={styles.loginMain} ref={loginMain}>
           <div className={styles.loginContainer}>
             <div className={styles.newUser}>
               <h1 className={styles.headerText}>New User</h1>

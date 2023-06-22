@@ -62,6 +62,21 @@ export const Receipts = () => {
   const [uniqueProds, setUniqueProds] = useState<string[]>(['sku'])
   const [pointRaces, setPointRaces] = useState<string[]>([])
 
+  const months = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december',
+  ]
+
   const order = [
     'date',
     'name',
@@ -474,20 +489,6 @@ export const Receipts = () => {
     })
 
     const newColumnDefs: ColDef[] = uniqueProds.map((key) => {
-      const months = [
-        'january',
-        'february',
-        'march',
-        'april',
-        'may',
-        'june',
-        'july',
-        'august',
-        'september',
-        'october',
-        'november',
-        'december',
-      ]
       const monthKey = months.reduce((acc, month) => {
         if (key.toLowerCase().includes(month)) {
           return key

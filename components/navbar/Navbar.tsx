@@ -1,22 +1,21 @@
 'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useSiteContext } from 'components/context/Context'
 
 import styles from './Navbar.module.css'
-
-import logo from '@public/static/images/tgf_logo.jpg'
 
 import { auth } from '../../firebase/firebaseClient'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useEffect, useState } from 'react'
-
-export interface NavbarProps {
-  showLogin?: () => void
-}
-
-export default function Navbar(props: NavbarProps) {
+import { Notification } from '@mantine/core'
+import type { NotificationProps } from '@mantine/core'
+export default function Navbar() {
   const [user] = useAuthState(auth)
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const { setShowSignUp, showSignUp } = useSiteContext()
+  const [showNotification, setShowNotification] = useState(true)
 
   useEffect(() => {
     if (user) {
@@ -33,6 +32,8 @@ export default function Navbar(props: NavbarProps) {
       ) {
         setIsAdmin(true)
       }
+    } else {
+      setIsAdmin(false)
     }
   }, [user])
 
@@ -40,104 +41,128 @@ export default function Navbar(props: NavbarProps) {
     auth.signOut()
   }
 
+  if (!isAdmin) return null
+
   return (
-    <div className={styles.navbarMain}>
-      <div className={styles.navbarContainer}>
-        <div className={styles.navbarImageWrapper}>
-          {/* SVG Hamburger Icon */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={styles.navbarImage}
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            onClick={() => {
-              if (props.showLogin) props.showLogin()
-            }}
-          >
-            <path
-              fillRule="evenodd"
-              d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-        <nav className={styles.navbar}>
-          {!user ? (
-            <>
-              <div className={styles.navbarTextWrapper}>
-                <h1
-                  onClick={() => {
-                    if (props.showLogin) props.showLogin()
-                  }}
-                  className={styles.navbarLink}
-                  key={'nav2'}
-                  style={{ cursor: 'pointer' }}
-                >
-                  Login
-                </h1>
-              </div>
-              <div className={styles.navbarTextWrapper}>
-                <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
-                  Shop
-                </Link>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className={styles.navbarTextWrapper}>
-                <Link href="/" className={styles.navbarLink} key={'nav1'}>
-                  Home
-                </Link>
-              </div>
-              <div className={styles.navbarTextWrapper} key={'nav2'}>
-                <Link href="/" className={styles.navbarLink} onClick={signOut}>
-                  Logout
-                </Link>
-              </div>
-              <div className={styles.navbarTextWrapper}>
-                <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
-                  Shop
-                </Link>
-              </div>
-            </>
-          )}
-        </nav>
-      </div>
-      {isAdmin && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            height: '100%',
-            width: '100%',
-            margin: '0',
-            backgroundImage:
-              'linear-gradient(45deg, rgba(255, 255, 255, 0.01) 1%, rgba(255, 255, 255, 0.1) 70%)',
-            backgroundSize: '3px',
-            backdropFilter: 'blur(15px)',
-            boxShadow: ' 0 4px 10px 2px rgba(0, 0, 0, 0.6)',
-          }}
-        >
-          <nav
-            className={styles.navbar}
-            style={{
-              justifyContent: 'space-evenly',
-              marginLeft: '5%',
-            }}
-          >
-            <div className={styles.navbarTextWrapper} key={'nav3'}>
-              <Link href="/admin" className={styles.navbarLink}>
-                Admin
-              </Link>
-            </div>
-            <div className={styles.navbarTextWrapper} key={'nav5'}>
-              <Link href="/godaddy" className={styles.navbarLink}>
-                GoDaddy
-              </Link>
-            </div>
+    <>
+      <div className={styles.navbarMain}>
+        <div className={styles.navbarContainer}>
+          <div className={styles.navbarImageWrapper}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={styles.navbarImage}
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              onClick={() => {
+                if (setShowSignUp !== undefined && showSignUp !== undefined)
+                  setShowSignUp(showSignUp)
+              }}
+            >
+              <path
+                fillRule="evenodd"
+                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 6a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <nav className={styles.navbar}>
+            {!user && (
+              <>
+                <div className={styles.navbarTextWrapper}>
+                  <h1
+                    onClick={() => {
+                      if (setShowSignUp !== undefined && showSignUp !== undefined)
+                        setShowSignUp(showSignUp)
+                    }}
+                    className={styles.navbarLink}
+                    key={'nav2'}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Login
+                  </h1>
+                </div>
+                <div className={styles.navbarTextWrapper}>
+                  <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
+                    Shop
+                  </Link>
+                </div>
+              </>
+            )}
+            {!isAdmin && user && (
+              <>
+                <div className={styles.navbarTextWrapper}>
+                  <Link href="/" className={styles.navbarLink} key={'nav1'}>
+                    Home
+                  </Link>
+                </div>
+                <div className={styles.navbarTextWrapper} key={'nav2'}>
+                  <Link href="/" className={styles.navbarLink} onClick={signOut}>
+                    Logout
+                  </Link>
+                </div>
+                <div className={styles.navbarTextWrapper}>
+                  <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
+                    Shop
+                  </Link>
+                </div>
+              </>
+            )}
+            {isAdmin && user && (
+              <>
+                <div className={styles.navbarTextWrapper}>
+                  <Link href="/" className={styles.navbarLink} key={'nav1'}>
+                    Home
+                  </Link>
+                </div>
+                <div className={styles.navbarTextWrapper} key={'nav2'}>
+                  <Link href="/" className={styles.navbarLink} onClick={signOut}>
+                    Logout
+                  </Link>
+                </div>
+                <div className={styles.navbarTextWrapper}>
+                  <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
+                    Shop
+                  </Link>
+                </div>
+                <div className={styles.navbarTextWrapper} key={'nav3'}>
+                  <Link href="/test" className={styles.navbarLink}>
+                    Test
+                  </Link>
+                </div>
+                <div className={styles.navbarTextWrapper} key={'nav5'}>
+                  <Link href="/godaddy" className={styles.navbarLink}>
+                    GoDaddy
+                  </Link>
+                </div>
+              </>
+            )}
           </nav>
         </div>
+      </div>
+      {user !== null && user !== undefined && showNotification && (
+        <Notification
+          onClose={() => setShowNotification(false)}
+          title={
+            user?.displayName
+              ? `Welcome ${user?.displayName}`
+              : user?.phoneNumber
+              ? `Welcome ${user?.phoneNumber}`
+              : `Welcome back.`
+          }
+          color="white"
+          style={{
+            backgroundColor: 'rgb(100, 100, 100)',
+            bottom: '0',
+            position: 'fixed',
+            zIndex: 100,
+            width: '100%',
+            textAlign: 'center',
+          }}
+        >
+          Thank you for being a member since {user?.metadata.creationTime}. Your last
+          login was {user?.metadata.lastSignInTime}.
+        </Notification>
       )}
-    </div>
+    </>
   )
 }

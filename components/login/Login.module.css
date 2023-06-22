@@ -1,8 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
-
 .loginMain {
-  font-family: 'Open Sans', sans-serif;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
