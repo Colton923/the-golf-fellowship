@@ -11,7 +11,6 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         withGlobalStyles
         withNormalizeCSS
         theme={{
-          colorScheme: 'dark',
           fontFamily: 'Open Sans, sans-serif',
           lineHeight: '1.5',
         }}

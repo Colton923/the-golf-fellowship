@@ -32,37 +32,7 @@ export default function Page() {
   }
 
   if (isAdmin) {
-    return (
-      <div>
-        {/* <input
-          type="button"
-          value="Clean"
-          onClick={() => {
-            fetch('/api/firebase/cleanGoDaddyData', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({}),
-            }).then((res) => {
-              res
-                .json()
-                .then((data) => {
-                  if (data.deleteCount === 0) {
-                    alert('No data to delete')
-                  } else {
-                    alert(data.message + ' ' + data.deleteCount)
-                  }
-                })
-                .catch((error) => {
-                  alert(error)
-                })
-            })
-          }}
-        /> */}
-        <Receipts />
-      </div>
-    )
+    return <Receipts />
   } else {
     return (
       <div>
