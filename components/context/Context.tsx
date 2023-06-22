@@ -9,7 +9,7 @@ import {
   useRef,
   createContext,
 } from 'react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { auth } from '../../firebase/firebaseClient'
 import { useForm } from 'react-hook-form'
 
@@ -82,13 +82,13 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 
   const loginMain = useRef(null)
   const handleClickOffLoginMain = (e: any) => {
-    if (
-      loginMain.current &&
-      //@ts-ignore
-      !loginMain.current.contains(e.target) &&
-      //@ts-ignore
-      !navbarRef.current.contains(e.target)
-    ) {
+    if (loginMain.current) {
+      if (e.target === loginMain.current) {
+        setShowSignupMenu(false)
+      } else {
+        setShowSignupMenu(true)
+      }
+    } else {
       setShowSignupMenu(false)
     }
   }

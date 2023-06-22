@@ -1,20 +1,27 @@
 'use client'
+import Navbar from '@components/navbar/Navbar'
+import styles from '@styles/App.module.css'
 
 import { MantineProvider } from '@mantine/core'
-
+import { ContextProvider } from './Context'
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <MantineProvider
-      withGlobalStyles
-      withNormalizeCSS
-      theme={{
-        colorScheme: 'dark',
-        fontFamily: 'Open Sans, sans-serif',
-        lineHeight: '1.5',
-      }}
-    >
-      {children}
-    </MantineProvider>
+    <ContextProvider>
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          colorScheme: 'dark',
+          fontFamily: 'Open Sans, sans-serif',
+          lineHeight: '1.5',
+        }}
+      >
+        <div className={styles.main}>
+          <Navbar />
+        </div>
+        {children}
+      </MantineProvider>
+    </ContextProvider>
   )
 }
 

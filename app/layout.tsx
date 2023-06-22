@@ -1,6 +1,5 @@
-import Navbar from '@components/navbar/Navbar'
-import styles from '@styles/App.module.css'
-import Login from '@components/login/Login'
+import Providers from '@components/context/Providers'
+
 import '@styles/global.css'
 
 interface Props {
@@ -21,11 +20,7 @@ export default async function RootLayout({ children }: Props) {
         <div>
           <div>
             <main>
-              <div className={styles.main}>
-                <Navbar />
-                <Login />
-              </div>
-              {children}
+              <Providers>{children}</Providers>
             </main>
           </div>
         </div>

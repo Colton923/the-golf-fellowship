@@ -1,9 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useSiteContext } from 'components/context/Context'
-
+import Login from '@components/login/Login'
 import styles from './Navbar.module.css'
 
 import { auth } from '../../firebase/firebaseClient'
@@ -40,9 +39,14 @@ export default function Navbar() {
   const signOut = () => {
     auth.signOut()
   }
+  const HandleLogin = () => {
+    if (!setShowSignUp) return
+    setShowSignUp(!showSignUp)
+  }
 
   return (
     <>
+      {showSignUp && <Login />}
       <div className={styles.navbarMain}>
         <div className={styles.navbarContainer}>
           <div className={styles.navbarImageWrapper}>
@@ -53,7 +57,7 @@ export default function Navbar() {
               fill="currentColor"
               onClick={() => {
                 if (setShowSignUp !== undefined && showSignUp !== undefined)
-                  setShowSignUp(showSignUp)
+                  setShowSignUp(!showSignUp)
               }}
             >
               <path
@@ -69,12 +73,16 @@ export default function Navbar() {
                 <div className={styles.navbarTextWrapper}>
                   <h1
                     onClick={() => {
-                      if (setShowSignUp !== undefined && showSignUp !== undefined)
-                        setShowSignUp(showSignUp)
+                      HandleLogin()
                     }}
                     className={styles.navbarLink}
                     key={'nav2'}
-                    style={{ cursor: 'pointer' }}
+                    style={{
+                      cursor: 'pointer',
+                      border: 'none',
+                      background: 'none',
+                      outline: 'none',
+                    }}
                   >
                     Login
                   </h1>
@@ -145,7 +153,7 @@ export default function Navbar() {
               ? `Welcome ${user?.displayName}`
               : user?.phoneNumber
               ? `Welcome ${user?.phoneNumber}`
-              : `Welcome back.`
+              : `Welcome.`
           }
           color="white"
           style={{
@@ -157,8 +165,11 @@ export default function Navbar() {
             textAlign: 'center',
           }}
         >
-          Thank you for being a member since {user?.metadata.creationTime}. Your last
-          login was {user?.metadata.lastSignInTime}.
+          {user &&
+            `
+          Thank you for being a member since ${user?.metadata.creationTime}. Your last
+          login was ${user?.metadata.lastSignInTime}.
+          `}
         </Notification>
       )}
     </>

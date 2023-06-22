@@ -92,78 +92,74 @@ export default function Login() {
     return () => {
       window.removeEventListener('click', HandleClickBackgroundCover)
     }
-  }, [])
+  }, [showSignUp])
 
-  if (!showSignUp) {
-    return null
-  } else {
-    return (
-      <>
-        <div className={styles.backgroundCover} />
-        <div className={styles.loginMain} ref={loginMain}>
-          <div className={styles.loginContainer}>
-            <div className={styles.newUser}>
-              <h1 className={styles.headerText}>New User</h1>
+  return (
+    <>
+      <div className={styles.backgroundCover} />
+      <div className={styles.loginMain} ref={loginMain}>
+        <div className={styles.loginContainer}>
+          <div className={styles.newUser}>
+            <h1 className={styles.headerText}>New User</h1>
+            <div className={styles.loginButtonWrapper}>
+              <input
+                type="button"
+                value="REGISTER"
+                onClick={gotoShop}
+                className={styles.loginButton}
+              />
+            </div>
+          </div>
+          <div className={styles.divBetweenDivsDiv}>
+            <div className={styles.divBetweenDivsOneTwoThree} />
+            <h1 className={styles.orText}>OR</h1>
+            <div className={styles.divBetweenDivsOneTwoThree} />
+          </div>
+          <div className={styles.returningUser}>
+            <h1 className={styles.headerText}>Returning User</h1>
+            <div className={styles.returningUserOptions}>
+              <div className={styles.returningUserOptionTwo}>
+                <input
+                  id="recaptcha-container"
+                  type="tel"
+                  placeholder="123-456-7890"
+                  className={styles.returningUserInput}
+                  onChange={(e) => {
+                    e.target.value = e.target.value.replace(/[^0-9,-]/g, '')
+                    if (e.target.value.length > 12) {
+                      e.target.value = e.target.value.slice(0, 12)
+                    }
+                    if (e.target.value.length === 3) {
+                      if (e.target.value[2] !== '-') {
+                        e.target.value = e.target.value + '-'
+                      }
+                    }
+                    if (e.target.value.length === 7) {
+                      if (e.target.value[6] !== '-') {
+                        e.target.value = e.target.value + '-'
+                      }
+                    }
+                    setPhone('+1' + e.target.value)
+                  }}
+                  onClick={() => {
+                    setSubmitPhoneLogin(false)
+                  }}
+                />
+              </div>
               <div className={styles.loginButtonWrapper}>
                 <input
                   type="button"
-                  value="REGISTER"
-                  onClick={gotoShop}
+                  value="Sign in With Phone"
+                  onClick={() => {
+                    setSubmitPhoneLogin(true)
+                  }}
                   className={styles.loginButton}
                 />
               </div>
             </div>
-            <div className={styles.divBetweenDivsDiv}>
-              <div className={styles.divBetweenDivsOneTwoThree} />
-              <h1 className={styles.orText}>OR</h1>
-              <div className={styles.divBetweenDivsOneTwoThree} />
-            </div>
-            <div className={styles.returningUser}>
-              <h1 className={styles.headerText}>Returning User</h1>
-              <div className={styles.returningUserOptions}>
-                <div className={styles.returningUserOptionTwo}>
-                  <input
-                    id="recaptcha-container"
-                    type="tel"
-                    placeholder="123-456-7890"
-                    className={styles.returningUserInput}
-                    onChange={(e) => {
-                      e.target.value = e.target.value.replace(/[^0-9,-]/g, '')
-                      if (e.target.value.length > 12) {
-                        e.target.value = e.target.value.slice(0, 12)
-                      }
-                      if (e.target.value.length === 3) {
-                        if (e.target.value[2] !== '-') {
-                          e.target.value = e.target.value + '-'
-                        }
-                      }
-                      if (e.target.value.length === 7) {
-                        if (e.target.value[6] !== '-') {
-                          e.target.value = e.target.value + '-'
-                        }
-                      }
-                      setPhone('+1' + e.target.value)
-                    }}
-                    onClick={() => {
-                      setSubmitPhoneLogin(false)
-                    }}
-                  />
-                </div>
-                <div className={styles.loginButtonWrapper}>
-                  <input
-                    type="button"
-                    value="Sign in With Phone"
-                    onClick={() => {
-                      setSubmitPhoneLogin(true)
-                    }}
-                    className={styles.loginButton}
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-      </>
-    )
-  }
+      </div>
+    </>
+  )
 }

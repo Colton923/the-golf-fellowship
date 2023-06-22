@@ -1,3 +1,5 @@
+'use client'
+
 import styles from '@styles/App.module.css'
 import Video from '@components/video/Video'
 import Image from 'next/image'
