@@ -10,7 +10,7 @@ import { auth } from '../../firebase/firebaseClient'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useEffect, useState } from 'react'
 import { Notification } from '@mantine/core'
-import type { NotificationProps } from '@mantine/core'
+
 export default function Navbar() {
   const [user] = useAuthState(auth)
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
@@ -40,8 +40,6 @@ export default function Navbar() {
   const signOut = () => {
     auth.signOut()
   }
-
-  if (!isAdmin) return null
 
   return (
     <>
@@ -139,7 +137,7 @@ export default function Navbar() {
           </nav>
         </div>
       </div>
-      {user !== null && user !== undefined && showNotification && (
+      {showNotification && (
         <Notification
           onClose={() => setShowNotification(false)}
           title={
