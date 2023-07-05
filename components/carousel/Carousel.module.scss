@@ -1,0 +1,25 @@
+@keyframes letterAnimation {
+  0% {
+    transform: scale(4);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.letter {
+  // other styles...
+
+  &.active {
+    animation: letterAnimation 1s ease-in-out forwards;
+  }
+
+  .definition {
+    animation: definitionAnimation 1s ease-in-out forwards 1s;
+  }
+}

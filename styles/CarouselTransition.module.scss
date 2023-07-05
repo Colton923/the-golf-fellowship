@@ -1,0 +1,34 @@
+.transitionIn {
+  animation: TransitionIn .3s linear forwards;
+  transition: all;
+
+  @keyframes TransitionIn {
+    0% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+}
+
+.transitionOut {
+  animation: TransitionOut 1.1s linear forwards;
+  transition: all;
+
+  @keyframes TransitionOut {
+    0% {
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+}

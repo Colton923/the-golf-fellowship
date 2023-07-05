@@ -4,3 +4,185 @@
   box-sizing: border-box;
   font-family: 'Open Sans', sans-serif;
 }
+
+body {
+  background-color: #000;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 0;
+    border: none;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:active {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:window-inactive {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-button:start {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-button:end {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-button:horizontal {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-button:vertical {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-button:decrement {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-button:increment {
+    display: none;
+  }
+
+
+  &::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track-piece:start {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track-piece:end {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track-piece:horizontal {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track-piece:vertical {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track-piece:decrement {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-track-piece:increment {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:start {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:end {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:horizontal {
+    background-color: transparent;
+  }
+
+
+  &::-webkit-scrollbar-thumb:vertical {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:decrement {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb:increment {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:horizontal {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:vertical {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:start {
+    background-color: transparent;
+  }
+
+
+  &::-webkit-scrollbar-corner:end {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:decrement {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:increment {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:window-inactive {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:horizontal:window-inactive {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:vertical:window-inactive {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:start:window-inactive {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:end:window-inactive {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-corner:decrement:window-inactive {
+    background-color: transparent;
+  }
+
+
+
+
+}

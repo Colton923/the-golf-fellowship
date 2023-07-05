@@ -98,23 +98,26 @@ export default async function getAllEventDates(findMonth: number, findYear: numb
         const roundYear = roundDate[0]
         const roundMonth = roundDate[1]
         const roundDay = roundDate[2]
+
         if (
-          roundYear === findYear.toString() &&
-          roundMonth === (findMonth + 1).toString()
+          parseInt(roundYear) === findYear &&
+          parseInt(roundMonth) === findMonth + 1
         ) {
+          console.log('found')
           const dateString = `${roundMonth}/${roundDay}/${roundYear}`
           dateArray.push({
             date: dateString,
             name: round.name,
             divisions: round.playing_divisions,
           })
+        } else {
         }
       })
       return dateArray
     })
   }
   const allRounds = async () => {
-    await Promise.all(data.map(eachRound))
+    await Promise.all(data.map((id: string) => eachRound(id)))
   }
   await allRounds()
   return dateArray

@@ -15,15 +15,15 @@ export default async function RootLayout({ children }: Props) {
           content="width=device-width, initial-scale=1, maximum-scale=1"
         />
         <meta name="description" content="The Golf Fellowship" />
+        <meta name="author" content="Colton McClintock" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="icon" href="static/images/favicon.ico" />
+        <title>The Golf Fellowship</title>
       </head>
-      <body style={{ margin: 0 }}>
-        <div>
-          <div>
-            <main>
-              <Providers>{children}</Providers>
-            </main>
-          </div>
-        </div>
+      <body>
+        <main>
+          <Providers>{children}</Providers>
+        </main>
       </body>
     </html>
   )

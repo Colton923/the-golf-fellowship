@@ -2,7 +2,7 @@
 import Navbar from '@components/navbar/Navbar'
 import styles from '@styles/App.module.css'
 
-import { MantineProvider } from '@mantine/core'
+import { MantineProvider, AppShell } from '@mantine/core'
 import { ContextProvider } from './Context'
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (

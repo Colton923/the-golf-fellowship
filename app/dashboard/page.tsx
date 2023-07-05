@@ -10,7 +10,7 @@ import { auth } from '../../firebase/firebaseClient'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useRouter } from 'next/navigation'
 
-import { Calendar } from '@components/calendar/Calendar'
+import { CalendarComponent } from '@components/calendar/Calendar'
 import { Account } from '@components/account/Account'
 
 export default function Page() {
@@ -148,7 +148,7 @@ export default function Page() {
                 <Account />
               </div>
               <div className={calendar ? styles.card : styles.hidden}>
-                <Calendar />
+                <CalendarComponent />
               </div>
               <div className={placeholder ? styles.card : styles.hidden}>
                 placeholder card
