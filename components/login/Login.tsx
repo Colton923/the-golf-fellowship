@@ -5,7 +5,17 @@ import styles from './Login.module.css'
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 import { useState, useEffect } from 'react'
 import { useSiteContext } from '@components/context/Context'
-
+import {
+  Container,
+  Modal,
+  Flex,
+  Group,
+  Input,
+  InputBase,
+  Text,
+  Space,
+} from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 export default function Login() {
   const [phone, setPhone] = useState('')
   const [submitPhoneLogin, setSubmitPhoneLogin] = useState(false)
@@ -13,7 +23,7 @@ export default function Login() {
   const [checked, setChecked] = useState(false)
   const { showSignUp, loginMain, setLoggedInUser, setShowSignUp, router } =
     useSiteContext()
-
+  const [opened, { open, close }] = useDisclosure(true)
   const gotoShop = () => {
     router.replace('/shop')
   }
@@ -95,71 +105,77 @@ export default function Login() {
   }, [showSignUp])
 
   return (
-    <>
-      <div className={styles.backgroundCover} />
-      <div className={styles.loginMain} ref={loginMain}>
-        <div className={styles.loginContainer}>
-          <div className={styles.newUser}>
-            <h1 className={styles.headerText}>New User</h1>
-            <div className={styles.loginButtonWrapper}>
+    <Modal
+      centered
+      opened={opened}
+      onClose={close}
+      overlayProps={{
+        color: 'transparent',
+        opacity: 0.55,
+        blur: 3,
+      }}
+    >
+      <Container ref={loginMain} size={'xl'}>
+        <Flex direction={'column'} justify={'space-between'}>
+          <Container
+            size={'xl'}
+            style={{ border: '1px solid black', borderRadius: '5px' }}
+          >
+            <Space h={20} />
+            <Text>New User Registration</Text>
+            <Space h={20} />
+            <Group position="center">
+              <Input type="button" value="Register" onClick={gotoShop} />
+            </Group>
+            <Space h={20} />
+          </Container>
+          <Space h={20} />
+          <Container
+            size={'xl'}
+            style={{ border: '1px solid black', borderRadius: '5px' }}
+          >
+            <Space h={20} />
+            <Text>Returning User Sign In</Text>
+            <Space h={20} />
+            <Group>
               <input
-                type="button"
-                value="REGISTER"
-                onClick={gotoShop}
-                className={styles.loginButton}
+                id="recaptcha-container"
+                type="tel"
+                placeholder="123-456-7890"
+                onChange={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9,-]/g, '')
+                  if (e.target.value.length > 12) {
+                    e.target.value = e.target.value.slice(0, 12)
+                  }
+                  if (e.target.value.length === 3) {
+                    if (e.target.value[2] !== '-') {
+                      e.target.value = e.target.value + '-'
+                    }
+                  }
+                  if (e.target.value.length === 7) {
+                    if (e.target.value[6] !== '-') {
+                      e.target.value = e.target.value + '-'
+                    }
+                  }
+                  setPhone('+1' + e.target.value)
+                }}
+                onClick={() => {
+                  setSubmitPhoneLogin(false)
+                }}
               />
-            </div>
-          </div>
-          <div className={styles.divBetweenDivsDiv}>
-            <div className={styles.divBetweenDivsOneTwoThree} />
-            <h1 className={styles.orText}>OR</h1>
-            <div className={styles.divBetweenDivsOneTwoThree} />
-          </div>
-          <div className={styles.returningUser}>
-            <h1 className={styles.headerText}>Returning User</h1>
-            <div className={styles.returningUserOptions}>
-              <div className={styles.returningUserOptionTwo}>
-                <input
-                  id="recaptcha-container"
-                  type="tel"
-                  placeholder="123-456-7890"
-                  className={styles.returningUserInput}
-                  onChange={(e) => {
-                    e.target.value = e.target.value.replace(/[^0-9,-]/g, '')
-                    if (e.target.value.length > 12) {
-                      e.target.value = e.target.value.slice(0, 12)
-                    }
-                    if (e.target.value.length === 3) {
-                      if (e.target.value[2] !== '-') {
-                        e.target.value = e.target.value + '-'
-                      }
-                    }
-                    if (e.target.value.length === 7) {
-                      if (e.target.value[6] !== '-') {
-                        e.target.value = e.target.value + '-'
-                      }
-                    }
-                    setPhone('+1' + e.target.value)
-                  }}
-                  onClick={() => {
-                    setSubmitPhoneLogin(false)
-                  }}
-                />
-              </div>
-              <div className={styles.loginButtonWrapper}>
-                <input
-                  type="button"
-                  value="Sign in With Phone"
-                  onClick={() => {
-                    setSubmitPhoneLogin(true)
-                  }}
-                  className={styles.loginButton}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+            </Group>
+            <Space h={20} />
+            <Input
+              type="button"
+              value="Sign in"
+              onClick={() => {
+                setSubmitPhoneLogin(true)
+              }}
+            />
+            <Space h={20} />
+          </Container>
+        </Flex>
+      </Container>
+    </Modal>
   )
 }

@@ -4,7 +4,8 @@ import styles from './Calendar.module.css'
 import getAllLeagueDates from './allLeagueDates'
 import getAllEventDates from './allEventDates'
 import { Calendar } from '@mantine/dates'
-import { Indicator, Text } from '@mantine/core'
+import { Badge, Indicator, Text, Flex } from '@mantine/core'
+import Link from 'next/link'
 const today = new Date()
 
 type CalendarProps = {
@@ -46,14 +47,6 @@ export const CalendarComponent = () => {
   const [eventNameColors, setEventNameColors] = useState({} as EventNameColors)
   const [roundEvents, setRoundEvents] = useState([] as EventRound[])
   const [loading, setLoading] = useState(true)
-  // console.log('selectedMonth', selectedMonth)
-  // console.log('selectedYear', selectedYear)
-  // console.log('selectedDate', selectedDate)
-  // console.log('footerItems', footerItems)
-  // console.log('calendarProps', calendarProps)
-  // console.log('eventNameColors', eventNameColors)
-  // console.log('roundEvents', roundEvents)
-  // console.log('loading', loading)
 
   //set roundEvents Data
   useEffect(() => {
@@ -99,32 +92,32 @@ export const CalendarComponent = () => {
     setCalendarProps(calendarProps)
     setLoading(false)
   }, [roundEvents])
+
   const FooterItemsComponent = () => {
     if (footerItems.length === 0) return <></>
     return (
       <>
-        <Text>Events on this day:</Text>
+        <Text>Click to view event</Text>
         <Text>
           {months[selectedMonth]} {selectedDate}, {selectedYear}
         </Text>
-        {footerItems.map((item) => {
-          return (
-            <div
-              key={item.date}
-              style={{
-                backgroundColor: eventNameColors[item.date.split('/')[1]] ?? 'black',
-                borderRadius: '5px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                margin: '5px',
-                padding: '5px',
-              }}
-            >
-              <Text>{item.name}</Text>
-            </div>
-          )
-        })}
+        <Flex direction={'column'} align={'center'}>
+          {footerItems.map((item) => {
+            return (
+              <Link
+                key={item.date}
+                href={`https://thegolffellowship.com/shop/ols/search?keywords=${item.name
+                  .replace(' ', '')
+                  .replace(' ', '')
+                  .toLowerCase()}`}
+              >
+                <Badge color={'dark'} h={'auto'} radius={'sm'} m={'sm'}>
+                  <Text>{item.name}</Text>
+                </Badge>
+              </Link>
+            )
+          })}
+        </Flex>
       </>
     )
   }
@@ -138,6 +131,8 @@ export const CalendarComponent = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        wordWrap: 'break-word',
+        padding: '10px',
       }}
     >
       <Calendar
@@ -164,13 +159,15 @@ export const CalendarComponent = () => {
           )?.name
           if (EventName) {
             return (
-              <Indicator
-                size={5}
-                color={eventNameColors[day.getDate()] ?? 'black'}
-                offset={-2}
+              <Badge
+                variant="gradient"
+                gradient={{
+                  from: eventNameColors[day.getDate()] ?? 'black',
+                  to: 'gray',
+                }}
               >
                 {day.getDate()}
-              </Indicator>
+              </Badge>
             )
           }
         }}
