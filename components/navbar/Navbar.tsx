@@ -87,7 +87,7 @@ export default function Navbar() {
                     className="cls-1"
                     d="M1.5,23.48l.37-2.05A10.3,10.3,0,0,1,12,13h0a10.3,10.3,0,0,1,10.13,8.45l.37,2.05"
                   />
-                  <text x="5" y="23" fill="red" fontSize={'4px'}>
+                  <text x="5" y="23" fill="black" fontSize={'4px'}>
                     Login
                   </text>
                 </svg>
@@ -184,7 +184,7 @@ export default function Navbar() {
                     fill="none"
                     d="M1.5,23.48l.37-2.05A10.3,10.3,0,0,1,12,13h0a10.3,10.3,0,0,1,10.13,8.45l.37,2.05"
                   />
-                  <text x="3" y="23" fill="red" fontSize={'4px'}>
+                  <text x="3" y="23" fill="black" fontSize={'4px'}>
                     Logout
                   </text>
                 </svg>
