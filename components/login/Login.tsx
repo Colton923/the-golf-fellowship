@@ -119,10 +119,21 @@ export default function Login() {
         <Flex direction={'column'} justify={'space-between'}>
           <Container
             size={'xl'}
-            style={{ border: '1px solid black', borderRadius: '5px' }}
+            bg={
+              'linear-gradient(to right top, #243f3c, #214043, #204149, #24414f, #2b4053, #2b3c51, #2c384e, #2d344b, #242c44, #1a253c, #101e35, #05172e)'
+            }
+            style={{
+              border: '1px solid black',
+              backgroundBlendMode: 'color',
+              boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
+              margin: '10px',
+              borderRadius: '5px',
+              backdropFilter: 'blur(5px)',
+              mixBlendMode: 'multiply',
+            }}
           >
             <Space h={20} />
-            <Text>New User Registration</Text>
+            <Text c={'white'}>New User Registration</Text>
             <Space h={20} />
             <Group position="center">
               <Input type="button" value="Register" onClick={gotoShop} />
@@ -132,10 +143,21 @@ export default function Login() {
           <Space h={20} />
           <Container
             size={'xl'}
-            style={{ border: '1px solid black', borderRadius: '5px' }}
+            bg={
+              'linear-gradient(to right bottom, #263d3b, #214143, #1f4148, #234250, #2c4054, #2d3d52, #2d3850, #2e344d, #262d46, #1b263f, #121e38, #071731)'
+            }
+            style={{
+              border: '1px solid black',
+              backgroundBlendMode: 'color',
+              boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
+              margin: '10px',
+              borderRadius: '5px',
+              backdropFilter: 'blur(5px)',
+              mixBlendMode: 'multiply',
+            }}
           >
             <Space h={20} />
-            <Text>Returning User Sign In</Text>
+            <Text c={'white'}>Returning User Sign In</Text>
             <Space h={20} />
             <Group>
               <input
