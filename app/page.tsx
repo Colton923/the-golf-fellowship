@@ -1,10 +1,10 @@
 'use client'
 
 import Video from '@components/video/Video'
-import imgCompete from '@public/static/images/tgf_default_pic_1.webp'
-import imgGolf from '@public/static/images/tgf_default_pic_2.webp'
-import imgImprove from '@public/static/images/tgf_default_pic_3.webp'
-import imgNetwork from '@public/static/images/tgf_default_pic_4.webp'
+import imgCompete from '@public/static/images/tgf_default_pic_1.jpg'
+import imgGolf from '@public/static/images/tgf_default_pic_2.jpg'
+import imgImprove from '@public/static/images/tgf_default_pic_3.jpg'
+import imgNetwork from '@public/static/images/tgf_default_pic_4.jpg'
 import {
   Flex,
   Text,

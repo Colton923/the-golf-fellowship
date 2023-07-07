@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import imgCompete from '@public/static/images/tgf_default_pic_7.webp'
-import imgGolf from '@public/static/images/tgf_default_pic_6.webp'
+import imgCompete from '@public/static/images/tgf_default_pic_7.jpg'
+import imgGolf from '@public/static/images/tgf_default_pic_6.jpg'
 import { Carousel, Embla } from '@mantine/carousel'
 
 import {
