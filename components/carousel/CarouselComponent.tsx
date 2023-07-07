@@ -80,7 +80,7 @@ export default function CarouselComponent() {
         keepMounted={true}
         transition={animationText}
         timingFunction={'ease'}
-        duration={Math.floor((300 * (index + 13)) / 4)}
+        duration={Math.floor((500 * (index + 13)) / 2)}
         key={index + name}
       >
         {(styles) => (
@@ -100,9 +100,10 @@ export default function CarouselComponent() {
             m={'0.2rem'}
             fw={'bolder'}
             c={'white'}
+            w={text === ' ' ? '1.5rem' : 'auto'}
             opacity={1}
           >
-            {text === ' ' ? <br style={{ width: '20px' }} /> : text}
+            {text}
           </Text>
         )}
       </Transition>
@@ -163,7 +164,7 @@ export default function CarouselComponent() {
           <Container p={0} m={0} mih={'600px'} miw={'100%'}>
             <Space h={'10rem'} />
             <Flex direction={'column'} align={'flex-start'} justify={'flex-start'}>
-              <Container p={'100px'} m={0}>
+              <Container p={'10%'} m={0}>
                 <Flex
                   direction={'row'}
                   align={'center'}
@@ -190,6 +191,7 @@ export default function CarouselComponent() {
                     return { ...text }
                   })}
                 </Flex>
+                <Space h={'3rem'} />
                 <Link href="/shop">
                   <Button
                     size={'xl'}
@@ -222,7 +224,7 @@ export default function CarouselComponent() {
           <Container p={0} m={0} mih={'600px'} miw={'100%'}>
             <Space h={'10rem'} />
             <Flex direction={'column'} align={'flex-start'} justify={'flex-start'}>
-              <Container p={'100px'} m={0}>
+              <Container p={'10%'} m={0}>
                 <Flex
                   direction={'row'}
                   align={'center'}
@@ -249,6 +251,7 @@ export default function CarouselComponent() {
                     return { ...text }
                   })}
                 </Flex>
+                <Space h={'3rem'} />
                 <Link href="/community">
                   <Button
                     size={'xl'}
