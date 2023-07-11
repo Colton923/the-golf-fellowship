@@ -23,6 +23,12 @@ export default async function RootLayout({ children }: Props) {
       <body>
         <main>
           <Providers>{children}</Providers>
+          <div
+            id="recaptcha-container"
+            style={{
+              display: 'none',
+            }}
+          ></div>
         </main>
       </body>
     </html>

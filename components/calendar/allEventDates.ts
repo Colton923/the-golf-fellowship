@@ -103,7 +103,6 @@ export default async function getAllEventDates(findMonth: number, findYear: numb
           parseInt(roundYear) === findYear &&
           parseInt(roundMonth) === findMonth + 1
         ) {
-          console.log('found')
           const dateString = `${roundMonth}/${roundDay}/${roundYear}`
           dateArray.push({
             date: dateString,

@@ -2,20 +2,12 @@
 
 import styles from './Login.module.css'
 
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
+import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 import { useState, useEffect } from 'react'
 import { useSiteContext } from '@components/context/Context'
-import {
-  Container,
-  Modal,
-  Flex,
-  Group,
-  Input,
-  InputBase,
-  Text,
-  Space,
-} from '@mantine/core'
+import { Container, Modal, Flex, Group, Input, Text, Space } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import { auth } from '../../firebase/firebaseClient'
 export default function Login() {
   const [phone, setPhone] = useState('')
   const [submitPhoneLogin, setSubmitPhoneLogin] = useState(false)
@@ -27,9 +19,7 @@ export default function Login() {
   const gotoShop = () => {
     router.replace('/shop')
   }
-
   //handles logging in with phone.
-  const auth = getAuth()
   const checkIfNumberInDB = async () => {
     await fetch('/api/firebase/isPhoneNumberInDB', {
       method: 'POST',
@@ -53,21 +43,23 @@ export default function Login() {
         console.log(error)
       })
   }
+
   useEffect(() => {
     submitPhoneLogin && checkIfNumberInDB()
   }, [submitPhoneLogin])
+
   useEffect(() => {
     const submitPhone = async () => {
       if (submitPhoneLogin === false) return
       if (submitPhoneLogin === true && isNumberInDB === true) {
-        const reCaptchaVerifier = new RecaptchaVerifier(
+        const appVerifier = new RecaptchaVerifier(
           'recaptcha-container',
           {
             size: 'invisible',
           },
           auth
         )
-        const appVerifier = reCaptchaVerifier
+
         const phoneNumber = phone
         signInWithPhoneNumber(auth, phoneNumber, appVerifier)
           .then((confirmationResult) => {
@@ -84,7 +76,7 @@ export default function Login() {
               })
           })
           .catch((error) => {
-            alert('Error sending SMS')
+            console.log(error)
             if (setLoggedInUser) setLoggedInUser('')
           })
       }
@@ -160,8 +152,7 @@ export default function Login() {
             <Text c={'white'}>Returning User Sign In</Text>
             <Space h={20} />
             <Group>
-              <input
-                id="recaptcha-container"
+              <Input
                 type="tel"
                 placeholder="123-456-7890"
                 onChange={(e) => {

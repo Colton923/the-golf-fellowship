@@ -16,10 +16,64 @@ import {
   Title,
   Rating,
   Card,
+  Button,
 } from '@mantine/core'
 import Link from 'next/link'
 import CarouselComponent from '@components/carousel/CarouselComponent'
 import { CalendarComponent } from '@components/calendar/Calendar'
+import Locations from '@components/locations/Locations'
+
+const testData1 = {
+  title: '2023 DFW CHAMPIONSHIP',
+  date: '2023-08-05T13:00:00.000Z',
+  location: {
+    title: 'Waterchase Golf Club',
+  },
+  cost: [
+    {
+      title: 'default_fee_championship',
+      plus: 70,
+      basic: 80,
+      guest: 90,
+    },
+  ],
+  sideGames: [
+    {
+      title: 'default_games',
+      games: [
+        'Individual Net & Gross',
+        'TEAM (Foursome) Net',
+        'Closest to Pins',
+        'Hole-in-One Eligibility',
+        'MVP Eligibility',
+      ],
+      fee: 25,
+    },
+  ],
+  pointsRaces: [
+    {
+      title: 'default_net',
+      par: 2,
+      birdie: 3,
+      eagle: 4,
+      dblEagle: 5,
+      holeInOne: 9,
+    },
+    {
+      title: 'default_gross',
+      par: 2,
+      birdie: 3,
+      eagle: 5,
+      dblEagle: 9,
+      holeInOne: 9,
+    },
+  ],
+  memberStatus: ['Plus', 'Basic', 'Guest'],
+  sideGamesOptions: ['Playing Partner Request', 'Dinner after Golf'],
+  tees: ['Blues', 'Whites'],
+  quantity: 1,
+}
+
 const cardData = [
   {
     image: imgGolf.src,
@@ -155,21 +209,46 @@ export default function Index() {
             </Center>
 
             <Space h={'10px'} />
+            <Button
+              variant="light"
+              color="gray"
+              onClick={async () => {
+                // test post endpoint
+                await fetch('/api/sanity/postEvent', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ testData1 }),
+                }).then(async (res) => {
+                  const data = await res.json()
+                  console.log(data)
+                })
 
-            <iframe
-              src="https://storage.googleapis.com/maps-solutions-6fnfn9etrn/locator-plus/gweu/locator-plus.html"
-              width="100%"
-              height="100%"
-              style={{
-                border: 'none',
-                borderRadius: '4px',
-                minWidth: '85vw',
-                minHeight: '750px',
-                margin: '0',
-                padding: '0',
+                // test get endpoint
+                // await fetch('/api/sanity/getEvents', {
+                //   method: 'POST',
+                //   headers: {
+                //     'Content-Type': 'application/json',
+                //   },
+                //   body: JSON.stringify({
+                //     query: `*[_type == "event"]`,
+                //   }),
+                // })
+                //   .then(async (res) => {
+                //     const data = await res.json()
+                //     console.log(data)
+                //   })
+                //   .then((data) => {
+                //     console.log(JSON.stringify(data))
+                //   })
               }}
-              loading="lazy"
-            ></iframe>
+              h={'50px'}
+              w={'100%'}
+            >
+              Get Events
+            </Button>
+            <Locations />
             <Space h={'10px'} />
             <Center>
               <div
