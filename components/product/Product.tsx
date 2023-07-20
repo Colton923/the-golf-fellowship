@@ -1,8 +1,8 @@
-import type { stripeProduct } from 'types/stripe/stripeProduct'
-import type { stripePrice } from 'types/stripe/stripePrice'
+// import type { stripeProduct } from 'types/stripe/stripeProduct'
+// import type { stripePrice } from 'types/stripe/stripePrice'
 import { Button } from '@mantine/core'
-import client from 'lib/sanity/client'
-import queries from 'lib/sanity/queries'
+// import client from 'lib/sanity/client'
+// import queries from 'lib/sanity/queries'
 
 interface ProductProps {
   inter: string

@@ -18,7 +18,7 @@ type LoginProps = {
 export default function Login(props: LoginProps) {
   const { opened, close } = props
   const [phone, setPhone] = useState('')
-  const { setLoggedInUser, router } = useSiteContext()
+  const { router } = useSiteContext()
   const [showNotification, setShowNotification] = useState(false)
   const [confirmResult, setConfirmResult] = useState<ConfirmationResult>()
   const gotoShop = () => {
@@ -72,7 +72,6 @@ export default function Login(props: LoginProps) {
         } else {
           alert('Error sending code')
         }
-        if (setLoggedInUser) setLoggedInUser('')
       })
   }
   const submitCode = (code: string) => {
@@ -80,11 +79,10 @@ export default function Login(props: LoginProps) {
     confirmResult
       ?.confirm(code)
       .then((result) => {
-        if (setLoggedInUser) setLoggedInUser(result.user.uid)
+        console.log(result)
       })
       .catch(() => {
-        if (setLoggedInUser) setLoggedInUser('')
-        alert('Error confirming code')
+        alert('Invalid code')
       })
   }
 

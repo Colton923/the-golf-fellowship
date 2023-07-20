@@ -49,47 +49,47 @@ export default function Page() {
   const { isAdmin, user, router } = useSiteContext()
 
   if (!user) {
-    router.push('/')
-  }
-
-  return (
-    <BackgroundImage src={imgBackground.src}>
-      <Flex direction="column" align="center" justify="center">
-        <Container size="xl" mih={'100vh'} mt={'200px'} miw={'80vw'}>
-          <Tabs defaultValue={'stats'}>
-            <Tabs.List>
-              <Tabs.Tab value="stats" icon={<GolferSVG />}>
-                Statistics
-              </Tabs.Tab>
-              <Tabs.Tab value="account" icon={<GolferSVG />}>
-                My Account
-              </Tabs.Tab>
-              <Tabs.Tab value="calendar" icon={<GolferSVG />}>
-                Calendar
-              </Tabs.Tab>
-              {isAdmin && (
-                <Tabs.Tab value="admin" icon={<GolferSVG />}>
-                  Admin
+    return router.replace('/')
+  } else {
+    return (
+      <BackgroundImage src={imgBackground.src}>
+        <Flex direction="column" align="center" justify="center">
+          <Container size="xl" mih={'100vh'} mt={'200px'} miw={'80vw'}>
+            <Tabs defaultValue={'stats'}>
+              <Tabs.List>
+                <Tabs.Tab value="stats" icon={<GolferSVG />}>
+                  Statistics
                 </Tabs.Tab>
-              )}
-            </Tabs.List>
-            <Tabs.Panel value="stats">Statistics</Tabs.Panel>
-            <Tabs.Panel value="account">My Account</Tabs.Panel>
-            <Tabs.Panel value="calendar">
-              <Center p={'sm'}>
-                <CalendarComponent />
-              </Center>
-            </Tabs.Panel>
-            {isAdmin && (
-              <Tabs.Panel value="admin">
+                <Tabs.Tab value="account" icon={<GolferSVG />}>
+                  My Account
+                </Tabs.Tab>
+                <Tabs.Tab value="calendar" icon={<GolferSVG />}>
+                  Calendar
+                </Tabs.Tab>
+                {isAdmin && (
+                  <Tabs.Tab value="admin" icon={<GolferSVG />}>
+                    Admin
+                  </Tabs.Tab>
+                )}
+              </Tabs.List>
+              <Tabs.Panel value="stats">Statistics</Tabs.Panel>
+              <Tabs.Panel value="account">My Account</Tabs.Panel>
+              <Tabs.Panel value="calendar">
                 <Center p={'sm'}>
-                  <Receipts />
+                  <CalendarComponent />
                 </Center>
               </Tabs.Panel>
-            )}
-          </Tabs>
-        </Container>
-      </Flex>
-    </BackgroundImage>
-  )
+              {isAdmin && (
+                <Tabs.Panel value="admin">
+                  <Center p={'sm'}>
+                    <Receipts />
+                  </Center>
+                </Tabs.Panel>
+              )}
+            </Tabs>
+          </Container>
+        </Flex>
+      </BackgroundImage>
+    )
+  }
 }

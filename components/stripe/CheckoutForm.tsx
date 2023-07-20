@@ -89,7 +89,7 @@ export default function CheckoutForm(props: CheckoutFormProps) {
         res
           .json()
           .then((data) => {
-            router.replace('/dashboard')
+            router.push('/dashboard')
           })
           .catch((error) => {
             console.log(error)

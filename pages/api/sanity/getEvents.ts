@@ -1,5 +1,5 @@
 import client from 'lib/sanity/client'
-import urlFor from 'lib/sanity/urlFor'
+// import urlFor from 'lib/sanity/urlFor'
 import type { NextApiRequest, NextApiResponse } from 'next'
 // example
 // export default {

@@ -107,7 +107,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   }
 
   const gotoDashboard = () => {
-    router.replace('/dashboard')
+    router.push('/dashboard')
   }
 
   const logout = () => {
