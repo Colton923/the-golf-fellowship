@@ -23,3 +23,38 @@
     animation: definitionAnimation 1s ease-in-out forwards 1s;
   }
 }
+
+
+.slideTextTitle {
+  color: white;
+  font-size: 2.3rem;
+  font-weight: 700;
+  letter-spacing: 0.1rem;
+  animation: fadeInDelay 1s ease-in-out forwards 1s;
+  opacity: 0;
+  word-wrap: break-word;
+  max-width: 66vw;
+}
+
+.slideTextSubTitle {
+  color: white;
+  font-size: 1.2rem;
+  animation: fadeInDelay 1.2s ease-in-out forwards 1.2s;
+  opacity: 0;
+  margin: 1rem;
+  word-wrap: break-word;
+  max-width: 66vw;
+}
+
+@keyframes fadeInDelay {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+

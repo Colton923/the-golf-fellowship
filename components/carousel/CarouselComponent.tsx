@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import imgCompete from '@public/static/images/tgf_default_pic_7.jpg'
 import imgGolf from '@public/static/images/tgf_default_pic_6.jpg'
 import { Carousel, Embla } from '@mantine/carousel'
-
+import styles from './Carousel.module.scss'
 import {
   BackgroundImage,
   Center,
@@ -12,9 +12,7 @@ import {
   Space,
   Text,
   Flex,
-  Input,
   Button,
-  Transition,
 } from '@mantine/core'
 import carouselStyles from '@styles/CarouselTransition.module.scss'
 import Link from 'next/link'
@@ -69,69 +67,6 @@ export default function CarouselComponent() {
     timingFunction: 'ease-in',
   }
 
-  const StyleGenerator = (index: number, text: string, name: string) => {
-    return (
-      <Transition
-        mounted={
-          name === 'styledTextThree' || name === 'styledTextFour'
-            ? scrollIndex === 1
-            : scrollIndex === 0
-        }
-        keepMounted={true}
-        transition={animationText}
-        timingFunction={'ease'}
-        duration={Math.floor((500 * (index + 13)) / 2)}
-        key={index + name}
-      >
-        {(styles) => (
-          <Text
-            style={{
-              ...styles,
-              textShadow: '5px 5px 5px #000',
-              WebkitTextFillColor: 'rgba(255,255,255,1)',
-              mixBlendMode: 'plus-lighter',
-              backgroundBlendMode: 'overlay',
-            }}
-            fz={
-              name === 'styledTextTwo' || name === 'styledTextFour'
-                ? '1.5rem'
-                : '2rem'
-            }
-            m={'0.2rem'}
-            fw={'bolder'}
-            c={'white'}
-            w={text === ' ' ? '1.5rem' : 'auto'}
-            opacity={1}
-          >
-            {text}
-          </Text>
-        )}
-      </Transition>
-    )
-  }
-
-  const styledText = 'Weeknight 9s & Weekend 18s.'.split('').map((letter, index) => {
-    return StyleGenerator(index, letter, 'styledText')
-  })
-
-  const styledTextTwo = 'Compete with your friends.'
-    .split('')
-    .map((letter, index) => {
-      return StyleGenerator(index, letter, 'styledTextTwo')
-    })
-
-  const styledTextThree = 'Join the golf community.'
-    .split('')
-    .map((letter, index) => {
-      return StyleGenerator(index, letter, 'styledTextThree')
-    })
-
-  const styledTextFour = 'Get the best tips and tricks.'
-    .split('')
-    .map((letter, index) => {
-      return StyleGenerator(index, letter, 'styledTextFour')
-    })
-
   if (loading) {
     return <Center>Loading...</Center>
   }
@@ -161,54 +96,30 @@ export default function CarouselComponent() {
             backgroundColor: 'rgba(0, 0, 0, 0.3)', // this gives the overlay
           }}
         >
-          <Container p={0} m={0} mih={'600px'} miw={'100%'}>
-            <Space h={'10rem'} />
-            <Flex direction={'column'} align={'flex-start'} justify={'flex-start'}>
-              <Container p={'10%'} m={0}>
-                <Flex
-                  direction={'row'}
-                  align={'center'}
-                  justify={'flex-start'}
-                  wrap={'wrap'}
-                  p={0}
-                  m={0}
-                  maw={'90vw'}
+          <Container p={0} m={0} miw={'100%'} h={'800px'}>
+            <Flex h={'100%'} w={'100%'} direction={'column'} p={'xs'}>
+              <Space h={'30%'} />
+              <Text className={styles.slideTextTitle}>Race for the Cup!</Text>
+              <Text className={styles.slideTextSubTitle}>
+                Earn points and compete to win the TGF Championship.
+              </Text>
+              <Space h={'10%'} />
+              <Link href="/shop">
+                <Button
+                  size={'xl'}
+                  type={'button'}
+                  variant={'gradient'}
+                  radius={'lg'}
+                  color="white"
+                  gradient={{
+                    from: 'rgba(0,0,0,0.2)',
+                    deg: 45,
+                    to: 'dark',
+                  }}
                 >
-                  {styledText.map((text) => {
-                    return { ...text }
-                  })}
-                </Flex>
-                <Flex
-                  direction={'row'}
-                  align={'center'}
-                  justify={'flex-start'}
-                  wrap={'wrap'}
-                  p={0}
-                  m={0}
-                  maw={'90vw'}
-                >
-                  {styledTextTwo.map((text) => {
-                    return { ...text }
-                  })}
-                </Flex>
-                <Space h={'3rem'} />
-                <Link href="/shop">
-                  <Button
-                    size={'xl'}
-                    type={'button'}
-                    variant={'gradient'}
-                    radius={'lg'}
-                    color="white"
-                    gradient={{
-                      from: 'rgba(0,0,0,0.2)',
-                      deg: 45,
-                      to: 'dark',
-                    }}
-                  >
-                    BECOME A MEMBER
-                  </Button>
-                </Link>
-              </Container>
+                  BECOME A MEMBER
+                </Button>
+              </Link>
             </Flex>
           </Container>
         </BackgroundImage>
@@ -221,54 +132,30 @@ export default function CarouselComponent() {
             backgroundColor: 'rgba(0, 0, 0, 0.3)', // this gives the overlay
           }}
         >
-          <Container p={0} m={0} mih={'600px'} miw={'100%'}>
-            <Space h={'10rem'} />
-            <Flex direction={'column'} align={'flex-start'} justify={'flex-start'}>
-              <Container p={'10%'} m={0}>
-                <Flex
-                  direction={'row'}
-                  align={'center'}
-                  justify={'flex-start'}
-                  wrap={'wrap'}
-                  p={0}
-                  m={0}
-                  maw={'90vw'}
+          <Container p={0} m={0} miw={'100%'} h={'800px'}>
+            <Flex h={'100%'} w={'100%'} direction={'column'} p={'xs'}>
+              <Space h={'30%'} />
+              <Text className={styles.slideTextTitle}>Play, Compete & Connect</Text>
+              <Text className={styles.slideTextSubTitle}>
+                Weeknight 9s and Weekend 18s. Qualify and represent your TGF League.
+              </Text>
+              <Space h={'10%'} />
+              <Link href="/community">
+                <Button
+                  size={'xl'}
+                  type={'button'}
+                  variant={'gradient'}
+                  radius={'lg'}
+                  color="white"
+                  gradient={{
+                    from: 'rgba(0,0,0,0.2)',
+                    deg: 45,
+                    to: 'dark',
+                  }}
                 >
-                  {styledTextThree.map((text) => {
-                    return { ...text }
-                  })}
-                </Flex>
-                <Flex
-                  direction={'row'}
-                  align={'center'}
-                  justify={'flex-start'}
-                  wrap={'wrap'}
-                  p={0}
-                  m={0}
-                  maw={'90vw'}
-                >
-                  {styledTextFour.map((text) => {
-                    return { ...text }
-                  })}
-                </Flex>
-                <Space h={'3rem'} />
-                <Link href="/community">
-                  <Button
-                    size={'xl'}
-                    type={'button'}
-                    variant={'gradient'}
-                    radius={'lg'}
-                    color="white"
-                    gradient={{
-                      from: 'rgba(0,0,0,0.2)',
-                      deg: 45,
-                      to: 'dark',
-                    }}
-                  >
-                    JOIN THE COMMUNITY
-                  </Button>
-                </Link>
-              </Container>
+                  JOIN THE COMMUNITY
+                </Button>
+              </Link>
             </Flex>
           </Container>
         </BackgroundImage>

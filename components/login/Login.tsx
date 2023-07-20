@@ -1,194 +1,225 @@
 'use client'
 
-import styles from './Login.module.css'
-
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
-import { useState, useEffect } from 'react'
+import {
+  ConfirmationResult,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from 'firebase/auth'
+import { useState } from 'react'
 import { useSiteContext } from '@components/context/Context'
-import { Container, Modal, Flex, Group, Input, Text, Space } from '@mantine/core'
-import { useDisclosure } from '@mantine/hooks'
+import { Modal, Flex, Input, Space, Center, Notification } from '@mantine/core'
 import { auth } from '../../firebase/firebaseClient'
-export default function Login() {
+
+type LoginProps = {
+  opened: boolean
+  close: () => void
+}
+
+export default function Login(props: LoginProps) {
+  const { opened, close } = props
   const [phone, setPhone] = useState('')
-  const [submitPhoneLogin, setSubmitPhoneLogin] = useState(false)
-  const [isNumberInDB, setIsNumberInDB] = useState(false)
-  const [checked, setChecked] = useState(false)
-  const { showSignUp, loginMain, setLoggedInUser, setShowSignUp, router } =
-    useSiteContext()
-  const [opened, { open, close }] = useDisclosure(true)
+  const { setLoggedInUser, router } = useSiteContext()
+  const [showNotification, setShowNotification] = useState(false)
+  const [confirmResult, setConfirmResult] = useState<ConfirmationResult>()
   const gotoShop = () => {
     router.replace('/shop')
+    close()
   }
-  //handles logging in with phone.
+  const [codeLetters, setCodeLetters] = useState(['', '', '', '', '', ''])
+
   const checkIfNumberInDB = async () => {
-    await fetch('/api/firebase/isPhoneNumberInDB', {
+    return await fetch('/api/firebase/isPhoneNumberInDB', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ phoneNumber: phone.trim() }),
     })
-      .then((res) => {
-        res
-          .json()
-          .then((data) => {
-            setIsNumberInDB(data.isPhoneNumberInDB)
-            setChecked(true)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.isPhoneNumberInDB) {
+          return true
+        } else {
+          return false
+        }
       })
-      .catch((error) => {
-        console.log(error)
+      .catch((err) => {
+        console.log(err)
+        return false
       })
   }
 
-  useEffect(() => {
-    submitPhoneLogin && checkIfNumberInDB()
-  }, [submitPhoneLogin])
-
-  useEffect(() => {
-    const submitPhone = async () => {
-      if (submitPhoneLogin === false) return
-      if (submitPhoneLogin === true && isNumberInDB === true) {
-        const appVerifier = new RecaptchaVerifier(
-          'recaptcha-container',
-          {
-            size: 'invisible',
-          },
-          auth
-        )
-
-        const phoneNumber = phone
-        signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-          .then((confirmationResult) => {
-            const code = window.prompt('Enter code')
-            confirmationResult
-              //@ts-ignore
-              .confirm(code)
-              .then((result) => {
-                if (setLoggedInUser) setLoggedInUser(result.user.uid)
-              })
-              .catch(() => {
-                if (setLoggedInUser) setLoggedInUser('')
-                alert('Error confirming code')
-              })
-          })
-          .catch((error) => {
-            console.log(error)
-            if (setLoggedInUser) setLoggedInUser('')
-          })
-      }
-    }
-    submitPhone()
-  }, [isNumberInDB])
-
-  useEffect(() => {
-    const HandleClickBackgroundCover = (e: any) => {
-      if (e.target.className === styles.backgroundCover) {
-        if (setShowSignUp) setShowSignUp(false)
-      }
-    }
-    window.addEventListener('click', HandleClickBackgroundCover)
-    return () => {
-      window.removeEventListener('click', HandleClickBackgroundCover)
-    }
-  }, [showSignUp])
+  const submitPhone = async () => {
+    const isNumberInDB = await checkIfNumberInDB()
+    if (!isNumberInDB) return alert('Phone number not found in database')
+    const appVerifier = new RecaptchaVerifier(
+      'recaptcha-container',
+      {
+        size: 'invisible',
+      },
+      auth
+    )
+    const phoneNumber = phone
+    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+      .then((confirmationResult) => {
+        setShowNotification(true)
+        setConfirmResult(confirmationResult)
+      })
+      .catch((error) => {
+        console.log(error)
+        if (error.code === 'auth/too-many-requests') {
+          alert('Too many requests. Please wait a few minutes before trying again.')
+        } else {
+          alert('Error sending code')
+        }
+        if (setLoggedInUser) setLoggedInUser('')
+      })
+  }
+  const submitCode = (code: string) => {
+    console.log(code)
+    confirmResult
+      ?.confirm(code)
+      .then((result) => {
+        if (setLoggedInUser) setLoggedInUser(result.user.uid)
+      })
+      .catch(() => {
+        if (setLoggedInUser) setLoggedInUser('')
+        alert('Error confirming code')
+      })
+  }
 
   return (
-    <Modal
-      centered
-      opened={opened}
-      onClose={close}
-      overlayProps={{
-        color: 'transparent',
-        opacity: 0.55,
-        blur: 3,
-      }}
-    >
-      <Container ref={loginMain} size={'xl'}>
-        <Flex direction={'column'} justify={'space-between'}>
-          <Container
-            size={'xl'}
-            bg={
-              'linear-gradient(to right top, #243f3c, #214043, #204149, #24414f, #2b4053, #2b3c51, #2c384e, #2d344b, #242c44, #1a253c, #101e35, #05172e)'
-            }
-            style={{
-              border: '1px solid black',
-              backgroundBlendMode: 'color',
-              boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
-              margin: '10px',
-              borderRadius: '5px',
-              backdropFilter: 'blur(5px)',
-              mixBlendMode: 'multiply',
-            }}
-          >
-            <Space h={20} />
-            <Text c={'white'}>New User Registration</Text>
-            <Space h={20} />
-            <Group position="center">
-              <Input type="button" value="Register" onClick={gotoShop} />
-            </Group>
-            <Space h={20} />
-          </Container>
-          <Space h={20} />
-          <Container
-            size={'xl'}
-            bg={
-              'linear-gradient(to right bottom, #263d3b, #214143, #1f4148, #234250, #2c4054, #2d3d52, #2d3850, #2e344d, #262d46, #1b263f, #121e38, #071731)'
-            }
-            style={{
-              border: '1px solid black',
-              backgroundBlendMode: 'color',
-              boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
-              margin: '10px',
-              borderRadius: '5px',
-              backdropFilter: 'blur(5px)',
-              mixBlendMode: 'multiply',
-            }}
-          >
-            <Space h={20} />
-            <Text c={'white'}>Returning User Sign In</Text>
-            <Space h={20} />
-            <Group>
-              <Input
-                type="tel"
-                placeholder="123-456-7890"
-                onChange={(e) => {
-                  e.target.value = e.target.value.replace(/[^0-9,-]/g, '')
-                  if (e.target.value.length > 12) {
-                    e.target.value = e.target.value.slice(0, 12)
+    <Modal.Root centered opened={opened} onClose={close}>
+      <Modal.Overlay blur={5} bg={'rgba(80, 80, 80, 0.9)'} />
+      <Modal.Content
+        bg={'linear-gradient(45deg, rgba(255,255,255,1), rgba(255,255,255,0.87))'}
+      >
+        <Modal.CloseButton />
+        <Flex p={'xs'} direction={'column'} justify={'flex-end'}>
+          <Center>
+            <Input
+              type="tel"
+              placeholder="123-456-7890"
+              onChange={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9,-]/g, '')
+                if (e.target.value.length > 12) {
+                  e.target.value = e.target.value.slice(0, 12)
+                }
+                if (e.target.value.length === 3) {
+                  if (e.target.value[2] !== '-') {
+                    e.target.value = e.target.value + '-'
                   }
-                  if (e.target.value.length === 3) {
-                    if (e.target.value[2] !== '-') {
-                      e.target.value = e.target.value + '-'
-                    }
+                }
+                if (e.target.value.length === 7) {
+                  if (e.target.value[6] !== '-') {
+                    e.target.value = e.target.value + '-'
                   }
-                  if (e.target.value.length === 7) {
-                    if (e.target.value[6] !== '-') {
-                      e.target.value = e.target.value + '-'
-                    }
-                  }
-                  setPhone('+1' + e.target.value)
-                }}
-                onClick={() => {
-                  setSubmitPhoneLogin(false)
-                }}
-              />
-            </Group>
-            <Space h={20} />
+                }
+                setPhone('+1' + e.target.value)
+              }}
+              style={{
+                boxShadow: '2px 2px 10px 0px rgba(0,0,0,0.2)',
+                borderRadius: '0.25rem',
+                textAlign: 'center',
+              }}
+            />
+          </Center>
+          <Space h={10} />
+          <Center>
             <Input
               type="button"
               value="Sign in"
               onClick={() => {
-                setSubmitPhoneLogin(true)
+                if (phone.length !== 14) {
+                  alert('Please enter a valid phone number')
+                  return
+                }
+                submitPhone()
+              }}
+              style={{
+                boxShadow: '2px 2px 10px 0px rgba(0,0,0,0.2)',
+                borderRadius: '0.25rem',
+                textDecoration: 'underline',
               }}
             />
-            <Space h={20} />
-          </Container>
+          </Center>
         </Flex>
-      </Container>
-    </Modal>
+        <Center m={'xs'}>
+          <div
+            style={{
+              textDecoration: 'underline',
+              backgroundColor: 'transparent',
+              color: 'black',
+            }}
+            onClick={gotoShop}
+          >
+            New TGF Members Click Here
+          </div>
+        </Center>
+        <Space h={10} />
+        {showNotification && (
+          <Notification
+            onClose={() => {
+              setShowNotification(false)
+            }}
+            title={'Enter the 6 digit pin that was sent to your phone number.'}
+            color="white"
+            style={{
+              backgroundColor: 'rgb(100, 100, 100)',
+              bottom: '0',
+              position: 'fixed',
+              width: '100%',
+              height: '100%',
+              textAlign: 'center',
+            }}
+          >
+            <Flex direction={'row'} align={'center'} justify={'center'}>
+              {codeLetters.map((letter, index) => {
+                return (
+                  <Input
+                    type="text"
+                    id={'code-letter-' + index}
+                    key={'code-letter-' + index}
+                    value={letter}
+                    onChange={(e) => {
+                      const newCodeLetters = [...codeLetters]
+                      newCodeLetters[index] = e.target.value
+                      setCodeLetters(newCodeLetters)
+                      if (e.target.value.length === 1 && index < 5) {
+                        const nextInput = document.getElementById(
+                          'code-letter-' + (index + 1)
+                        )
+                        if (nextInput) nextInput.focus()
+                      }
+                      if (e.target.value.length === 0 && index > 0) {
+                        const prevInput = document.getElementById(
+                          'code-letter-' + (index - 1)
+                        )
+                        if (prevInput) prevInput.focus()
+                      }
+                      if (e.target.value.length === 1 && index === 5) {
+                        submitCode(codeLetters.join('') + e.target.value)
+                        setShowNotification(false)
+                        close()
+                      }
+                    }}
+                    style={{
+                      boxShadow: '2px 2px 10px 0px rgba(0,0,0,0.2)',
+                      borderRadius: '0.25rem',
+                      textAlign: 'center',
+                      width: '2rem',
+                      height: '2rem',
+                      margin: '0.25rem',
+                      fontSize: '1.5rem',
+                    }}
+                  />
+                )
+              })}
+            </Flex>
+            <Space h={10} />
+          </Notification>
+        )}
+      </Modal.Content>
+    </Modal.Root>
   )
 }

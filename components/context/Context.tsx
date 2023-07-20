@@ -12,6 +12,8 @@ import {
 import { useRouter } from 'next/navigation'
 import { auth } from '../../firebase/firebaseClient'
 import { useForm } from 'react-hook-form'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { notifications } from '@mantine/notifications'
 
 type FormData = {
   firstName: string
@@ -30,8 +32,6 @@ interface ContextScope {
   setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>
   focus: boolean
   setFocus: React.Dispatch<React.SetStateAction<boolean>>
-  loggedInUser: string
-  setLoggedInUser: React.Dispatch<React.SetStateAction<string>>
   navbarRef: React.MutableRefObject<null>
   router: any
   gotoShop: () => void
@@ -42,7 +42,10 @@ interface ContextScope {
   setValue: any
   handleSubmit: any
   errors: any
-  goToShop: () => void
+  isAdmin: boolean
+  user: any
+  loading: boolean
+  error: any
 }
 
 export const Context = createContext<Partial<ContextScope>>({})
@@ -50,7 +53,50 @@ export const Context = createContext<Partial<ContextScope>>({})
 export const ContextProvider = ({ children }: { children: React.ReactNode }) => {
   const [showSignupMenu, setShowSignupMenu] = useState(false)
   const [focus, setFocus] = useState(false)
-  const [loggedInUser, setLoggedInUser] = useState('')
+  const [user, loading, error] = useAuthState(auth)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [notified, setNotified] = useState(false) //does this execute twice in prod
+
+  const IsAdmin = async (userId: string) => {
+    const response = await fetch('/api/firebase/admin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ uid: userId }),
+    })
+    const data = await response.json()
+    setIsAdmin(data.admin)
+  }
+
+  useEffect(() => {
+    if (!user) {
+      setIsAdmin(false)
+
+      if (notified) return
+      setNotified(true)
+      notifications.show({
+        title: `Welcome.`,
+        message: '',
+        color: 'white',
+        withCloseButton: true,
+        autoClose: 6000,
+      })
+    } else {
+      IsAdmin(user.uid)
+      notifications.show({
+        title: `Welcome ${user?.displayName}`,
+
+        message: `        Thank you for being a member since ${user?.metadata.creationTime}. Your last
+      login was ${user?.metadata.lastSignInTime}.
+      `,
+        color: 'white',
+        withCloseButton: true,
+        autoClose: 6000,
+      })
+      router.push('/dashboard')
+    }
+  }, [user])
 
   const navbarRef = useRef(null)
 
@@ -76,52 +122,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     formState: { errors },
   } = useForm<FormData>()
 
-  const goToShop = () => {
-    router.replace('/shop')
-  }
-
   const loginMain = useRef(null)
-  const handleClickOffLoginMain = (e: any) => {
-    if (loginMain.current) {
-      if (e.target === loginMain.current) {
-        setShowSignupMenu(false)
-      } else {
-        setShowSignupMenu(true)
-      }
-    } else {
-      setShowSignupMenu(false)
-    }
-  }
-
-  useEffect(() => {
-    const isUserSubscribed = async () => {
-      if (loggedInUser === '') return
-      try {
-        alert('Checking subscription status...')
-
-        //temporary fix for subscription check
-        if (loggedInUser !== '') {
-          gotoDashboard()
-        } else {
-          alert('Please register for a subscription')
-          logout()
-          gotoShop()
-        }
-      } catch (error) {
-        alert('Please register for a subscription')
-        logout()
-        gotoShop()
-      }
-    }
-    isUserSubscribed()
-  }, [loggedInUser])
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOffLoginMain)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOffLoginMain)
-    }
-  }, [])
 
   useEffect(() => {
     const handleFocusForm = () => {
@@ -143,8 +144,6 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       setShowSignUp: setShowSignupMenu,
       focus,
       setFocus,
-      loggedInUser,
-      setLoggedInUser,
       navbarRef,
       router,
       gotoShop,
@@ -155,9 +154,11 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       setValue,
       handleSubmit,
       errors,
-      goToShop,
+      isAdmin,
+      user,
+      loading,
     }),
-    [showSignupMenu, focus, loggedInUser, router, errors]
+    [showSignupMenu, focus, user, router, errors, loading, isAdmin]
   )
 
   return (
