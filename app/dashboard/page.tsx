@@ -1,4 +1,5 @@
 'use client'
+
 import Image from 'next/image'
 import imgBackground from '@public/static/images/tgf_dashboard_background.png'
 import styles from '@styles/Dashboard.module.css'
@@ -48,48 +49,44 @@ const svg3 = () => {
 export default function Page() {
   const { isAdmin, user, router } = useSiteContext()
 
-  if (!user) {
-    return router.replace('/')
-  } else {
-    return (
-      <BackgroundImage src={imgBackground.src}>
-        <Flex direction="column" align="center" justify="center">
-          <Container size="xl" mih={'100vh'} mt={'200px'} miw={'80vw'}>
-            <Tabs defaultValue={'stats'}>
-              <Tabs.List>
-                <Tabs.Tab value="stats" icon={<GolferSVG />}>
-                  Statistics
+  return (
+    <BackgroundImage src={imgBackground.src}>
+      <Flex direction="column" align="center" justify="center">
+        <Container size="xl" mih={'100vh'} mt={'200px'} miw={'80vw'}>
+          <Tabs defaultValue={'stats'}>
+            <Tabs.List>
+              <Tabs.Tab value="stats" icon={<GolferSVG />}>
+                Statistics
+              </Tabs.Tab>
+              <Tabs.Tab value="account" icon={<GolferSVG />}>
+                My Account
+              </Tabs.Tab>
+              <Tabs.Tab value="calendar" icon={<GolferSVG />}>
+                Calendar
+              </Tabs.Tab>
+              {isAdmin && (
+                <Tabs.Tab value="admin" icon={<GolferSVG />}>
+                  Admin
                 </Tabs.Tab>
-                <Tabs.Tab value="account" icon={<GolferSVG />}>
-                  My Account
-                </Tabs.Tab>
-                <Tabs.Tab value="calendar" icon={<GolferSVG />}>
-                  Calendar
-                </Tabs.Tab>
-                {isAdmin && (
-                  <Tabs.Tab value="admin" icon={<GolferSVG />}>
-                    Admin
-                  </Tabs.Tab>
-                )}
-              </Tabs.List>
-              <Tabs.Panel value="stats">Statistics</Tabs.Panel>
-              <Tabs.Panel value="account">My Account</Tabs.Panel>
-              <Tabs.Panel value="calendar">
+              )}
+            </Tabs.List>
+            <Tabs.Panel value="stats">Statistics</Tabs.Panel>
+            <Tabs.Panel value="account">My Account</Tabs.Panel>
+            <Tabs.Panel value="calendar">
+              <Center p={'sm'}>
+                <CalendarComponent />
+              </Center>
+            </Tabs.Panel>
+            {isAdmin && (
+              <Tabs.Panel value="admin">
                 <Center p={'sm'}>
-                  <CalendarComponent />
+                  <Receipts />
                 </Center>
               </Tabs.Panel>
-              {isAdmin && (
-                <Tabs.Panel value="admin">
-                  <Center p={'sm'}>
-                    <Receipts />
-                  </Center>
-                </Tabs.Panel>
-              )}
-            </Tabs>
-          </Container>
-        </Flex>
-      </BackgroundImage>
-    )
-  }
+            )}
+          </Tabs>
+        </Container>
+      </Flex>
+    </BackgroundImage>
+  )
 }
