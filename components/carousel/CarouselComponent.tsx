@@ -59,14 +59,6 @@ export default function CarouselComponent() {
     }
   }, [embla, scrollIndex])
 
-  const animationText = {
-    in: { opacity: 1, transform: 'skewX(0deg)' },
-    out: { opacity: 0, transform: 'skewX(-40deg)' },
-    common: { transformOrigin: 'top', transform: 'skewX(-20deg)', opacity: 0 },
-    transitionProperty: 'transform, opacity',
-    timingFunction: 'ease-in',
-  }
-
   if (loading) {
     return <Center>Loading...</Center>
   }

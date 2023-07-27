@@ -11,16 +11,16 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 //     {name: 'date', title: 'Date', type: 'datetime'},
 //     {name: 'location', title: 'Location', type: 'reference', to: [{type: 'locations'}]},
 //     {name: 'cost', title: 'Cost', type: 'reference', to: [{type: 'eventFee'}]},
-//     {name: 'sideGames', title: 'Side Games', type: 'reference', to: [{type: 'sideGames'}]},
+//     {name: 'eventType', title: 'Event Type', type: 'reference', to: [{type: 'eventTypes'}]},
 //     {
-//       name: 'pointsRaces',
-//       title: 'Points Races',
+//       name: 'sideGames',
+//       title: 'Side Games',
 //       type: 'array',
-//       of: [{type: 'reference', to: [{type: 'pointsValues'}]}],
+//       of: [{type: 'reference', to: [{type: 'sideGames'}]}],
 //     },
-//     {name: 'memberStatus', title: 'Member Status', type: 'array', of: [{type: 'string'}]},
-//     {name: 'sideGamesOptions', title: 'Side Games Options', type: 'array', of: [{type: 'string'}]},
-//     {name: 'tees', title: 'Tees', type: 'array', of: [{type: 'string'}]},
+//     {name: 'tees', title: 'Tees', type: 'array', of: [{type: 'reference', to: [{type: 'tees'}]}]},
+//     {name: 'description', title: 'Description', type: 'array', of: [{type: 'string'}]},
+//     {name: 'inclusions', title: 'Inclusions', type: 'array', of: [{type: 'string'}]},
 //   ],
 // }
 
@@ -28,35 +28,13 @@ const Events = () => `*[_type == "events"] {
   _id,
   title,
   date,
-  "locations": *[_type == "locations"] {
-    _id,
-    title,
-  },
-  "cost": *[_type == "eventFee"] {
-    _id,
-    title,
-    plus,
-    basic,
-    guest,
-  },
-  "sideGames": *[_type == "sideGames"] {
-    _id,
-    title,
-    fee,
-    games,
-  },
-  "pointsRaces": *[_type == "pointsValues"] {
-    _id,
-    title,
-    par,
-    birdie,
-    eagle,
-    dblEagle,
-holeInOne,
-  },
-  memberStatus,
-  sideGamesOptions,
-  tees
+  location,
+  cost,
+  eventType->{title, description, defaultFee},
+  sideGames[]->{title, fee, description, membersOnly},
+  tees[]->{title, description},
+  description,
+  inclusions,
 }`
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -102,13 +102,9 @@ export default function CheckoutForm(props: CheckoutFormProps) {
 
   const NewUserSignIn = () => {
     const auth = getAuth()
-    const reCaptchaVerifier = new RecaptchaVerifier(
-      'recaptcha-container',
-      {
-        size: 'invisible',
-      },
-      auth
-    )
+    const reCaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible',
+    })
     const appVerifier = reCaptchaVerifier
     const phoneNumber = '+1' + props.phone.replace('+1', '').replace(/-/g, '')
     //FOR TESTING ONLY: Replace '+16505551234' with phoneNumber, and uncomment

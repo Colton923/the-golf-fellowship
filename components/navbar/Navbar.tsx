@@ -154,17 +154,24 @@ export default function Navbar() {
         </div>
         <nav className={styles.navbar}>
           {!user ? (
-            <div className={styles.navbarLink}>
-              <UserSVG />
-            </div>
+            <>
+              <div className={styles.navbarLink}>
+                <UserSVG />
+              </div>
+              <Link href="/membership" className={styles.navbarLink} key={'nav3'}>
+                <ShopSVG />
+              </Link>
+            </>
           ) : (
-            <Link href="/" className={styles.navbarLink} onClick={logout}>
-              <UserSignOutSVG />
-            </Link>
+            <>
+              <Link href="/" className={styles.navbarLink} onClick={logout}>
+                <UserSignOutSVG />
+              </Link>
+              <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
+                <ShopSVG />
+              </Link>
+            </>
           )}
-          <Link href="/shop" className={styles.navbarLink} key={'nav3'}>
-            <ShopSVG />
-          </Link>
         </nav>
       </div>
     </>

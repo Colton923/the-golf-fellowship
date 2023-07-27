@@ -639,11 +639,23 @@ export const Receipts = () => {
           }}
         />
       </div>
-      <div className={styles.gridWrapper}>
+      <div
+        className={styles.gridWrapper}
+        style={{
+          display: 'flex',
+          width: '100%',
+          height: '100vh',
+          margin: '0 auto',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <div
           className="ag-theme-alpine"
           style={{
-            width: screenWidth,
+            position: 'absolute',
+            left: 0,
+            width: '100vw',
             height: screenHeight,
             boxShadow: '5px 5px 10px 0 rgba(0,0,0,0.2)',
             border: '1px solid rgba(0,0,0,0.2)',

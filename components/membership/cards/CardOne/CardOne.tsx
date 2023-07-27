@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
 import Chevron from '../Chevron/Chevron'
+import { notifications } from '@mantine/notifications'
 
 type RegisterForm = {
   firstNameCardOne: string
@@ -27,6 +28,20 @@ export default function CardOne(props: CardOneProps) {
   const [lastNameCardOne, setLastNameCardOne] = useState('')
   const [emailCardOne, setEmailCardOne] = useState('')
   const [phoneCardOne, setPhoneCardOne] = useState('')
+  const [notified, setNotified] = useState(false)
+
+  useEffect(() => {
+    if (!notified) {
+      notifications.show({
+        title: 'Thank you for your interest in joining our league.',
+        message:
+          'This information will be used to login to your account. Please make sure it is correct.',
+        color: 'dark',
+        autoClose: 5000,
+      })
+      setNotified(true)
+    }
+  }, [])
 
   useEffect(() => {
     if (phoneCardOne.length >= 10) {

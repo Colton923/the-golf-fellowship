@@ -1,7 +1,7 @@
 .cardForm {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
   text-align: left;
 }
@@ -37,7 +37,7 @@
 
   padding: 8px;
   margin: 8px;
-  width: 80vw;
+  min-width: 90vw;
 
   display: flex;
   flex-wrap: wrap;
@@ -88,15 +88,15 @@
 
   border: 1px solid #000;
   border-radius: 5px;
-  box-shadow: 0 0 5px rgba(8, 7, 16, 0.6);
 }
 
 .optionInput {
   color: #000000;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 300;
   cursor: pointer;
 
+  display:flex;
   position: relative;
   height: 45px;
   width: 240px;
@@ -156,7 +156,7 @@
 
 .selectOption {
   z-index: 1;
-  font-size: 1.3rem;
+  font-size: .8rem;
   font-weight: bold;
   margin: 10px 10px 0;
   padding: 10px 10px 0;

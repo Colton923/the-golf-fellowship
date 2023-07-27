@@ -141,6 +141,9 @@ const FooterTSX = () => {
           variant="default"
           radius="xl"
           style={{ backgroundColor: 'transparent' }}
+          onClick={() => {
+            window.open('https://www.facebook.com/thegolffellowship', '_blank')
+          }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

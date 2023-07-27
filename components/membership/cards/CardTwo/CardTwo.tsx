@@ -5,6 +5,8 @@ import CardTwoSubmit from '../../functions/CardTwoSubmit'
 import type { DefaultMembership } from '../../../../types/data/DefaultMembership'
 import type { FormData } from '../../../../types/data/FormData'
 import Chevron from '../Chevron/Chevron'
+import { Button, Center, Popover, Text, Title, Flex } from '@mantine/core'
+import { IconInfoCircle } from '@tabler/icons-react'
 
 interface CardTwoProps {
   setCheckoutData: (data: any) => void
@@ -182,12 +184,25 @@ const CardTwo = (props: CardTwoProps) => {
                       }}
                     />
                     <label className={styles.optionLabel}>
-                      <strong>{city.toUpperCase()}</strong>
+                      {city.toUpperCase()}
                     </label>
                   </div>
                 </div>
               ))}
             </div>
+            <Popover position="right" withArrow width={'150px'}>
+              <Popover.Target>
+                <IconInfoCircle
+                  size={20}
+                  style={{ marginLeft: '5px', cursor: 'pointer' }}
+                />
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text>
+                  Select the city that you would primarily enjoy competing in.
+                </Text>
+              </Popover.Dropdown>
+            </Popover>
           </>
         )}
         <Chevron {...{ collapse: collapseCity, setCollapse: setCollapseCity }} />
@@ -198,7 +213,7 @@ const CardTwo = (props: CardTwoProps) => {
             <div className={styles.selectWrap}>
               <label className={styles.cardFormItemLabel}>PLAN:</label>
               <label className={styles.selectOption}>
-                {selectedPlan.toUpperCase()}
+                {selectedPlan.toUpperCase().replace('PLUS', '+')}
               </label>
             </div>
           ) : (
@@ -231,13 +246,36 @@ const CardTwo = (props: CardTwoProps) => {
                           }}
                         />
                         <label className={styles.optionLabel}>
-                          <strong>{plan.toUpperCase()}</strong>
+                          {plan.toUpperCase().replace('PLUS', '+')}
                         </label>
                       </div>
                     </div>
                   )
                 )}
               </div>
+              <Popover position="right" withArrow width={'150px'}>
+                <Popover.Target>
+                  <IconInfoCircle
+                    size={20}
+                    style={{ marginLeft: '5px', cursor: 'pointer' }}
+                  />
+                </Popover.Target>
+                <Popover.Dropdown>
+                  <Button
+                    color="dark"
+                    onClick={() => {
+                      window.open(
+                        'https://thegolffellowship.com/membership-details',
+                        '_blank'
+                      )
+                    }}
+                  >
+                    <Center>
+                      <Text>Open Plans</Text>
+                    </Center>
+                  </Button>
+                </Popover.Dropdown>
+              </Popover>
             </>
           )}
           <Chevron
@@ -256,7 +294,7 @@ const CardTwo = (props: CardTwoProps) => {
               <div className={styles.selectWrap}>
                 <label className={styles.cardFormItemLabel}>TERM:</label>
                 <label className={styles.selectOption}>
-                  {selectedTerm.toUpperCase()}
+                  {selectedTerm.toUpperCase().replace('PLUS', '+')}
                 </label>
               </div>
             ) : (
@@ -295,7 +333,7 @@ const CardTwo = (props: CardTwoProps) => {
                           }}
                         />
                         <label className={styles.optionLabel}>
-                          <strong>{term.toUpperCase()}</strong>
+                          {term.toUpperCase().replace('PLUS', '+')}
                         </label>
                       </div>
                     </div>
@@ -351,7 +389,7 @@ const CardTwo = (props: CardTwoProps) => {
                         }}
                       />
                       <label className={styles.optionLabel}>
-                        <strong>{subTerm.toUpperCase()}</strong>
+                        {subTerm.toUpperCase()}
                       </label>
                     </div>
                   </div>
@@ -372,43 +410,40 @@ const CardTwo = (props: CardTwoProps) => {
           <label className={styles.cardFormItemLabel}>QUANTITY: </label>
           <div className={styles.cardFormItemGroup}>
             <div className={styles.cardFormOptionWrap} style={{ height: '30px' }}>
-              <div className={styles.option}>
-                <input
-                  className={styles.optionInput}
-                  type="tel"
-                  min="1"
-                  max="10"
-                  defaultValue={1}
-                  {...register('quantity')}
-                  onChange={(e) => {
-                    setValue('quantity', parseInt(e.target.value))
-                  }}
-                  onInput={(e) => {
-                    if (
-                      e.currentTarget.value === '' ||
-                      e.currentTarget.value === '0' ||
-                      e.currentTarget.value.length > 1 ||
-                      !Number(e.currentTarget.value)
-                    ) {
-                      e.currentTarget.value = '1'
-                    } else {
-                      e.currentTarget.value = Math.max(
-                        1,
-                        parseInt(e.currentTarget.value)
-                      )
-                        .toString()
-                        .slice(0, 2)
-                    }
-                  }}
-                  style={{
-                    textAlign: 'center',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    width: '50px',
-                    height: '30px',
-                  }}
-                />
-              </div>
+              <input
+                className={styles.optionInput}
+                type="number"
+                min="1"
+                max="10"
+                defaultValue={1}
+                {...register('quantity')}
+                onChange={(e) => {
+                  setValue('quantity', parseInt(e.target.value))
+                }}
+                onInput={(e) => {
+                  if (
+                    e.currentTarget.value === '' ||
+                    e.currentTarget.value === '0' ||
+                    e.currentTarget.value.length > 1 ||
+                    !Number(e.currentTarget.value)
+                  ) {
+                    e.currentTarget.value = '1'
+                  } else {
+                    e.currentTarget.value = Math.max(
+                      1,
+                      parseInt(e.currentTarget.value)
+                    )
+                      .toString()
+                      .slice(0, 2)
+                  }
+                }}
+                style={{
+                  textAlign: 'center',
+                  fontSize: '20px',
+                  width: '50px',
+                  height: '30px',
+                }}
+              />
             </div>
           </div>
         </div>
@@ -447,7 +482,7 @@ const CardTwo = (props: CardTwoProps) => {
                         }}
                       />
                       <label className={styles.optionLabel}>
-                        <strong>{statusKey.toUpperCase()}</strong>
+                        {statusKey.toUpperCase()}
                       </label>
                     </div>
                   </div>
@@ -464,29 +499,17 @@ const CardTwo = (props: CardTwoProps) => {
         </div>
       )}
       {showPrice && (
-        <div className={styles.cardFormItemGroup}>
-          <div className={styles.cardFormOptionWrap}>
-            <div className={styles.option} id="checkoutButton">
-              <button
-                className={styles.optionInput}
-                type="submit"
-                onClick={() => {
-                  setFocusedElementID('top')
-                }}
-                style={{
-                  backgroundColor: 'rgba(0, 0, 0, .01)',
-                  color: 'black',
-                  border: 'none',
-                  fontSize: '20px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                }}
-              >
-                CHECKOUT
-              </button>
-            </div>
-          </div>
-        </div>
+        <Button
+          type="submit"
+          onClick={() => {
+            setFocusedElementID('top')
+          }}
+          color="dark"
+          id="checkoutButton"
+          miw={'100%'}
+        >
+          CHECKOUT
+        </Button>
       )}
     </form>
   )

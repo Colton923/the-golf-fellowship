@@ -1,29 +1,47 @@
 'use client'
-import Membership from '@components/membership/Membership'
-import { auth } from '../../firebase/firebaseClient'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { Events } from '@components/stripe/products/events/Events'
+
+import { useSiteContext } from '@components/context/Context'
+import Sales from '@components/sales/Sales'
+import { Container, Space } from '@mantine/core'
+
+// const data = await getEvents()
+
+// export async function getEvents() {
+//   const res = await fetch('/api/sanity/getEvents', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//   })
+
+//   if (!res.ok) {
+//     throw new Error(res.statusText)
+//   }
+
+//   return res.json()
+// }
+// console.log(data)
+
+// if (!data) {
+//   return null
+// }
 
 export default function Page() {
-  const [user, loading, error] = useAuthState(auth)
+  const { user, loading, error, router } = useSiteContext()
 
-  if (loading && !error) {
-    return <>Loading...</>
+  if (loading) {
+    return <div>Loading...</div>
   }
-  if (error && !loading) {
-    return <>Error: {error}</>
-  }
-  if (!user) {
+
+  if (user) {
     return (
-      <div>
-        <Membership />
-      </div>
+      <Container size={'xl'} p={'xl'} m={'xl'}>
+        <Space h={'500px'} />
+        <Sales />
+      </Container>
     )
   } else {
-    return (
-      <div>
-        <Events />
-      </div>
-    )
+    router.push('/membership')
+    return null
   }
 }

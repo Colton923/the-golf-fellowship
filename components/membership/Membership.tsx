@@ -1,4 +1,5 @@
 'use client'
+
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -18,6 +19,7 @@ import CardTwo from './cards/CardTwo/CardTwo'
 import type { DefaultMembership } from '../../types/data/DefaultMembership'
 import type { CustomerData } from '../../types/data/CustomerData'
 import type { FormData } from '../../types/data/FormData'
+import { Button } from '@mantine/core'
 type CreateNewSubscription = {
   requestData: body
 }
@@ -344,9 +346,9 @@ export default function Membership() {
                   TGF MEMBERSHIP SUMMARY
                 </h1>
                 <div className={styles.cardFormOptionWrap}>
-                  <button
+                  <Button
                     id="backButton"
-                    className={styles.backButton}
+                    color="dark"
                     onClick={() => (
                       setShowCheckout(false),
                       setShowCardTwo(false),
@@ -380,7 +382,7 @@ export default function Membership() {
                     )}
                   >
                     BACK
-                  </button>
+                  </Button>
                 </div>
                 <div className={styles.cardFormItemGroup}>
                   <div className={styles.cartGroup}>
@@ -394,7 +396,7 @@ export default function Membership() {
                       <h1 className={styles.cartItemTitle}>PLAN</h1>
                       <h1 className={styles.cartItemSubTitle}>
                         {' '}
-                        {checkoutData.plan.toUpperCase()}
+                        {checkoutData.plan.toUpperCase().replace('PLUS', '+')}
                       </h1>
                     </div>
                     <div className={styles.cartSubGroup}>
@@ -436,7 +438,7 @@ export default function Membership() {
             <form onSubmit={customerHandleSubmit(submitCustomerForm)}>
               <div className={styles.cardFormItem}>
                 <div className={styles.cardFormItemGroup}>
-                  <h1 className={styles.cardFormItemLabel}>CUSTOMER INFORMATION</h1>
+                  <h1 className={styles.cardFormItemLabel}>Customer</h1>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
@@ -472,9 +474,7 @@ export default function Membership() {
               </div>
               <div className={styles.cardFormItem}>
                 <div className={styles.cardFormItemGroup}>
-                  <h1 className={styles.cardFormItemLabel}>
-                    SHIPPING ADDRESS (FREE SHIPPING)
-                  </h1>
+                  <h1 className={styles.cardFormItemLabel}>Shipping</h1>
                   <div className={styles.optionInputShippingWrap}>
                     <div className={styles.checkoutOption}>
                       <input
@@ -606,7 +606,9 @@ export default function Membership() {
               </div>
               <div className={styles.cardFormItem}>
                 <div className={styles.cardFormItemGroup}>
-                  <h1 className={styles.cardFormItemLabel}>SPECIAL INSTRUCTIONS</h1>
+                  <h1 className={styles.cardFormItemLabel}>
+                    Comments, Special Requests
+                  </h1>
                   <div className={styles.checkoutOption}>
                     <textarea
                       id="shippingSpecial"
@@ -618,15 +620,9 @@ export default function Membership() {
                   </div>
                 </div>
               </div>
-              <div className={styles.optionInputShippingWrap}>
-                <button
-                  className={styles.stripeButton}
-                  type="submit"
-                  id="submitButton"
-                >
-                  SUBMIT
-                </button>
-              </div>
+              <Button type="submit" id="submitButton" color="dark">
+                SUBMIT
+              </Button>
             </form>
           </div>
         )}

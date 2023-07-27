@@ -1,9 +1,6 @@
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth'
-import 'firebase/compat/firestore'
+import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
-import { initializeApp } from 'firebase/app'
 
 // Firebase configuration variables loaded from environment variables
 const clientCredentials = {
@@ -17,7 +14,7 @@ const clientCredentials = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 }
 
-const app = !firebase.apps.length ? initializeApp(clientCredentials) : firebase.app()
+const app = initializeApp(clientCredentials)
 const auth = getAuth(app)
 const db = getFirestore(app)
 

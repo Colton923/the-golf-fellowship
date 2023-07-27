@@ -52,13 +52,9 @@ export default function Login(props: LoginProps) {
   const submitPhone = async () => {
     const isNumberInDB = await checkIfNumberInDB()
     if (!isNumberInDB) return alert('Phone number not found in database')
-    const appVerifier = new RecaptchaVerifier(
-      'recaptcha-container',
-      {
-        size: 'invisible',
-      },
-      auth
-    )
+    const appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible',
+    })
     const phoneNumber = phone
     signInWithPhoneNumber(auth, phoneNumber, appVerifier)
       .then((confirmationResult) => {

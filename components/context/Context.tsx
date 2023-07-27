@@ -14,6 +14,7 @@ import { auth } from '../../firebase/firebaseClient'
 import { useForm } from 'react-hook-form'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { notifications } from '@mantine/notifications'
+import { usePathname } from 'next/navigation'
 
 type FormData = {
   firstName: string
@@ -57,50 +58,13 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const [isAdmin, setIsAdmin] = useState(false)
   const [notified, setNotified] = useState(false) //does this execute twice in prod
 
-  const IsAdmin = async (userId: string) => {
-    const response = await fetch('/api/firebase/admin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ uid: userId }),
-    })
-    const data = await response.json()
-    setIsAdmin(data.admin)
-  }
+  const pathname = usePathname()
 
-  useEffect(() => {
-    if (!user) {
-      setIsAdmin(false)
-
-      if (notified) return
-      setNotified(true)
-      notifications.show({
-        title: `Welcome.`,
-        message: '',
-        color: 'white',
-        withCloseButton: true,
-        autoClose: 6000,
-      })
-    } else {
-      IsAdmin(user.uid)
-      notifications.show({
-        title: `Welcome ${user?.displayName}`,
-
-        message: `        Thank you for being a member since ${user?.metadata.creationTime}. Your last
-      login was ${user?.metadata.lastSignInTime}.
-      `,
-        color: 'white',
-        withCloseButton: true,
-        autoClose: 6000,
-      })
-      router.push('/dashboard')
-    }
-  }, [user])
+  const router = useRouter()
 
   const navbarRef = useRef(null)
 
-  const router = useRouter()
+  const loginMain = useRef(null)
 
   const gotoShop = () => {
     router.replace('/shop')
@@ -122,21 +86,51 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     formState: { errors },
   } = useForm<FormData>()
 
-  const loginMain = useRef(null)
+  const IsAdminCheck = async (userId: string) => {
+    const response = await fetch('/api/firebase/admin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ uid: userId }),
+    })
+    const data = await response.json()
+    setIsAdmin(data.admin)
+    return data.admin
+  }
 
   useEffect(() => {
-    const handleFocusForm = () => {
-      const firstNameFocus = document.getElementById('firstName')
-      firstNameFocus?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-        inline: 'center',
-      })
-      //select the first input field
-      firstNameFocus?.focus()
+    if (notified || !user) return
+    const notify = async () => {
+      setNotified(true)
+
+      const admin = await IsAdminCheck(user.uid)
+
+      if (pathname === '/') {
+        if (admin) {
+          notifications.show({
+            title: `Welcome Admin ${user?.displayName}`,
+            message: `Redirecting you to dashboard.`,
+            color: 'white',
+            withCloseButton: true,
+            autoClose: 6000,
+          })
+          router.push('/dashboard')
+        } else {
+          notifications.show({
+            title: `Welcome ${user?.displayName}`,
+            message: `Thank you for being a member since ${user?.metadata.creationTime}. Your last
+              login was ${user?.metadata.lastSignInTime}. Redirecting you to your dashboard.
+              `,
+            color: 'white',
+            withCloseButton: true,
+            autoClose: 6000,
+          })
+        }
+      }
     }
-    handleFocusForm()
-  }, [focus])
+    notify()
+  }, [user])
 
   const contextValue = useMemo(
     () => ({
