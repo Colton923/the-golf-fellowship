@@ -137,7 +137,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             </Text>
           </Button>
         </Flex>
-        <Drawer opened={opened} onClose={close} position={'bottom'} color="dark">
+        <Drawer opened={opened} onClose={close} position={'bottom'}>
           <Flex
             direction="column"
             align={'center'}
