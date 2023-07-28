@@ -8,6 +8,7 @@ type SalesBadgeProps = {
   tint?: string
   middleTextFontSize?: string
   middleTextFontStretch?: string
+  uniqueKey?: string
 }
 
 const SalesBadge = (props: SalesBadgeProps) => {
@@ -21,6 +22,7 @@ const SalesBadge = (props: SalesBadgeProps) => {
     tint,
     middleTextFontSize,
     middleTextFontStretch,
+    uniqueKey,
   } = props
   const defaultProps = {
     color: color || 'rgb(139, 0, 0)',
@@ -36,7 +38,7 @@ const SalesBadge = (props: SalesBadgeProps) => {
 
   const colorOne = defaultProps.color
   const temp = defaultProps.color.split('(')[1].split(')')[0]
-  const rgba = temp.split(', ')
+  const rgba = temp.split(',')
   const tempTwo =
     Math.abs(parseInt(rgba[0]) - 22) +
     ', ' +
@@ -53,6 +55,15 @@ const SalesBadge = (props: SalesBadgeProps) => {
     Math.abs(parseInt(rgba[2]) - 45) +
     ')'
 
+  if (defaultProps.text1.length > 18) {
+    defaultProps.text1 = defaultProps.text1.slice(0, 18)
+  }
+  if (defaultProps.text2.length > 6) {
+    defaultProps.text2 = defaultProps.text2.slice(0, 6)
+  }
+  if (defaultProps.text3.length > 18) {
+    defaultProps.text3 = defaultProps.text3.slice(0, 18)
+  }
   return (
     <svg
       width="100%"
@@ -61,73 +72,83 @@ const SalesBadge = (props: SalesBadgeProps) => {
       style={{
         transform: 'rotate(-10deg)',
       }}
+      id={`${uniqueKey}svg${defaultProps.text1}`}
     >
       <defs>
-        <linearGradient id="lgOne">
+        <linearGradient id={`${uniqueKey}lgOne`}>
           <stop stopColor={`${colorOne}`} stopOpacity="1" offset="0" />
-          <stop stopColor={`${colorTwo}`} stopOpacity="0" offset="1" />
+          <stop stopColor={`${colorTwo}`} stopOpacity="0.5" offset="1" />
         </linearGradient>
         {/* text filter */}
-        <filter id="fThree" colorInterpolationFilters="sRGB">
+        <filter id={`${uniqueKey}fThree`} colorInterpolationFilters="sRGB">
           <feFlood
-            floodOpacity=".8"
+            floodOpacity=".4"
             floodColor="rgb(0,0,0)"
             result="flood"
-            id="feFlood5829"
+            id={`${uniqueKey}feFlood5829`}
           />
           <feComposite
             in="flood"
             in2="SourceGraphic"
             operator="in"
             result="composite1"
-            id="feComposite5831"
+            id={`${uniqueKey}feComposite5831`}
           />
-          <feGaussianBlur stdDeviation="1" result="blur" id="feGaussianBlur5833" />
-          <feOffset dx="1" dy="1" result="offset" id="feOffset5835" />
+          <feGaussianBlur
+            stdDeviation="1"
+            result="blur"
+            id={`${uniqueKey}feGaussianBlur5833`}
+          />
+          <feOffset dx="1" dy="1" result="offset" id={`${uniqueKey}feOffset5835`} />
           <feComposite
             in="SourceGraphic"
             in2="offset"
             operator="over"
             result="composite2"
-            id="feComposite5837"
+            id={`${uniqueKey}feComposite5837`}
           />
         </filter>
 
-        <filter id="fOne" colorInterpolationFilters="sRGB">
+        <filter id={`${uniqueKey}fOne`} colorInterpolationFilters="sRGB">
           <feFlood
-            floodOpacity=".8"
+            floodOpacity="1"
             floodColor="rgb(0,0,0)"
             result="flood"
-            id="feFlood5829"
+            id={`${uniqueKey}feFlood5829`}
           />
           <feComposite
             in="flood"
             in2="SourceGraphic"
             operator="in"
             result="composite1"
-            id="feComposite5831"
+            id={`${uniqueKey}feComposite5831`}
           />
-          <feGaussianBlur stdDeviation="1" result="blur" id="feGaussianBlur5833" />
-          <feOffset dx="1" dy="1" result="offset" id="feOffset5835" />
+          <feGaussianBlur
+            stdDeviation="1"
+            result="blur"
+            id={`${uniqueKey}feGaussianBlur5833`}
+          />
+          <feOffset dx="1" dy="1" result="offset" id={`${uniqueKey}feOffset5835`} />
           <feComposite
             in="SourceGraphic"
             in2="offset"
             operator="over"
             result="composite2"
-            id="feComposite5837"
+            id={`${uniqueKey}feComposite5837`}
+          />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.3
+                    0 0 0 0 0.3
+                    0 0 0 0 0.3
+                    0 0 0 1 0"
+            result="darken"
+            id={`${uniqueKey}feColorMatrix5839`}
           />
         </filter>
-        <filter id="fTwo" colorInterpolationFilters="sRGB">
-          <feMerge id="feMerge5841">
-            <feMergeNode in="SourceGraphic" id="feMergeNode5843" />
-            <feMergeNode in="SourceGraphic" id="feMergeNode5847" />
-            <feMergeNode in="SourceGraphic" id="feMergeNode5847" />
-          </feMerge>
-        </filter>
-
         <radialGradient
-          xlinkHref="#lgOne"
-          id="radialGradient4207"
+          xlinkHref={`#${uniqueKey}lgOne`}
+          id={`${uniqueKey}radialGradient4207`}
           gradientUnits="userSpaceOnUse"
           gradientTransform="matrix(0.56626527, -1.9491737,2.6535343,0.77089145,5592.9315,-3935.7797)"
           cx="-1918.6243"
@@ -138,8 +159,8 @@ const SalesBadge = (props: SalesBadgeProps) => {
         />
 
         <radialGradient
-          xlinkHref="#lgOne"
-          id="radialGradient4221"
+          xlinkHref={`#${uniqueKey}lgOne`}
+          id={`${uniqueKey}radialGradient4221`}
           gradientUnits="userSpaceOnUse"
           gradientTransform="matrix(0.67830627,-0.52701445,0.42848693,0.55149129,1656.5395,2090.3276)"
           cx="-669.98749"
@@ -158,21 +179,21 @@ const SalesBadge = (props: SalesBadgeProps) => {
             x="19.310228"
             height="261.3797"
             width="261.3797"
-            fill="url(#radialGradient4221)"
+            fill={`url(#${uniqueKey}radialGradient4221)`}
             fillOpacity="1"
             stroke="none"
-            filter='url("#fTwo")'
+            filter={`url(#${uniqueKey}fTwo)`}
           />
           <rect
             transform="matrix(3.173314,0,0,3.173314,1777.8554,6245.1647)"
             opacity="0.6"
-            fill="url(#radialGradient4207)"
+            fill={`url(#${uniqueKey}radialGradient4207)`}
             fillOpacity="1"
             stroke={`${strokeColor}`}
             strokeWidth="0.63025582"
             strokeMiterlimit="4"
             strokeDasharray="none"
-            filter="url(#fOne)"
+            filter={`url(#${uniqueKey}fOne)`}
             width="88.123566"
             height="88.123566"
             x="-557.04456"
@@ -190,8 +211,7 @@ const SalesBadge = (props: SalesBadgeProps) => {
           fill="#f9f9f9"
           fontSize="24px"
           fontWeight="bold"
-          fontFamily="sans-serif"
-          filter="url(#fThree)"
+          filter={`url(#${uniqueKey}fThree)`}
         >
           {defaultProps.text1}
         </text>
@@ -208,10 +228,9 @@ const SalesBadge = (props: SalesBadgeProps) => {
           y="53.5%"
           textAnchor="middle"
           fill="#f9f9f9"
-          fontWeight="bold"
-          fontFamily="sans-serif"
+          fontWeight={200}
           fontSize={defaultProps.middleTextFontSize}
-          filter="url(#fThree)"
+          filter={`url(#${uniqueKey}fThree)`}
           style={{
             transformOrigin: 'center',
             transform: `scaleY(${defaultProps.middleTextFontStretch})`,
@@ -220,6 +239,7 @@ const SalesBadge = (props: SalesBadgeProps) => {
         >
           {defaultProps.text2}
         </text>
+
         <line
           x1="10%"
           y1="75%"
@@ -235,8 +255,7 @@ const SalesBadge = (props: SalesBadgeProps) => {
           fill="#f9f9f9"
           fontSize="24px"
           fontWeight="bold"
-          fontFamily="sans-serif"
-          filter="url(#fThree)"
+          filter={`url(#${uniqueKey}fThree)`}
         >
           {defaultProps.text3}
         </text>

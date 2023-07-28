@@ -2,30 +2,7 @@
 
 import { useSiteContext } from '@components/context/Context'
 import Sales from '@components/sales/Sales'
-import { Container, Space } from '@mantine/core'
-
-// const data = await getEvents()
-
-// export async function getEvents() {
-//   const res = await fetch('/api/sanity/getEvents', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   })
-
-//   if (!res.ok) {
-//     throw new Error(res.statusText)
-//   }
-
-//   return res.json()
-// }
-// console.log(data)
-
-// if (!data) {
-//   return null
-// }
-
+import { Container, Menu, Space, Text, Button } from '@mantine/core'
 export default function Page() {
   const { user, loading, error, router } = useSiteContext()
 
@@ -35,8 +12,26 @@ export default function Page() {
 
   if (user) {
     return (
-      <Container size={'xl'} p={'xl'} m={'xl'}>
-        <Space h={'500px'} />
+      <Container size={'xl'} p={'xl'} m={'xl'} mih={'100vh'}>
+        <Space h={'100px'} />
+        <Menu width={300}>
+          <Menu.Target>
+            <Button>
+              <Text>Select League</Text>
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item>
+              <Text>League 1</Text>
+            </Menu.Item>
+            <Menu.Item>
+              <Text>League 2</Text>
+            </Menu.Item>
+            <Menu.Item>
+              <Text>League 3</Text>
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
         <Sales />
       </Container>
     )

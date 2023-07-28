@@ -1,35 +1,66 @@
 import client from 'lib/sanity/client'
 // import urlFor from 'lib/sanity/urlFor'
 import type { NextApiRequest, NextApiResponse } from 'next'
-// example
-// export default {
-//   name: 'events',
-//   title: 'Events',
-//   type: 'document',
-//   fields: [
-//     {name: 'title', title: 'Title', type: 'string'},
-//     {name: 'date', title: 'Date', type: 'datetime'},
-//     {name: 'location', title: 'Location', type: 'reference', to: [{type: 'locations'}]},
-//     {name: 'cost', title: 'Cost', type: 'reference', to: [{type: 'eventFee'}]},
-//     {name: 'eventType', title: 'Event Type', type: 'reference', to: [{type: 'eventTypes'}]},
-//     {
-//       name: 'sideGames',
-//       title: 'Side Games',
-//       type: 'array',
-//       of: [{type: 'reference', to: [{type: 'sideGames'}]}],
-//     },
-//     {name: 'tees', title: 'Tees', type: 'array', of: [{type: 'reference', to: [{type: 'tees'}]}]},
-//     {name: 'description', title: 'Description', type: 'array', of: [{type: 'string'}]},
-//     {name: 'inclusions', title: 'Inclusions', type: 'array', of: [{type: 'string'}]},
-//   ],
-// }
+export interface Event {
+  _id: string
+  title: string
+  date: string
+  description: string[]
+  tees: Tees[]
+  inclusions: string[]
+  location: Location
+  cost: Cost
+  eventType: EventType
+  sideGames: SideGame[]
+}
+
+export interface Tees {
+  title: string
+  description: string
+}
+
+export interface Location {
+  title: string
+  default9Fee: number
+  default18Fee: number
+  description: string
+}
+
+export interface Cost {
+  title: string
+  feePerMembership: FeePerMembership[]
+}
+
+export interface FeePerMembership {
+  _key: string
+  fee: number
+  membership: Membership
+}
+
+export interface Membership {
+  _ref: string
+  _type: string
+}
+
+export interface EventType {
+  title: string
+  description: string
+  defaultFee: number
+}
+
+export interface SideGame {
+  title: string
+  fee: number
+  description: string
+  membersOnly: boolean
+}
 
 const Events = () => `*[_type == "events"] {
   _id,
   title,
   date,
-  location,
-  cost,
+  location->{title, default9Fee, default18Fee, description},
+  cost->{title, feePerMembership[]},
   eventType->{title, description, defaultFee},
   sideGames[]->{title, fee, description, membersOnly},
   tees[]->{title, description},
@@ -41,6 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     try {
       const events = await client.fetch(Events())
+      console.log('events', JSON.stringify(events, null, 2))
       res.status(200).json(events)
     } catch (err: any) {
       res.status(err.statusCode || 500).json(err.message)

@@ -30,8 +30,6 @@ export default function CreateEvents() {
 
     const data = await res.json().then((data) => {
       setEvent(data)
-
-      console.log('data', data)
     })
 
     const stripeRes = await fetch('/api/stripe/stripe_newEvent', {
@@ -46,8 +44,6 @@ export default function CreateEvents() {
     })
 
     const stripeData = await stripeRes.json()
-
-    console.log('stripeData', stripeData)
     setSubmitted(true)
   }
 
