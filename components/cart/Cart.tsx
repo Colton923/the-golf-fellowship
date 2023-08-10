@@ -29,7 +29,6 @@ const Cart = () => {
       size="md"
       title="Cart"
       position="bottom"
-      shadow="xl"
       withOverlay
       withCloseButton
       zIndex={1000}

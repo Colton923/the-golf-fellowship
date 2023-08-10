@@ -204,11 +204,11 @@ export default function Navbar() {
               >
                 <ShoppingCart />
               </Flex>
-              <Cart />
             </>
           )}
         </nav>
       </div>
+      <Cart />
     </>
   )
 }
