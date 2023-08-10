@@ -1,40 +1,26 @@
 'use client'
 
-import { Button, Card, Center, Drawer, Flex, Text } from '@mantine/core'
+import { Affix, Button, Card, Center, Flex, Space, Text } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'
 
 const Cart = () => {
-  const {
-    cart,
-    AddItemToCart,
-    cartOpened,
-    RemoveItemFromCart,
-    user,
-    HandleClosingCart,
-    HandleOpeningCart,
-    error,
-    router,
-  } = useSiteContext()
-
-  const close = () => {
-    if (HandleClosingCart) HandleClosingCart()
-  }
+  const { cart, cartOpened, RemoveItemFromCart } = useSiteContext()
 
   if (!cartOpened) return null
   return (
-    <Drawer
-      opened={cartOpened}
-      onClose={close}
-      padding="md"
-      size="md"
-      title="Cart"
-      position="bottom"
-      withOverlay
-      withCloseButton
-      zIndex={1000}
-      keepMounted
+    <Affix
+      position={{
+        bottom: 0,
+        right: 0,
+      }}
     >
-      <Flex direction="column" justify="center" align="center">
+      <Flex
+        direction="column"
+        justify="flex-end"
+        align="flex-end"
+        miw={'350px'}
+        mih={'600px'}
+      >
         {cart && cart.length > 0 ? (
           cart.map((item, index) => {
             return (
@@ -50,12 +36,19 @@ const Cart = () => {
                   <Text>{item.id}</Text>
                   <Text>{item.quantity}</Text>
                   <Button
+                    color="dark"
                     onClick={() => {
                       if (RemoveItemFromCart) RemoveItemFromCart(item.id)
                     }}
                   >
                     Remove
                   </Button>
+                  <Space h={'10px'} />
+                  <Center>
+                    <Button color="dark" variant="outline">
+                      Checkout
+                    </Button>
+                  </Center>
                 </Card>
               </Flex>
             )
@@ -64,7 +57,7 @@ const Cart = () => {
           <Text>Cart is empty</Text>
         )}
       </Flex>
-    </Drawer>
+    </Affix>
   )
 }
 
