@@ -14,6 +14,7 @@ import {
   Spoiler,
   Button,
   Drawer,
+  ScrollArea,
 } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useSiteContext } from '@components/context/Context'
@@ -24,14 +25,12 @@ import { notifications } from '@mantine/notifications'
 export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params
   const [event, setEvent] = useState<Event | null>(null)
-  const { user } = useSiteContext()
+  const { user, router } = useSiteContext()
   const [sideGamesSelected, setSideGamesSelected] = useState<string[]>([])
   const [opened, { open, close }] = useDisclosure(false)
   const [locationFee, setLocationFee] = useState<number>(0)
   const [sideGamesFee, setSideGamesFee] = useState<Record<string, number>[]>([])
   const [totalPrice, setTotalPrice] = useState<number>(0)
-
-  console.log('user', user)
 
   useEffect(() => {
     async function getEvent(slug: string) {
@@ -66,21 +65,28 @@ export default function Page({ params }: { params: { slug: string } }) {
       setLocationFee(event.location.default18Fee)
     }
 
-    sideGamesSelected.forEach((sideGame) => {
-      const sideGameObj = event.sideGames.find(
+    sideGamesSelected.map((sideGame) => {
+      const sideGameFee = event.sideGames.find(
         (sideGameObj) => sideGameObj.title === sideGame
       )
-      if (sideGameObj) {
-        total += sideGameObj.fee
-        setSideGamesFee([...sideGamesFee, { [sideGame]: sideGameObj.fee }])
+      if (sideGameFee) {
+        total += sideGameFee.fee
       }
     })
+
+    const sideGamesFee = event.sideGames
+      .filter((sideGame) => sideGamesSelected.includes(sideGame.title))
+      .map((sideGame) => {
+        return { [sideGame.title]: sideGame.fee }
+      })
+
+    setSideGamesFee(sideGamesFee)
 
     setTotalPrice(total)
   }, [event, sideGamesSelected])
 
   if (!event) {
-    return <div>404</div>
+    return null
   }
 
   const DateHelper = (date: string) => {
@@ -104,12 +110,12 @@ export default function Page({ params }: { params: { slug: string } }) {
     return `${threeLetterMonths[month].toUpperCase()} ${day}, ${year}`
   }
 
-  const CheckoutButton = () => {
+  const AddToCartButton = () => {
     return (
       <Button
         onClick={() => {
           notifications.show({
-            title: 'Redirecting to checkout...',
+            title: 'Added to Cart',
             message: '',
             color: 'dark',
             icon: '$',
@@ -120,7 +126,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         variant={'outline'}
       >
         <Text fz={'xl'} p={'md'} ta={'right'}>
-          Checkout
+          Add to Cart
         </Text>
       </Button>
     )
@@ -130,8 +136,8 @@ export default function Page({ params }: { params: { slug: string } }) {
     <Container w={'100%'} m={0} p={0} mih={'100vh'}>
       <Space h={'100px'} />
       <Card shadow={'md'} m={'sm'} padding={'xs'} radius={'md'} withBorder>
-        <Flex w={'100%'} m={0} p={0} justify={'flex-end'}>
-          <Button onClick={open} color={'dark'} variant={'outline'}>
+        <Flex w={'100%'} m={'xs'} p={'xs'} justify={'flex-end'}>
+          <Button onClick={open} color={'dark'} variant={'filled'}>
             <Text fz={'xl'} p={'md'} ta={'right'}>
               ${totalPrice.toFixed(2)}
             </Text>
@@ -144,48 +150,97 @@ export default function Page({ params }: { params: { slug: string } }) {
             justify={'space-between'}
             wrap={'wrap'}
           >
-            <Grid w={'100%'}>
-              <Grid.Col span={3}>
-                <Text>Green Fees:</Text>
-              </Grid.Col>
-              <Grid.Col span={3} offset={3}>
-                ${locationFee.toFixed(2)}
-              </Grid.Col>
-            </Grid>
-            {sideGamesFee.map((sideGame, index) => {
-              const key = Object.keys(sideGame)[0]
-              const value = Object.values(sideGame)[0]
-              return (
-                <Grid key={'sideGame' + index} w={'100%'}>
-                  <Grid.Col span={3}>
-                    <Text>{key}</Text>
-                  </Grid.Col>
-                  <Grid.Col span={3} offset={3}>
-                    ${value.toFixed(2)}
-                  </Grid.Col>
-                </Grid>
-              )
-            })}
-            <Text>Total: ${totalPrice.toFixed(2)}</Text>
-            <CheckoutButton />
+            <Flex
+              direction="column"
+              align={'center'}
+              justify={'space-between'}
+              wrap={'wrap'}
+            >
+              <Container w={'100%'} m={0} p={0} mah={'400px'} mih={'300px'}>
+                <ScrollArea h={'300px'} w={'100%'} type="scroll">
+                  <Grid w={'100%'} miw={'75vw'} h={'100%'}>
+                    <Grid.Col span={'auto'}>
+                      <Text fz={'xs'} fw={'bolder'}>
+                        Greens Fees:
+                      </Text>
+                    </Grid.Col>
+                    <Grid.Col span={'auto'} offset={1}>
+                      <Text fz={'xs'} fw={'lighter'} color={'green'}>
+                        ${locationFee.toFixed(2)}
+                      </Text>
+                    </Grid.Col>
+                  </Grid>
+                  {sideGamesFee.map((sideGame, index) => {
+                    const key = Object.keys(sideGame)[0]
+                    const value = Object.values(sideGame)[0]
+                    return (
+                      <Grid
+                        key={'sideGame' + index}
+                        w={'100%'}
+                        miw={'75vw'}
+                        h={'100%'}
+                      >
+                        <Grid.Col span={'auto'}>
+                          <Text fz={'xs'} fw={'bolder'}>
+                            {key}
+                          </Text>
+                        </Grid.Col>
+                        <Grid.Col span={'auto'} offset={1}>
+                          <Text fz={'xs'} fw={'lighter'} color={'green'}>
+                            ${value.toFixed(2)}
+                          </Text>
+                        </Grid.Col>
+                      </Grid>
+                    )
+                  })}
+                </ScrollArea>
+              </Container>
+            </Flex>
+            <Flex direction="row" align={'center'} justify={'flex-end'}>
+              <Container m={'xs'} p={'xs'}>
+                <Text fw={'bolder'} fz={'md'}>
+                  Total:
+                </Text>
+                <Text fw={'lighter'} color={'green'} fz={'md'}>
+                  ${totalPrice.toFixed(2)}
+                </Text>
+              </Container>
+              <AddToCartButton />
+            </Flex>
           </Flex>
         </Drawer>
         <Flex direction="row" align="center" justify="center" wrap={'wrap'}>
           <Center>
             <Skeleton height={120} width={120} />
           </Center>
-          <Center>
-            <Title ta={'center'} p={'xs'}>
-              {event.title}
-            </Title>
-          </Center>
-          <Text fw={100} fz={'xs'}>
-            {DateHelper(event.date)}
-          </Text>
-          {`  |  `}
-          <Text fw={100} fz={'xs'}>
-            {event.location.title}
-          </Text>
+          <Flex direction={'column'} align={'center'} justify={'center'}>
+            <Center>
+              <Title ta={'center'} p={'xs'}>
+                {event.title}
+              </Title>
+            </Center>
+            <Text fw={100} fz={'xs'}>
+              {DateHelper(event.date)}
+            </Text>
+            <Text fw={100} fz={'xs'}>
+              {event.location.title}
+            </Text>
+          </Flex>
+          {event.description.map((desc, index) => {
+            return (
+              <Text
+                w={'100%'}
+                p={0}
+                ta={'center'}
+                key={'eventDesc' + index}
+                fw={'bolder'}
+                fz={'xs'}
+                m={0}
+              >
+                {desc}
+              </Text>
+            )
+          })}
           <Flex direction="row" align="center" justify="center" wrap={'wrap'}>
             <Container
               style={{
@@ -193,51 +248,40 @@ export default function Page({ params }: { params: { slug: string } }) {
               }}
             >
               <Center>
-                <Grid>
-                  <Grid.Col>
-                    <Flex
-                      direction="row"
-                      align="center"
-                      justify="center"
-                      wrap={'wrap'}
-                    >
-                      {event.description.map((desc, index) => {
+                <Grid justify="space-between" p={'xs'} m={'xs'}>
+                  <Grid.Col mb={'xs'} span={'auto'}>
+                    <Spoiler maxHeight={110} showLabel="show more" hideLabel="hide">
+                      <Center>
+                        <Title
+                          mb={'sm'}
+                          fz={'md'}
+                          ta={'center'}
+                          underline
+                          w={'100%'}
+                        >
+                          Details
+                        </Title>
+                      </Center>
+                      {event.inclusions.map((inclusion, index) => {
                         return (
                           <Text
+                            ta={'left'}
                             w={'100%'}
-                            p={0}
-                            ta={'center'}
-                            key={'eventDesc' + index}
-                            fw={100}
-                            fz={'xs'}
-                            fs={'italic'}
-                            m={0}
+                            key={'eventInclus' + index}
+                            p={'xs'}
                           >
-                            {desc}
+                            {inclusion}
                           </Text>
                         )
                       })}
-                      <Spoiler
-                        maxHeight={110}
-                        showLabel="show extras"
-                        hideLabel="hide"
-                      >
-                        {event.inclusions.map((inclusion, index) => {
-                          return (
-                            <Text
-                              ta={'left'}
-                              w={'100%'}
-                              key={'eventInclus' + index}
-                              p={'xs'}
-                            >
-                              {inclusion}
-                            </Text>
-                          )
-                        })}
-                      </Spoiler>
-                    </Flex>
+                    </Spoiler>
                   </Grid.Col>
-                  <Grid.Col>
+                  <Grid.Col mb={'xs'} span={'auto'}>
+                    <Center>
+                      <Title mb={'sm'} fz={'md'} ta={'center'} underline w={'100%'}>
+                        Add Side Games
+                      </Title>
+                    </Center>
                     <Flex
                       direction="row"
                       align="center"
@@ -256,7 +300,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             </Container>
           </Flex>
         </Flex>
-        <CheckoutButton />
+        <AddToCartButton />
       </Card>
     </Container>
   )

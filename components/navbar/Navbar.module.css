@@ -1,5 +1,3 @@
-@import url('/public/static/images/tgf_logo.jpg');
-
 .navbarMain {
   position: fixed;
   backdrop-filter: blur(15px);
@@ -62,7 +60,7 @@
   margin: 0;
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   position: absolute;
   top: 0;
@@ -398,25 +396,26 @@
     right: auto;
     bottom: 23%;
     top: auto;
-    transform: rotate(3133deg);
+    transform: rotate(2833deg);
   }
   96% {
     left: 89%;
     right: auto;
     bottom: 23%;
     top: auto;
-    transform: rotate(3233deg);
+    transform: rotate(2733deg);
   }
   99% {
     left: 88%;
     right: auto;
     bottom: 18%;
     top: auto;
-    transform: rotate(3333deg);
+    transform: rotate(2733deg);
   }
   100% {
-    left: 66vw;
+    left: auto;
     right: auto;
+    margin: 0 50%;
     bottom: -25px;
     top: auto;
     height: 50px;

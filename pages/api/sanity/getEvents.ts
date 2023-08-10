@@ -55,7 +55,7 @@ export interface SideGame {
   membersOnly: boolean
 }
 
-const Events = () => `*[_type == "events"] {
+const Events = () => `*[_type == "events"] | order(date desc) {
   _id,
   title,
   date,

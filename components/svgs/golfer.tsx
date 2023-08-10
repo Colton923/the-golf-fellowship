@@ -1,6 +1,13 @@
 export default function GolferSVG() {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1174.876 1658.241">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 1174.876 1658.241"
+      x="0px"
+      y="0px"
+      width="55px"
+      height="55px"
+    >
       <g>
         <circle fill="#030303" cx="1117.505" cy="623.591" r="21.61" />
         <path

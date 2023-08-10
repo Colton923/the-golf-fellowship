@@ -14,24 +14,6 @@ export default function Page() {
     return (
       <Container size={'xl'} p={'xl'} m={'xl'} mih={'100vh'}>
         <Space h={'100px'} />
-        <Menu width={300}>
-          <Menu.Target>
-            <Button>
-              <Text>Select League</Text>
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <Menu.Item>
-              <Text>League 1</Text>
-            </Menu.Item>
-            <Menu.Item>
-              <Text>League 2</Text>
-            </Menu.Item>
-            <Menu.Item>
-              <Text>League 3</Text>
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
         <Sales />
       </Container>
     )

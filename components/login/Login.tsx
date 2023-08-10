@@ -5,7 +5,7 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber,
 } from 'firebase/auth'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSiteContext } from '@components/context/Context'
 import { Modal, Flex, Input, Space, Center, Notification } from '@mantine/core'
 import { auth } from '../../firebase/firebaseClient'
@@ -20,12 +20,20 @@ export default function Login(props: LoginProps) {
   const [phone, setPhone] = useState('')
   const { router } = useSiteContext()
   const [showNotification, setShowNotification] = useState(false)
+  const [appVerifier, setAppVerifier] = useState<RecaptchaVerifier | null>(null)
   const [confirmResult, setConfirmResult] = useState<ConfirmationResult>()
   const gotoShop = () => {
     router.replace('/shop')
     close()
   }
   const [codeLetters, setCodeLetters] = useState(['', '', '', '', '', ''])
+
+  useEffect(() => {
+    const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      size: 'invisible',
+    })
+    setAppVerifier(verifier)
+  }, [])
 
   const checkIfNumberInDB = async () => {
     return await fetch('/api/firebase/isPhoneNumberInDB', {
@@ -51,27 +59,25 @@ export default function Login(props: LoginProps) {
 
   const submitPhone = async () => {
     const isNumberInDB = await checkIfNumberInDB()
-    if (!isNumberInDB) return alert('Phone number not found in database')
-    const appVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'invisible',
-    })
-    const phoneNumber = phone
-    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
+    if (!isNumberInDB) return alert('User not found.')
+    if (!appVerifier) return
+    signInWithPhoneNumber(auth, phone, appVerifier)
       .then((confirmationResult) => {
         setShowNotification(true)
         setConfirmResult(confirmationResult)
+        appVerifier.clear()
       })
       .catch((error) => {
         console.log(error)
         if (error.code === 'auth/too-many-requests') {
           alert('Too many requests. Please wait a few minutes before trying again.')
         } else {
-          alert('Error sending code')
+          alert('Recaptcha verifier already used. Please refresh the page.')
         }
       })
   }
+
   const submitCode = (code: string) => {
-    console.log(code)
     confirmResult
       ?.confirm(code)
       .then((result) => {
@@ -96,6 +102,12 @@ export default function Login(props: LoginProps) {
               placeholder="123-456-7890"
               onChange={(e) => {
                 e.target.value = e.target.value.replace(/[^0-9,-]/g, '')
+
+                if (e.target.value.length < phone.length - 2) {
+                  setPhone('+1' + e.target.value)
+                  return
+                }
+
                 if (e.target.value.length > 12) {
                   e.target.value = e.target.value.slice(0, 12)
                 }
@@ -114,7 +126,6 @@ export default function Login(props: LoginProps) {
               style={{
                 boxShadow: '2px 2px 10px 0px rgba(0,0,0,0.2)',
                 borderRadius: '0.25rem',
-                textAlign: 'center',
               }}
             />
           </Center>

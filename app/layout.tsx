@@ -1,11 +1,13 @@
 import Providers from '@components/context/Providers'
+import CalendarIcon from '@components/sales/calendarIcon/CalendarIcon'
 
 import '@styles/global.css'
 
 interface Props {
   children: React.ReactNode
+  modal: React.ReactNode
 }
-export default async function RootLayout({ children }: Props) {
+export default async function RootLayout({ children, modal }: Props) {
   return (
     <html>
       <head>
@@ -22,7 +24,10 @@ export default async function RootLayout({ children }: Props) {
       </head>
       <body>
         <main>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+          {modal}
+          </Providers>
           <div
             id="recaptcha-container"
             style={{

@@ -50,7 +50,7 @@ const FooterTSX = () => {
           variant="outline"
           color="gray"
         >
-          <Link href="careers" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link href="/careers" style={{ textDecoration: 'none', color: 'black' }}>
             <Text
               style={{
                 textShadow: '1px 1px 1px rgba(255,255,255,1)',
@@ -68,7 +68,7 @@ const FooterTSX = () => {
           variant="outline"
           color="gray"
         >
-          <Link href="contact" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link href="/contact" style={{ textDecoration: 'none', color: 'black' }}>
             <Text
               style={{
                 textShadow: '1px 1px 1px rgba(255,255,255,1)',
@@ -86,7 +86,7 @@ const FooterTSX = () => {
           variant="outline"
           color="gray"
         >
-          <Link href="terms" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link href="/terms" style={{ textDecoration: 'none', color: 'black' }}>
             <Text
               style={{
                 textShadow: '1px 1px 1px rgba(255,255,255,1)',
@@ -104,7 +104,7 @@ const FooterTSX = () => {
           variant="outline"
           color="gray"
         >
-          <Link href="privacy" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link href="/privacy" style={{ textDecoration: 'none', color: 'black' }}>
             <Text
               style={{
                 textShadow: '1px 1px 1px rgba(255,255,255,1)',
@@ -122,7 +122,7 @@ const FooterTSX = () => {
           variant="outline"
           color="gray"
         >
-          <Link href="cookies" style={{ textDecoration: 'none', color: 'black' }}>
+          <Link href="/cookies" style={{ textDecoration: 'none', color: 'black' }}>
             <Text
               style={{
                 textShadow: '1px 1px 1px rgba(255,255,255,1)',

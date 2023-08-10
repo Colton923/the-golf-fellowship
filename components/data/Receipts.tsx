@@ -269,7 +269,7 @@ export const Receipts = () => {
   const defaultColDef = useMemo(() => {
     return {
       flex: 1,
-      minWidth: 180,
+      minWidth: 85,
       resizable: true,
       sortable: true,
       filter: true,
@@ -280,13 +280,13 @@ export const Receipts = () => {
           if (params.data.shippingAddress !== undefined) {
             return {
               display: 'flex',
-              fontSize: '13px',
-              lineHeight: '1.2',
+              fontSize: '10px',
+              lineHeight: '1',
               whiteSpace: 'normal',
               wordWrap: 'break-word',
               textAlign: 'center',
               alignItems: 'center',
-              padding: '3px',
+              padding: '0px',
               margin: '0px',
               border: '1px',
               outline: '0px',
@@ -636,6 +636,20 @@ export const Receipts = () => {
           value="Export to CSV"
           onClick={() => {
             gridApi ? gridApi.exportDataAsCsv() : null
+          }}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: '50px',
+            margin: '0 auto',
+            fontSize: '20px',
+            backgroundColor: '#ffffff',
+            color: '#000000',
+            border: '1px solid #fefefe',
+            borderRadius: '10px',
+            cursor: 'pointer',
           }}
         />
       </div>

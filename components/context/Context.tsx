@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { notifications } from '@mantine/notifications'
 import { usePathname } from 'next/navigation'
-
+import { useDisclosure } from '@mantine/hooks'
 type FormData = {
   firstName: string
   lastName: string
@@ -46,9 +46,19 @@ interface ContextScope {
   isAdmin: boolean
   user: any
   loading: boolean
+  AddItemToCart: (id: string) => void
+  RemoveItemFromCart: (id: string) => void
+  cart: Cart[]
+  HandleClosingCart: () => void
+  HandleOpeningCart: () => void
   error: any
+  cartOpened: boolean
 }
 
+export type Cart = {
+  id: string
+  quantity: number
+}
 export const Context = createContext<Partial<ContextScope>>({})
 
 export const ContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -57,6 +67,8 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const [user, loading, error] = useAuthState(auth)
   const [isAdmin, setIsAdmin] = useState(false)
   const [notified, setNotified] = useState(false) //does this execute twice in prod
+  const [cart, setCart] = useState<Cart[]>([])
+  const [cartOpened, { open, close }] = useDisclosure(false)
 
   const pathname = usePathname()
 
@@ -77,6 +89,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const logout = () => {
     auth.signOut()
     setShowSignupMenu(false)
+    router.refresh()
   }
 
   const {
@@ -97,6 +110,51 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     const data = await response.json()
     setIsAdmin(data.admin)
     return data.admin
+  }
+
+  const AddItemToCart = (id: string) => {
+    const item = cart.find((item) => item.id === id)
+    if (item) {
+      setCart(
+        cart.map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+        )
+      )
+    } else {
+      setCart([...cart, { id, quantity: 1 }])
+    }
+  }
+
+  const RemoveItemFromCart = (id: string) => {
+    const item = cart.find((item) => item.id === id)
+    if (item) {
+      setCart(
+        cart.map((item) =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+      )
+    } else {
+      setCart([...cart, { id, quantity: 1 }])
+    }
+  }
+
+  const HandleOpeningCart = () => {
+    if (user) {
+      open()
+    } else {
+      notifications.show({
+        title: `Please login to view your cart.`,
+        message: `You will be redirected to membership purchasing.`,
+        color: 'white',
+        withCloseButton: true,
+        autoClose: 6000,
+      })
+      router.push('/shop')
+    }
+  }
+
+  const HandleClosingCart = () => {
+    close()
   }
 
   useEffect(() => {
@@ -151,8 +209,38 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       isAdmin,
       user,
       loading,
+      AddItemToCart,
+      RemoveItemFromCart,
+      cart,
+      HandleClosingCart,
+      HandleOpeningCart,
+      cartOpened,
+      error,
     }),
-    [showSignupMenu, focus, user, router, errors, loading, isAdmin]
+    [
+      showSignupMenu,
+      HandleClosingCart,
+      HandleOpeningCart,
+      focus,
+      user,
+      router,
+      errors,
+      cartOpened,
+      loading,
+      isAdmin,
+      cart,
+      error,
+      handleSubmit,
+      loginMain,
+      logout,
+      navbarRef,
+      register,
+      setValue,
+      gotoDashboard,
+      gotoShop,
+      AddItemToCart,
+      RemoveItemFromCart,
+    ]
   )
 
   return (

@@ -132,7 +132,7 @@ export default function CarouselComponent() {
                 Weeknight 9s and Weekend 18s. Qualify and represent your TGF League.
               </Text>
               <Space h={'10%'} />
-              <Link href="/community">
+              <Link href="/shop">
                 <Button
                   size={'xl'}
                   type={'button'}
