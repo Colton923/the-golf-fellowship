@@ -14,7 +14,7 @@ const LayoutController = (props: LayoutControllerProps) => {
       footer={<Footer />}
       padding={0}
       fixed={false}
-      // aside={<Cart />}
+      aside={<Cart />}
     >
       {props.children}
     </AppShell>
