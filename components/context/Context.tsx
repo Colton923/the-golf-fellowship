@@ -141,6 +141,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const HandleOpeningCart = () => {
     if (user) {
       open()
+      router.push('/cart')
     } else {
       notifications.show({
         title: `Please login to view your cart.`,

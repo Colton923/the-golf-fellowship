@@ -16,6 +16,7 @@ import {
   Drawer,
   ScrollArea,
   Group,
+  Modal,
 } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useSiteContext } from '@components/context/Context'
@@ -233,247 +234,231 @@ export default function Page({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <Container w={'100%'} m={0} p={'xs'} className={styles.modal}>
-      <ScrollArea
+    <Modal
+      opened={true}
+      onClose={() => router.back()}
+      size={'xl'}
+      pt={'xl'}
+      mt={'xl'}
+    >
+      <Space h={'50px'} />
+      <Flex
+        direction="row"
+        align="flex-start"
+        justify="space-evenly"
+        wrap={'wrap'}
         w={'100%'}
-        h={'70vh'}
-        type="scroll"
-        p={0}
-        m={0}
         style={{
-          borderRadius: '10px',
+          zIndex: 100,
+          margin: '10px',
         }}
       >
-        <Card shadow={'md'} m={0} padding={0} radius={'md'} withBorder>
-          <Flex direction="row" align="flex-start" justify="center" wrap={'wrap'}>
-            <Flex
-              direction="row"
-              align="flex-start"
-              justify="space-evenly"
-              wrap={'wrap'}
-              w={'100%'}
-              pos={'fixed'}
-              style={{
-                zIndex: 100,
-                margin: '10px',
-              }}
-            >
-              <Button
-                onClick={() => {
-                  router.back()
-                }}
-                color={'dark'}
-                variant={'filled'}
-                p={'xs'}
-                w={'100px'}
-              >
-                <Text fz={'md'} p={'xs'} ta={'center'} m={0}>
-                  Back
-                </Text>
-              </Button>
-              <Button
-                onClick={open}
-                color={'dark'}
-                variant={'filled'}
-                p={'xs'}
-                w={'100px'}
-              >
-                <Text fz={'md'} p={'xs'} ta={'center'} m={0}>
-                  ${totalPrice.toFixed(2)}
-                </Text>
-              </Button>
-            </Flex>
-            <Space h={'75px'} />
-            <Drawer opened={opened} onClose={close} position={'bottom'}>
-              <Flex
-                direction="column"
-                align={'center'}
-                justify={'space-between'}
-                wrap={'wrap'}
-              >
-                <Flex
-                  direction="column"
-                  align={'center'}
-                  justify={'space-between'}
-                  wrap={'wrap'}
-                >
-                  <Container w={'100%'} m={0} p={0} mah={'400px'} mih={'300px'}>
-                    <ScrollArea h={'300px'} w={'100%'} type="scroll">
-                      <Grid w={'100%'} miw={'75vw'} h={'100%'}>
-                        <Grid.Col span={'auto'}>
-                          <Text fz={'xs'} fw={'bolder'}>
-                            Greens Fees:
-                          </Text>
-                        </Grid.Col>
-                        <Grid.Col span={'auto'} offset={1}>
-                          <Text fz={'xs'} fw={'lighter'} color={'green'}>
-                            ${locationFee.toFixed(2)}
-                          </Text>
-                        </Grid.Col>
-                      </Grid>
-                      <Grid w={'100%'} miw={'75vw'} h={'100%'}>
-                        <Grid.Col span={'auto'}>
-                          <Text fz={'xs'} fw={'bolder'}>
-                            TGF Fees:
-                          </Text>
-                        </Grid.Col>
-                        <Grid.Col span={'auto'} offset={1}>
-                          <Text fz={'xs'} fw={'lighter'} color={'green'}>
-                            $
-                            {sanityMember
-                              ? parseInt(sanityMember.fee).toFixed(2)
-                              : '0.00'}
-                          </Text>
-                        </Grid.Col>
-                      </Grid>
-                      {sideGamesFee.map((sideGame, index) => {
-                        const key = Object.keys(sideGame)[0]
-                        const value = Object.values(sideGame)[0]
-                        return (
-                          <Grid
-                            key={'sideGame' + index}
-                            w={'100%'}
-                            miw={'75vw'}
-                            h={'100%'}
-                          >
-                            <Grid.Col span={'auto'}>
-                              <Text fz={'xs'} fw={'bolder'}>
-                                {key}
-                              </Text>
-                            </Grid.Col>
-                            <Grid.Col span={'auto'} offset={1}>
-                              <Text fz={'xs'} fw={'lighter'} color={'green'}>
-                                ${value.toFixed(2)}
-                              </Text>
-                            </Grid.Col>
-                          </Grid>
-                        )
-                      })}
-                    </ScrollArea>
-                  </Container>
-                </Flex>
-                <Flex direction="row" align={'center'} justify={'flex-end'}>
-                  <Container m={'xs'} p={'xs'}>
-                    <Text fw={'bolder'} fz={'md'}>
-                      Total:
+        <Button
+          onClick={() => {
+            router.back()
+          }}
+          color={'dark'}
+          variant={'filled'}
+          p={'xs'}
+          w={'100px'}
+        >
+          <Text fz={'md'} p={'xs'} ta={'center'} m={0}>
+            Back
+          </Text>
+        </Button>
+        <Button
+          onClick={open}
+          color={'dark'}
+          variant={'filled'}
+          p={'xs'}
+          w={'100px'}
+        >
+          <Text fz={'md'} p={'xs'} ta={'center'} m={0}>
+            ${totalPrice.toFixed(2)}
+          </Text>
+        </Button>
+      </Flex>
+      <Drawer opened={opened} onClose={close} position={'bottom'}>
+        <Flex
+          direction="column"
+          align={'center'}
+          justify={'space-between'}
+          wrap={'wrap'}
+        >
+          <Flex
+            direction="column"
+            align={'center'}
+            justify={'space-between'}
+            wrap={'wrap'}
+          >
+            <Container w={'100%'} m={0} p={0} mah={'400px'} mih={'300px'}>
+              <ScrollArea h={'300px'} w={'100%'} type="scroll">
+                <Grid w={'100%'} miw={'75vw'} h={'100%'}>
+                  <Grid.Col span={'auto'}>
+                    <Text fz={'xs'} fw={'bolder'}>
+                      Greens Fees:
                     </Text>
-                    <Text fw={'lighter'} color={'green'} fz={'md'}>
-                      ${totalPrice.toFixed(2)}
+                  </Grid.Col>
+                  <Grid.Col span={'auto'} offset={1}>
+                    <Text fz={'xs'} fw={'lighter'} color={'green'}>
+                      ${locationFee.toFixed(2)}
                     </Text>
-                  </Container>
-                  <AddToCartButton />
-                </Flex>
-              </Flex>
-            </Drawer>
-            <Flex direction="row" align="center" justify="center" wrap={'wrap'}>
-              <Center>
-                <Skeleton height={120} width={120} />
-              </Center>
-              <Flex direction={'column'} align={'center'} justify={'center'}>
-                <Center>
-                  <Title ta={'center'} p={'xs'}>
-                    {event.title}
-                  </Title>
-                </Center>
-                <Text fw={100} fz={'xs'}>
-                  {DateHelper(event.date)}
-                </Text>
-                <Text fw={100} fz={'xs'}>
-                  {event.location.title}
-                </Text>
-              </Flex>
-              {event.description.map((desc, index) => {
-                return (
-                  <Text
-                    w={'100%'}
-                    p={0}
-                    ta={'center'}
-                    key={'eventDesc' + index}
-                    fw={'bolder'}
-                    fz={'xs'}
-                    m={0}
-                  >
-                    {desc}
-                  </Text>
-                )
-              })}
-              <Flex direction="row" align="center" justify="center" wrap={'wrap'}>
-                <Container
-                  style={{
-                    padding: '0 10px',
-                  }}
-                >
-                  <Center>
-                    <Grid justify="space-between" p={'xs'} m={'xs'}>
-                      <Grid.Col mb={'xs'} span={'auto'}>
-                        <Spoiler maxHeight={0} showLabel="Details" hideLabel="Hide">
-                          {event.inclusions.map((inclusion, index) => {
-                            return (
-                              <Text
-                                ta={'left'}
-                                w={'100%'}
-                                key={'eventInclus' + index}
-                                p={'xs'}
-                              >
-                                {inclusion}
-                              </Text>
-                            )
-                          })}
-                          <Text
-                            ta={'left'}
-                            w={'100%'}
-                            key={'descriptionForTitle' + event.eventType.title}
-                            p={'xs'}
-                          >
-                            {event.eventType.title}
-                          </Text>
-                          <Text
-                            ta={'left'}
-                            w={'100%'}
-                            key={'descriptionFor' + event.eventType.title}
-                            p={'xs'}
-                          >
-                            {event.eventType.description}
-                          </Text>
-                        </Spoiler>
+                  </Grid.Col>
+                </Grid>
+                <Grid w={'100%'} miw={'75vw'} h={'100%'}>
+                  <Grid.Col span={'auto'}>
+                    <Text fz={'xs'} fw={'bolder'}>
+                      TGF Fees:
+                    </Text>
+                  </Grid.Col>
+                  <Grid.Col span={'auto'} offset={1}>
+                    <Text fz={'xs'} fw={'lighter'} color={'green'}>
+                      $
+                      {sanityMember ? parseInt(sanityMember.fee).toFixed(2) : '0.00'}
+                    </Text>
+                  </Grid.Col>
+                </Grid>
+                {sideGamesFee.map((sideGame, index) => {
+                  const key = Object.keys(sideGame)[0]
+                  const value = Object.values(sideGame)[0]
+                  return (
+                    <Grid
+                      key={'sideGame' + index}
+                      w={'100%'}
+                      miw={'75vw'}
+                      h={'100%'}
+                    >
+                      <Grid.Col span={'auto'}>
+                        <Text fz={'xs'} fw={'bolder'}>
+                          {key}
+                        </Text>
                       </Grid.Col>
-                      <Grid.Col mb={'xs'} span={'auto'}>
-                        <Spoiler
-                          maxHeight={0}
-                          showLabel="Add Side Games"
-                          hideLabel="Hide"
-                        >
-                          <Flex
-                            direction="row"
-                            align="center"
-                            justify="center"
-                            wrap={'wrap'}
-                          >
-                            <SideGamesChips
-                              event={event}
-                              sideGamesSelected={sideGamesSelected}
-                              setSideGamesSelected={setSideGamesSelected}
-                            />
-                          </Flex>
-                        </Spoiler>
-                      </Grid.Col>
-                      <Grid.Col>
-                        <Spoiler
-                          maxHeight={0}
-                          showLabel="Cancellation Policy"
-                          hideLabel="Hide"
-                        ></Spoiler>
+                      <Grid.Col span={'auto'} offset={1}>
+                        <Text fz={'xs'} fw={'lighter'} color={'green'}>
+                          ${value.toFixed(2)}
+                        </Text>
                       </Grid.Col>
                     </Grid>
-                  </Center>
-                </Container>
-              </Flex>
-              <AddToCartButton />
-            </Flex>
+                  )
+                })}
+              </ScrollArea>
+            </Container>
           </Flex>
-          <Space h={'25px'} />
-        </Card>
-      </ScrollArea>
-    </Container>
+          <Flex direction="row" align={'center'} justify={'flex-end'}>
+            <Container m={'xs'} p={'xs'}>
+              <Text fw={'bolder'} fz={'md'}>
+                Total:
+              </Text>
+              <Text fw={'lighter'} color={'green'} fz={'md'}>
+                ${totalPrice.toFixed(2)}
+              </Text>
+            </Container>
+            <AddToCartButton />
+          </Flex>
+        </Flex>
+      </Drawer>
+      <Flex direction="row" align="center" justify="center" wrap={'wrap'}>
+        <Center>
+          <Skeleton height={120} width={120} />
+        </Center>
+        <Flex direction={'column'} align={'center'} justify={'center'}>
+          <Center>
+            <Title ta={'center'} p={'xs'}>
+              {event.title}
+            </Title>
+          </Center>
+          <Text fw={100} fz={'xs'}>
+            {DateHelper(event.date)}
+          </Text>
+          <Text fw={100} fz={'xs'}>
+            {event.location.title}
+          </Text>
+        </Flex>
+        {event.description.map((desc, index) => {
+          return (
+            <Text
+              w={'100%'}
+              p={0}
+              ta={'center'}
+              key={'eventDesc' + index}
+              fw={'bolder'}
+              fz={'xs'}
+              m={0}
+            >
+              {desc}
+            </Text>
+          )
+        })}
+        <Flex direction="row" align="center" justify="center" wrap={'wrap'}>
+          <Container
+            style={{
+              padding: '0 10px',
+            }}
+          >
+            <Center>
+              <Grid justify="space-between" p={'xs'} m={'xs'}>
+                <Grid.Col mb={'xs'} span={'auto'}>
+                  <Spoiler maxHeight={0} showLabel="Details" hideLabel="Hide">
+                    {event.inclusions.map((inclusion, index) => {
+                      return (
+                        <Text
+                          ta={'left'}
+                          w={'100%'}
+                          key={'eventInclus' + index}
+                          p={'xs'}
+                        >
+                          {inclusion}
+                        </Text>
+                      )
+                    })}
+                    <Text
+                      ta={'left'}
+                      w={'100%'}
+                      key={'descriptionForTitle' + event.eventType.title}
+                      p={'xs'}
+                    >
+                      {event.eventType.title}
+                    </Text>
+                    <Text
+                      ta={'left'}
+                      w={'100%'}
+                      key={'descriptionFor' + event.eventType.title}
+                      p={'xs'}
+                    >
+                      {event.eventType.description}
+                    </Text>
+                  </Spoiler>
+                </Grid.Col>
+                <Grid.Col mb={'xs'} span={'auto'}>
+                  <Spoiler maxHeight={0} showLabel="Add Side Games" hideLabel="Hide">
+                    <Flex
+                      direction="row"
+                      align="center"
+                      justify="center"
+                      wrap={'wrap'}
+                    >
+                      <SideGamesChips
+                        event={event}
+                        sideGamesSelected={sideGamesSelected}
+                        setSideGamesSelected={setSideGamesSelected}
+                      />
+                    </Flex>
+                  </Spoiler>
+                </Grid.Col>
+                <Grid.Col>
+                  <Spoiler
+                    maxHeight={0}
+                    showLabel="Cancellation Policy"
+                    hideLabel="Hide"
+                  ></Spoiler>
+                </Grid.Col>
+              </Grid>
+            </Center>
+          </Container>
+        </Flex>
+        <AddToCartButton />
+        <Space h={'50px'} />
+      </Flex>
+    </Modal>
   )
 }

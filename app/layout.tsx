@@ -26,7 +26,7 @@ export default async function RootLayout({ children, modal }: Props) {
         <main>
           <Providers>
             {children}
-          {modal}
+            {modal}
           </Providers>
           <div
             id="recaptcha-container"
