@@ -32,6 +32,7 @@ const Cart = () => {
       withOverlay
       withCloseButton
       zIndex={1000}
+      keepMounted
     >
       <Flex direction="column" justify="center" align="center">
         {cart && cart.length > 0 ? (
