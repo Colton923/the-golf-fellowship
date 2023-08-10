@@ -1,6 +1,6 @@
 'use client'
 
-import { Flex, Container, Card, Space, Affix, Transition } from '@mantine/core'
+import { Flex, Container, Card, Space } from '@mantine/core'
 import { cardData } from '@components/homepageCards/static'
 import Video from '@components/video/Video'
 import CarouselComponent from '@components/carousel/CarouselComponent'
