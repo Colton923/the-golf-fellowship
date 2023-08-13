@@ -25,7 +25,6 @@ import { notifications } from '@mantine/notifications'
 export default function Page({ params }: { params: { slug: string } }) {
   const { slug } = params
   const [event, setEvent] = useState<Event | null>(null)
-  const { user, router } = useSiteContext()
   const [sideGamesSelected, setSideGamesSelected] = useState<string[]>([])
   const [opened, { open, close }] = useDisclosure(false)
   const [locationFee, setLocationFee] = useState<number>(0)

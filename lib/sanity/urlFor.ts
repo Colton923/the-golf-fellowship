@@ -1,11 +1,10 @@
-// import imageUrlBuilder from '@sanity/image-url',
-// import client from './client'
+import imageUrlBuilder from '@sanity/image-url'
+import client from './client'
 
 const urlFor = (source: string) => {
-  // const builder = imageUrlBuilder(client)
+  const builder = imageUrlBuilder(client)
 
-  // return builder.image(source)
-  return source
+  return builder.image(source)
 }
 
 export default urlFor

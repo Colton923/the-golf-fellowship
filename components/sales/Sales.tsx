@@ -1,8 +1,6 @@
 'use client'
 
 import {
-  Badge,
-  Chip,
   Container,
   Flex,
   Skeleton,
@@ -13,64 +11,12 @@ import {
   MultiSelect,
   Space,
 } from '@mantine/core'
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import CalendarIcon from './calendarIcon/CalendarIcon'
-import { Event } from '@api/sanity/getEvents'
+import { useSiteContext } from '@components/context/Context'
 
 export default function Sales() {
-  const [salesData, setSalesData] = useState([])
-  const playing = Math.random() > 0.5 ? true : false
-
-  const UpdateStripeDB = async (event: Event) => {
-    const res = await fetch('/api/stripe/new/sanityEvent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ event }),
-    })
-    if (!res.ok) {
-      throw new Error(res.statusText)
-    }
-
-    return res.json()
-  }
-
-  useEffect(() => {
-    async function getEvents() {
-      const res = await fetch('/api/sanity/getEvents', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      if (!res.ok) {
-        throw new Error(res.statusText)
-      }
-
-      return res.json()
-    }
-    const DataSetter = async () => {
-      const data = await getEvents()
-      if (!data) return
-      const goodData = data
-        .filter((event: any) => {
-          const eventDate = new Date(event.date)
-          const today = new Date()
-          if (eventDate > today) return event
-        })
-        .sort((a: any, b: any) => {
-          const aDate = new Date(a.date) as any
-          const bDate = new Date(b.date) as any
-          return aDate - bDate
-        })
-
-      setSalesData(goodData)
-    }
-    DataSetter()
-  }, [])
+  const { salesData } = useSiteContext()
 
   if (salesData.length === 0) {
     return (
@@ -133,20 +79,6 @@ export default function Sales() {
                     {militaryTimeToStandardTime(sale.date.split('T')[1].slice(0, 5))}
                   </Text>
                 </Flex>
-                <div
-                  style={{
-                    marginLeft: 'auto',
-                    display: 'flex',
-                    height: '100%',
-                    width: '30px',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Text ta={'center'} ml={'xs'} mr={'xs'}>
-                    {playing ? '✔️' : '❌'}
-                  </Text>
-                </div>
               </Flex>
             </Link>
           )

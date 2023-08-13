@@ -25,6 +25,7 @@ const ChipHelper = (props: ChipHelperProps) => {
     <>
       <Chip
         p={'xs'}
+        m={0}
         checked={selected}
         onChange={() => {
           handleSelect()

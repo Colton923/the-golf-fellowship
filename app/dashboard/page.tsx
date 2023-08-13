@@ -11,6 +11,7 @@ import { Receipts } from '@components/data/Receipts'
 import { useSiteContext } from '@components/context/Context'
 import { BackgroundImage, Center, Container, Flex, Tabs } from '@mantine/core'
 import Sales from '@components/sales/Sales'
+import { Suspense } from 'react'
 
 const StatsSVG = () => {
   return (
@@ -165,7 +166,9 @@ export default function Page() {
               )}
             </Tabs.List>
             <Tabs.Panel value="proShop" id="proshopId">
-              <Sales />
+              <Suspense fallback={<div>Loading...</div>}>
+                <Sales />
+              </Suspense>
             </Tabs.Panel>
             <Tabs.Panel value="stats">Statistics</Tabs.Panel>
             <Tabs.Panel value="account">My Account</Tabs.Panel>

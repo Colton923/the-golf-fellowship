@@ -1,5 +1,4 @@
 import client from 'lib/sanity/client'
-// import urlFor from 'lib/sanity/urlFor'
 import type { NextApiRequest, NextApiResponse } from 'next'
 export interface Event {
   _id: string
@@ -12,6 +11,8 @@ export interface Event {
   cost: Cost
   eventType: EventType
   sideGames: SideGame[]
+  playingPartnerRequest: boolean
+  image: string
 }
 
 export interface Tees {
@@ -66,13 +67,14 @@ const Events = () => `*[_type == "events"] | order(date desc) {
   tees[]->{title, description},
   description,
   inclusions,
+  playingPartnerRequest,
+  image
 }`
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
       const events = await client.fetch(Events())
-      console.log('events', JSON.stringify(events, null, 2))
       res.status(200).json(events)
     } catch (err: any) {
       res.status(err.statusCode || 500).json(err.message)

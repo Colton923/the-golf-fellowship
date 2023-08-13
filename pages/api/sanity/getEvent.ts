@@ -12,6 +12,8 @@ const Event = (slug: string) => `*[_type == "events" && _id == "${slug}"] {
   tees[]->{title, description},
   description,
   inclusions,
+  playingPartnerRequest,
+  image
 }`
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

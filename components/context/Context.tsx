@@ -16,6 +16,8 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { notifications } from '@mantine/notifications'
 import { usePathname } from 'next/navigation'
 import { useDisclosure } from '@mantine/hooks'
+import { Event } from '@api/sanity/getEvents'
+import type { CartItem } from 'app/@modal/(.)shop/[slug]/page'
 type FormData = {
   firstName: string
   lastName: string
@@ -46,18 +48,50 @@ interface ContextScope {
   isAdmin: boolean
   user: any
   loading: boolean
-  AddItemToCart: (id: string) => void
+  AddItemToCart: (newItem: CartItem) => void
   RemoveItemFromCart: (id: string) => void
   cart: Cart[]
   HandleClosingCart: () => void
+  cartTotal: number
   HandleOpeningCart: () => void
   error: any
   cartOpened: boolean
+  salesData: any
+  sanityMember: any
+  myUserData: MyUserData
 }
 
 export type Cart = {
-  id: string
+  item: CartItem
   quantity: number
+  id: string
+}
+export type MyUserData = {
+  address: {
+    city: string
+    country: string
+    opt: string
+    postalCode: string
+    special: string
+    state: string
+    street: string
+  }
+  dateAdded: string
+  email: string
+  firstName: string
+  lastName: string
+  membership: {
+    city: string
+    plan: string
+    quantity: string
+    status: string
+    subTerm: string
+    term: string
+  }
+  phone: string
+  stripeId: string
+  stripeLink: string
+  uid: string
 }
 export const Context = createContext<Partial<ContextScope>>({})
 
@@ -69,6 +103,25 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const [notified, setNotified] = useState(false) //does this execute twice in prod
   const [cart, setCart] = useState<Cart[]>([])
   const [cartOpened, { open, close }] = useDisclosure(false)
+  const [salesData, setSalesData] = useState([])
+  const [sanityMember, setSanityMember] = useState<any | null>(null)
+  const [myUserData, setMyUserData] = useState<MyUserData | null>(null)
+  const [cartTotal, setCartTotal] = useState(0)
+  const [cartHash, setCartHash] = useState(0)
+  const UpdateStripeDB = async (event: Event) => {
+    const res = await fetch('/api/stripe/new/sanityEvent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ event }),
+    })
+    if (!res.ok) {
+      throw new Error(res.statusText)
+    }
+
+    return res.json()
+  }
 
   const pathname = usePathname()
 
@@ -112,29 +165,25 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     return data.admin
   }
 
-  const AddItemToCart = (id: string) => {
-    const item = cart.find((item) => item.id === id)
-    if (item) {
-      setCart(
-        cart.map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-        )
-      )
-    } else {
-      setCart([...cart, { id, quantity: 1 }])
-    }
+  const AddItemToCart = (newItem: CartItem) => {
+    setCartHash(cartHash + 1)
+    setCart([...cart, { item: newItem, quantity: 1, id: cartHash.toString() }])
   }
 
   const RemoveItemFromCart = (id: string) => {
     const item = cart.find((item) => item.id === id)
-    if (item) {
+    if (!item) {
+      return
+    } else if (item.quantity <= 1) {
+      setCart(cart.filter((item) => item.id !== id))
+    } else {
       setCart(
         cart.map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+          item.id === id
+            ? { ...item, quantity: item.quantity - 1, id: item.id }
+            : item
         )
       )
-    } else {
-      setCart([...cart, { id, quantity: 1 }])
     }
   }
 
@@ -160,6 +209,71 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 
   useEffect(() => {
     if (notified || !user) return
+    async function getEvents() {
+      const res = await fetch('/api/sanity/getEvents', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!res.ok) {
+        throw new Error(res.statusText)
+      }
+
+      return res.json()
+    }
+    const DataSetter = async () => {
+      const data = await getEvents()
+      if (!data) return
+      const goodData = data
+        .filter((event: any) => {
+          const eventDate = new Date(event.date)
+          const today = new Date()
+          if (eventDate > today) return event
+        })
+        .sort((a: any, b: any) => {
+          const aDate = new Date(a.date) as any
+          const bDate = new Date(b.date) as any
+          return aDate - bDate
+        })
+
+      setSalesData(goodData)
+    }
+    DataSetter()
+
+    async function sanityMember() {
+      if (!user) return
+      if (!user.uid) return
+      if (myUserData) return
+      async function getMyData(uid: string) {
+        const res = await fetch('/api/firebase/myData', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ uid }),
+        })
+        return res.json()
+      }
+      const data = await getMyData(user.uid)
+      setMyUserData(data)
+      async function getSanityMembership(plan: string) {
+        const res = await fetch('/api/sanity/getSanityMembership', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ plan: plan }),
+        })
+        return res.json()
+      }
+      const sanitydata = await getSanityMembership(data.membership.plan)
+      setSanityMember(sanitydata.membership)
+    }
+
+    sanityMember()
+
     const notify = async () => {
       setNotified(true)
 
@@ -191,6 +305,15 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     notify()
   }, [user])
 
+  useEffect(() => {
+    let total = 0
+    cart.forEach((item) => {
+      total += item.quantity * item.item.totalPrice
+    })
+
+    setCartTotal(total)
+  }, [cart])
+
   const contextValue = useMemo(
     () => ({
       showSignUp: showSignupMenu,
@@ -198,6 +321,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       focus,
       setFocus,
       navbarRef,
+      cartTotal,
       router,
       gotoShop,
       gotoDashboard,
@@ -216,14 +340,20 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       HandleClosingCart,
       HandleOpeningCart,
       cartOpened,
+      sanityMember,
+      salesData,
       error,
+      myUserData,
     }),
     [
+      myUserData,
+      salesData,
       showSignupMenu,
       HandleClosingCart,
       HandleOpeningCart,
       focus,
       user,
+      sanityMember,
       router,
       errors,
       cartOpened,
@@ -240,6 +370,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       gotoDashboard,
       gotoShop,
       AddItemToCart,
+      cartTotal,
       RemoveItemFromCart,
     ]
   )

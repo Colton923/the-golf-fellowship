@@ -7,7 +7,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 const handler = async (req: any, res: any) => {
   const body = req.body
-
   if (body.payment_intent_id) {
     try {
       // If a payment_intent_id is passed, retrieve the paymentIntent
@@ -21,15 +20,13 @@ const handler = async (req: any, res: any) => {
           body.payment_intent_id,
           {
             amount: body.amount,
-            metadata: {
-              id: body.metadata.id,
-            },
           }
         )
         res.status(200).json(updated_intent)
         return
       }
     } catch (e) {
+      console.log(e)
       //Catch any error and return a status 500
       //@ts-ignore
       if (e.code !== 'resource_missing') {
@@ -41,21 +38,22 @@ const handler = async (req: any, res: any) => {
   } else {
     try {
       // Create PaymentIntent
-      const params = {
+      const params: any = {
         amount: body.amount,
         currency: 'usd',
         description: 'Payment description',
         automatic_payment_methods: {
           enabled: true,
         },
-        metadata: {
-          id: body.metadata.id,
-        },
+      }
+      if (body.customer) {
+        params.customer = body.customer
       }
       const payment_intent = await stripe.paymentIntents.create(params)
       //Return the payment_intent object
       res.status(200).json(payment_intent)
     } catch (err) {
+      console.log(err)
       const errorMessage =
         err instanceof Error ? err.message : 'Internal server error'
       res.status(500).json({ statusCode: 500, message: errorMessage })

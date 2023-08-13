@@ -1,11 +1,11 @@
 'use client'
 
-import { Button, Card, Center, Flex, Space, Text } from '@mantine/core'
+import { Badge, Button, Card, Flex, Space, Text, Title } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'
+import { DateHelper } from 'app/@modal/(.)shop/[slug]/page'
 
 const Cart = () => {
   const { cart, cartOpened, RemoveItemFromCart } = useSiteContext()
-
   if (!cartOpened) return null
   return (
     <Flex direction="column" justify="flex-end" align="flex-end">
@@ -21,8 +21,26 @@ const Cart = () => {
               wrap={'wrap'}
             >
               <Card shadow={'md'} m={'sm'} padding={'xs'} radius={'md'} withBorder>
-                <Text>{item.id}</Text>
-                <Text>{item.quantity}</Text>
+                <Badge
+                  color="green"
+                  variant="light"
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                  }}
+                >
+                  ${item.item.totalPrice}
+                </Badge>
+                <Title w={'100%'}>{item.item.event.title}</Title>
+                {item.item.sideGamesSelected.map((sideGame) => {
+                  return (
+                    <Badge key={sideGame} color="dark">
+                      <Text>{sideGame}</Text>
+                    </Badge>
+                  )
+                })}
+                <Text>{DateHelper(item.item.event.date)}</Text>
                 <Button
                   color="dark"
                   onClick={() => {
@@ -39,11 +57,6 @@ const Cart = () => {
       ) : (
         <Text>Cart is empty</Text>
       )}
-      <Center>
-        <Button color="dark" variant="outline">
-          Checkout
-        </Button>
-      </Center>
     </Flex>
   )
 }
