@@ -2,7 +2,27 @@
 
 import { Badge, Button, Card, Flex, Space, Text, Title } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'
-import { DateHelper } from 'app/@modal/(.)shop/[slug]/page'
+
+const DateHelper = (date: string) => {
+  const dateObj = new Date(date)
+  const day = dateObj.getDate()
+  const month = dateObj.getMonth()
+  const year = dateObj.getFullYear()
+  const threeLetterMonths = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+  return `${threeLetterMonths[month].toUpperCase()} ${day}, ${year}`
+}
 
 const Cart = () => {
   const { cart, cartOpened, RemoveItemFromCart } = useSiteContext()

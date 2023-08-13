@@ -36,7 +36,7 @@ export interface CartItem {
   event: Event
   playingPartner: string
 }
-export function DateHelper(date: string) {
+const DateHelper = (date: string) => {
   const dateObj = new Date(date)
   const day = dateObj.getDate()
   const month = dateObj.getMonth()
