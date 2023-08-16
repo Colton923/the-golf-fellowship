@@ -162,6 +162,7 @@ export default function Navbar() {
         position="left"
         size={'300px'}
         onClose={toggle}
+        keepMounted
       >
         <Flex align={'center'} w={'100%'} p={'xl'}>
           <Space h={'300px'} />
