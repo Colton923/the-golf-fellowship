@@ -42,7 +42,7 @@ export default function Page() {
   }
 
   if (!user) {
-    router.push('/')
+    router.push('/membership')
   }
 
   return (

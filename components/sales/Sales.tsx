@@ -9,17 +9,33 @@ import {
   Title,
   Space,
   Card,
+  ThemeIcon,
 } from '@mantine/core'
 import Link from 'next/link'
 import CalendarIcon from './calendarIcon/CalendarIcon'
 import { useSiteContext } from '@components/context/Context'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Event } from '@api/sanity/getEvents'
+import {
+  IconCheck,
+  IconCheckbox,
+  IconGolf,
+  IconGolfOff,
+  IconNumber1,
+  IconNumber8,
+  IconNumber9,
+} from '@tabler/icons-react'
 
 export default function Sales() {
   const [selectedSale, setSelectedSale] = useState<number | null>(null)
-  const { salesData } = useSiteContext()
+  const { salesData, HandleIveBoughtThatBefore } = useSiteContext()
 
-  if (salesData.length === 0) {
+  useEffect(() => {
+    if (!HandleIveBoughtThatBefore) return
+    HandleIveBoughtThatBefore()
+  }, [HandleIveBoughtThatBefore])
+
+  if (!salesData) {
     return (
       <Container w={300}>
         <Skeleton height={300} />
@@ -39,9 +55,18 @@ export default function Sales() {
 
   return (
     <Container w={'100%'} p={'xs'}>
-      <Text>Pro Shop</Text>
-      <Stack justify="flex-start" spacing={'xs'} w={'100%'}>
-        {salesData.map((sale: any, index: number) => {
+      <Text
+        fz={'xl'}
+        weight={700}
+        style={{
+          borderBottom: '1px solid rgba(0,0,0,0.1)',
+          paddingBottom: '10px',
+        }}
+      >
+        TGF Events
+      </Text>
+      <Stack justify="flex-start" spacing={'xs'} w={'100%'} mt={'xs'}>
+        {salesData.map((sale: Event, index: number) => {
           return (
             <Link
               href={`/shop/${sale._id}`}
@@ -64,10 +89,13 @@ export default function Sales() {
                     }
               }
             >
-              <Card shadow="sm" padding={0} radius="md" withBorder>
+              <Card shadow="sm" padding={0} radius="md">
                 <Flex w={'100%'} direction="row" align="center" p={0} h={'60px'}>
                   <Flex w={'60px'} h={'100%'}>
-                    <CalendarIcon date={sale.date} />
+                    <CalendarIcon
+                      date={new Date(sale.date)}
+                      color={sale.userOwns ? 'green' : 'black'}
+                    />
                   </Flex>
                   <Flex
                     direction="column"
@@ -90,6 +118,33 @@ export default function Sales() {
                     </Text>
                   </Flex>
                 </Flex>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    position: 'absolute',
+                    top: '3px',
+                    right: '3px',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {sale.userOwns && (
+                    <ThemeIcon color="green" size="xs">
+                      <IconCheck />
+                    </ThemeIcon>
+                  )}
+                  {sale.cost.title.includes('9') ? (
+                    <ThemeIcon color="blue" size="xs">
+                      <Text fz={'xs'}>{'9'}</Text>
+                    </ThemeIcon>
+                  ) : (
+                    <Flex align="center" justify="center" direction="row">
+                      <ThemeIcon color="blue" size="xs">
+                        <Text fz={'xs'}>{'18'}</Text>
+                      </ThemeIcon>
+                    </Flex>
+                  )}
+                </div>
               </Card>
             </Link>
           )

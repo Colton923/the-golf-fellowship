@@ -32,7 +32,7 @@ const SideGamesChips = (props: SideGamesChipsProps) => {
     return (
       <ChipHelper
         fn={() => console.log('clicked')}
-        color="cyan"
+        color="dark"
         variant="light"
         label={sideGame.title}
         handleNewSideGame={handleNewSideGame}

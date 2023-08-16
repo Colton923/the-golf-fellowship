@@ -11,9 +11,12 @@ import {
   IconHome,
   IconList,
   IconSettings,
-  IconShoppingBag,
+  IconShoppingCart,
   IconUser,
 } from '@tabler/icons-react'
+import { usePathname } from 'next/navigation'
+
+type dashboardSubRoutes = 'proshop' | 'purchases' | 'account' | 'receipts' | ''
 
 export const ShopSVG = () => {
   return (
@@ -47,46 +50,27 @@ export const ShopSVG = () => {
 
 export default function Navbar() {
   const [opened, { open, close }] = useDisclosure(false)
-  const [openDashboardNavigation, { toggle }] = useDisclosure(false)
-  const {
-    user,
-    HandleOpeningCart,
-    cartOpened,
-    HandleClosingCart,
-    isAdmin,
-    HandleDashboardViews,
-  } = useSiteContext()
-  const [openProShop, { toggle: ProshopToggle }] = useDisclosure(true)
-  const [openAdmin, { toggle: AdminToggle }] = useDisclosure(false)
-  const [openAccount, { toggle: AccountToggle }] = useDisclosure(false)
-  const [openPurchases, { toggle: PurchasesToggle }] = useDisclosure(false)
+  const [openDashboardNavigation, { toggle: dashboardToggle }] = useDisclosure(false)
+  const { router, user, HandleOpeningCart, cartOpened, HandleClosingCart, isAdmin } =
+    useSiteContext()
+  const pathname = usePathname()
   const HandleLogin = () => {
     if (opened) return
     open()
   }
-
-  const HandleOpenProShop = () => {
-    ProshopToggle()
-    if (!HandleDashboardViews) return
-    HandleDashboardViews('proShop')
-  }
-
-  const HandleOpenAdmin = () => {
-    AdminToggle()
-    if (!HandleDashboardViews) return
-    HandleDashboardViews('admin')
-  }
-
-  const HandleOpenAccount = () => {
-    AccountToggle()
-    if (!HandleDashboardViews) return
-    HandleDashboardViews('account')
-  }
-
-  const HandleOpenPurchases = () => {
-    PurchasesToggle()
-    if (!HandleDashboardViews) return
-    HandleDashboardViews('purchases')
+  const HandleDashboard = (dashboardComponent: dashboardSubRoutes) => {
+    if (dashboardComponent === '') {
+      router.push('/dashboard')
+      dashboardToggle()
+      return
+    }
+    if (!pathname) return
+    if (pathname.includes(dashboardComponent)) {
+      router.push('/dashboard')
+    } else {
+      router.push(`/dashboard?component=${dashboardComponent}`)
+    }
+    dashboardToggle()
   }
 
   return (
@@ -94,7 +78,10 @@ export default function Navbar() {
       {opened && <Login close={close} opened={opened} />}
       <div className={styles.navbarMain}>
         <div className={styles.navbarContainer}>
-          <Link href={user ? '/dashboard' : '/'} className={styles.spinner} />
+          <Link
+            href={user ? '/dashboard' : '/membership'}
+            className={styles.spinner}
+          />
         </div>
         <nav className={styles.navbar}>
           {!user ? (
@@ -124,17 +111,20 @@ export default function Navbar() {
               </Link>
             </>
           ) : (
-            <>
+            <Flex
+              direction={'row'}
+              justify={'space-between'}
+              align={'center'}
+              w={'100%'}
+            >
               <Burger
                 opened={openDashboardNavigation}
-                onClick={toggle}
+                onClick={dashboardToggle}
                 ml={'xs'}
                 p={'xs'}
               />
               <Flex
                 justify={'flex-end'}
-                w={'100%'}
-                h={'100%'}
                 align={'center'}
                 p={'md'}
                 onClick={() => {
@@ -147,7 +137,7 @@ export default function Navbar() {
               >
                 <ShoppingCart />
               </Flex>
-            </>
+            </Flex>
           )}
         </nav>
       </div>
@@ -155,12 +145,18 @@ export default function Navbar() {
         opened={openDashboardNavigation}
         position="left"
         size={'300px'}
-        onClose={toggle}
+        onClose={dashboardToggle}
       >
         <Flex align={'center'} w={'100%'} p={'xl'}>
           <Space h={'300px'} />
           <Stack spacing={'xl'} align="stretch">
-            <Flex justify={'space-evenly'} onClick={toggle}>
+            <Flex
+              justify={'space-evenly'}
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                HandleDashboard('')
+              }}
+            >
               <ThemeIcon size={'md'} color="dark" variant={'outline'}>
                 <IconHome />
               </ThemeIcon>
@@ -176,13 +172,15 @@ export default function Navbar() {
               </Text>
             </Flex>
 
-            <Flex justify={'space-evenly'} onClick={HandleOpenProShop}>
-              <ThemeIcon
-                size={'md'}
-                color="dark"
-                variant={openProShop ? 'filled' : 'outline'}
-              >
-                <IconShoppingBag />
+            <Flex
+              justify={'space-evenly'}
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                HandleDashboard('proshop')
+              }}
+            >
+              <ThemeIcon size={'md'} color="dark" variant="outline">
+                <IconShoppingCart />
               </ThemeIcon>
               <Text
                 style={{
@@ -195,12 +193,14 @@ export default function Navbar() {
                 Pro Shop
               </Text>
             </Flex>
-            <Flex justify={'space-evenly'} onClick={HandleOpenPurchases}>
-              <ThemeIcon
-                size={'md'}
-                color="dark"
-                variant={openPurchases ? 'filled' : 'outline'}
-              >
+            <Flex
+              justify={'space-evenly'}
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                HandleDashboard('purchases')
+              }}
+            >
+              <ThemeIcon size={'md'} color="dark" variant={'outline'}>
                 <IconList />
               </ThemeIcon>
               <Text
@@ -214,12 +214,14 @@ export default function Navbar() {
                 Purchases
               </Text>
             </Flex>
-            <Flex justify={'space-evenly'} onClick={HandleOpenAccount}>
-              <ThemeIcon
-                size={'md'}
-                color="dark"
-                variant={openAccount ? 'filled' : 'outline'}
-              >
+            <Flex
+              justify={'space-evenly'}
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                HandleDashboard('account')
+              }}
+            >
+              <ThemeIcon size={'md'} color="dark" variant={'outline'}>
                 <IconUser />
               </ThemeIcon>
               <Text
@@ -234,12 +236,14 @@ export default function Navbar() {
               </Text>
             </Flex>
             {isAdmin && (
-              <Flex justify={'space-evenly'} onClick={HandleOpenAdmin}>
-                <ThemeIcon
-                  size={'md'}
-                  color="dark"
-                  variant={openAdmin ? 'filled' : 'outline'}
-                >
+              <Flex
+                justify={'space-evenly'}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  HandleDashboard('receipts')
+                }}
+              >
+                <ThemeIcon size={'md'} color="dark" variant={'outline'}>
                   <IconSettings />
                 </ThemeIcon>
                 <Text

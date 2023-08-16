@@ -1,79 +1,33 @@
 'use client'
 
-import type { NewPurchase } from '@components/context/Context'
-
-import { auth, db } from '../../../firebase/firebaseClient'
-import {
-  Card,
-  Flex,
-  Group,
-  Text,
-  Title,
-  Badge,
-  Skeleton,
-  Center,
-  Space,
-} from '@mantine/core'
+import { Card, Flex, Group, Text, Badge, Divider } from '@mantine/core'
 
 import { useSiteContext } from '@components/context/Context'
-import { useEffect, useState } from 'react'
-import { collection, getDocs } from 'firebase/firestore'
+
+const DateHelper = (date: number) => {
+  const dateObj = new Date(date * 1000)
+  const day = dateObj.getDate()
+  const month = dateObj.getMonth()
+  const year = dateObj.getFullYear()
+  const threeLetterMonths = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ]
+  return `${threeLetterMonths[month].toUpperCase()} ${day}, ${year}`
+}
 
 const Purchases = () => {
-  const [purchases, setPurchases] = useState<NewPurchase[] | null>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  const { user, HandleUserPurchase } = useSiteContext()
-
-  useEffect(() => {
-    if (!user) return
-    if (!loading) return
-    const unsubscribe = getDocs(collection(db, 'users', user.uid, 'purchases')).then(
-      (snapshot) => {
-        const purchases: NewPurchase[] = []
-        snapshot.forEach((doc) => {
-          purchases.push(doc.data() as NewPurchase)
-        })
-        setPurchases(purchases)
-      }
-    )
-
-    const Handler = async () => {
-      await unsubscribe.then(() => {
-        setLoading(false)
-      })
-    }
-    Handler()
-  }, [user, purchases, loading, HandleUserPurchase])
-
-  if (loading) {
-    return (
-      <Flex justify="center" align="center">
-        <Group>
-          <Skeleton h={'30px'} w={'100%'} />
-          <Skeleton h={'30px'} w={'100%'} />
-          <Skeleton h={'30px'} w={'100%'} />
-          <Center>
-            <Text>loading...</Text>
-          </Center>
-          <Space h={20} />
-        </Group>
-      </Flex>
-    )
-  }
-
-  if (!purchases) {
-    return (
-      <Flex direction={'column'} justify="center" align="center">
-        <Center>
-          <Text>
-            This is where you can see your purchases. Please visit the Pro Shop to
-            see what is in store.
-          </Text>
-        </Center>
-      </Flex>
-    )
-  }
-
+  const { purchases } = useSiteContext()
+  if (!purchases) return null
   return (
     <Flex direction={'column'} justify={'center'} p={'xs'}>
       <Text>Purchases</Text>
@@ -81,20 +35,78 @@ const Purchases = () => {
         return (
           <Group key={index + 'transition-purchase'} m={'xs'}>
             <Card shadow="sm" padding="sm">
-              <Flex justify="space-between" align="center" wrap={'wrap'}>
-                {purchase.cart.map((item, index) => {
+              <Flex
+                justify="space-between"
+                align="center"
+                wrap={'wrap'}
+                direction={'column'}
+              >
+                <Text fz={'xs'} ta={'left'}>
+                  Purchased On
+                </Text>
+                <Text fz={'xs'} ta={'right'}>
+                  {DateHelper(purchase.createdAt.seconds)}
+                </Text>
+                {purchase.cart.map((item, jindex) => {
                   return (
-                    <Flex key={'purchase' + index + item.id} p={'xs'}>
+                    <Flex
+                      key={index + 'purchase' + jindex + item.id}
+                      p={'xs'}
+                      direction={'column'}
+                      justify={'flex-start'}
+                      w={'100%'}
+                    >
+                      <Divider />
+
                       <Text>{item.item.event.title}</Text>
-                      <Text>{item.item.event.date}</Text>
+                      <Divider />
+
+                      <Text>
+                        {item.item.sideGamesSelected.length > 0 && (
+                          <Text fz={'xs'} ta={'center'} mt={'xs'}>
+                            Side Games
+                          </Text>
+                        )}
+                        <Divider />
+                        {item.item.sideGamesSelected.length > 0 &&
+                          item.item.sideGamesSelected.map((sideGame, kindex) => {
+                            return (
+                              <Text
+                                fz={'sm'}
+                                ta={'left'}
+                                key={index + jindex + 'sideGame' + kindex}
+                              >
+                                {sideGame}
+                              </Text>
+                            )
+                          })}
+                      </Text>
+                      {item.item.playingPartner && (
+                        <>
+                          <Text fz={'xs'} ta={'center'} mt={'xs'}>
+                            Playing Partner
+                          </Text>
+                          <Divider />
+                          <Text fz={'sm'} ta={'left'}>
+                            {item.item.playingPartner}
+                          </Text>
+                        </>
+                      )}
                     </Flex>
                   )
                 })}
-                <Flex>
+                <div
+                  style={{
+                    display: 'flex',
+                    position: 'absolute',
+                    top: '3px',
+                    right: '3px',
+                  }}
+                >
                   <Badge variant="outline" color="green">
-                    {purchase.total}
+                    ${purchase.total}
                   </Badge>
-                </Flex>
+                </div>
               </Flex>
             </Card>
           </Group>

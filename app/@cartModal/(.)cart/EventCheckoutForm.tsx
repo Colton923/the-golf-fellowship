@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react'
 import { Button, Card, Group, Text, Title } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'
 import { notifications } from '@mantine/notifications'
+import { Timestamp } from 'firebase/firestore'
 
 type Props = {
   user: User
@@ -63,8 +64,9 @@ const EventCheckoutForm = (props: Props) => {
         cart: cart,
         uid: user.uid,
         total: cartTotal,
+        createdAt: new Timestamp(Date.now() / 1000, 0),
       }
-      const response = await HandleUserPurchase(dataObj as any)
+      const response = await HandleUserPurchase(dataObj)
       console.log(response)
     }
 

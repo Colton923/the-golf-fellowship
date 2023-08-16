@@ -4,9 +4,14 @@ import '@styles/global.css'
 
 interface Props {
   children: React.ReactNode
-  modal: React.ReactNode
+  cartModal: React.ReactNode
+  storeModal: React.ReactNode
 }
-export default async function RootLayout({ children, modal }: Props) {
+export default async function RootLayout({
+  children,
+  cartModal,
+  storeModal,
+}: Props) {
   return (
     <html>
       <head>
@@ -16,16 +21,17 @@ export default async function RootLayout({ children, modal }: Props) {
           content="width=device-width, initial-scale=1, maximum-scale=1"
         />
         <meta name="description" content="The Golf Fellowship" />
-        <meta name="author" content="Colton McClintock" />
+        <meta name="author" content="Colton McClintock" />f
         <meta name="theme-color" content="#000000" />
-        <link rel="icon" href="static/images/favicon.ico" />
+        <link rel="icon" href="public/static/images/favicon.ico" />
         <title>The Golf Fellowship</title>
       </head>
       <body>
         <main>
           <Providers>
             {children}
-            {modal}
+            {cartModal}
+            {storeModal}
           </Providers>
           <div
             id="recaptcha-container"

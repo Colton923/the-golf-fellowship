@@ -2,42 +2,21 @@
 
 import Cart from '@components/cart/Cart'
 import { useSiteContext } from '@components/context/Context'
-import { Space, Flex, Button, Modal, Center, Container } from '@mantine/core'
-import { useState, useEffect } from 'react'
+import { Flex, Button, Modal } from '@mantine/core'
+import { useState } from 'react'
 import { Elements } from '@stripe/react-stripe-js'
-import type { User } from 'firebase/auth'
 import EventCheckoutForm from './EventCheckoutForm'
-import { loadStripe } from '@stripe/stripe-js'
-
-const stripe = loadStripe(
-  //@ts-ignore
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-)
 
 export default function Page() {
-  const { cartOpened, HandleClosingCart, cart, user, cartTotal, myUserData } =
-    useSiteContext()
+  const {
+    cartOpened,
+    HandleClosingCart,
+    user,
+    cartTotal,
+    clientSecret,
+    clientStripe,
+  } = useSiteContext()
   const [checkingOut, setCheckingOut] = useState(false)
-  const [clientSecret, setClientSecret] = useState('')
-  const [paymentIntent, setPaymentIntent] = useState('')
-
-  //Initialize stripe payment intent
-  useEffect(() => {
-    if (!myUserData) return
-    if (!cartTotal) return
-    fetch('api/stripe/stripe_intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: cartTotal * 100,
-        customer: myUserData.stripeId,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setClientSecret(data.client_secret), setPaymentIntent(data.id)
-      })
-  }, [cartTotal])
 
   const options = {
     clientSecret: clientSecret,
@@ -46,9 +25,7 @@ export default function Page() {
     },
   }
 
-  if (!user) return null
   if (!HandleClosingCart || !cartOpened) return null
-  if (!cartTotal) return null
 
   return (
     <Modal
@@ -57,8 +34,8 @@ export default function Page() {
       onClose={HandleClosingCart}
       title={`Total: $${cartTotal}`}
     >
-      {checkingOut && stripe && options && user && cartTotal && (
-        <Elements stripe={stripe} options={options}>
+      {checkingOut && clientStripe && options && user && cartTotal && (
+        <Elements stripe={clientStripe} options={options}>
           <EventCheckoutForm cartTotal={cartTotal} user={user} />
         </Elements>
       )}

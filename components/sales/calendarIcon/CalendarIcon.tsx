@@ -2,6 +2,7 @@ import styles from './CalendarIcon.module.scss'
 
 export interface CalendarIconProps {
   date: Date
+  color?: string
 }
 
 const CalendarIcon = (props: CalendarIconProps) => {

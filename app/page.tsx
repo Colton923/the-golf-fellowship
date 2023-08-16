@@ -7,7 +7,6 @@ import CarouselComponent from '@components/carousel/CarouselComponent'
 import Locations from '@components/locations/Locations'
 import Cards from '@components/homepageCards/Cards'
 import styles from '@styles/App.module.scss'
-import { useWindowScroll } from '@mantine/hooks'
 
 export default function Index() {
   return (

@@ -1,3 +1,5 @@
+'use client'
+
 import { Card, Flex, Avatar, Badge, Text } from '@mantine/core'
 
 interface PlayerData {

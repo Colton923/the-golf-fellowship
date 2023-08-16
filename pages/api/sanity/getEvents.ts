@@ -13,6 +13,7 @@ export interface Event {
   sideGames: SideGame[]
   playingPartnerRequest: boolean
   image: string
+  userOwns?: boolean
 }
 
 export interface Tees {

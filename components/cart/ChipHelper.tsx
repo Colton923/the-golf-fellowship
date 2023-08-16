@@ -24,14 +24,18 @@ const ChipHelper = (props: ChipHelperProps) => {
   return (
     <>
       <Chip
-        p={'xs'}
-        m={0}
+        p={'1px'}
+        m={'1px'}
         checked={selected}
         onChange={() => {
           handleSelect()
         }}
         color={color}
         variant={variant}
+        style={{
+          cursor: 'pointer',
+          fontSize: '10px',
+        }}
       >
         {label}
       </Chip>

@@ -330,29 +330,6 @@ export const Receipts = () => {
   }, [])
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerHeight < 500) {
-        setScreenHeight(500)
-      } else if (window.innerHeight >= 500 && window.innerHeight < 700) {
-        setScreenHeight(500)
-      } else if (window.innerHeight >= 700 && window.innerHeight < 1000) {
-        setScreenHeight(700)
-      } else if (window.innerHeight >= 1000 && window.innerHeight < 1300) {
-        setScreenHeight(1000)
-      } else if (window.innerHeight >= 1300 && window.innerHeight < 1600) {
-        setScreenHeight(1300)
-      } else if (window.innerHeight >= 1600 && window.innerHeight < 2000) {
-        setScreenHeight(1600)
-      } else {
-        setScreenHeight(2000)
-      }
-    }
-    window.addEventListener('resize', handleResize)
-    handleResize()
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  useEffect(() => {
     if (user) {
       const getOrdersFromFirebase = async () => {
         const colRef = collection(db, 'goDaddy')
@@ -474,6 +451,7 @@ export const Receipts = () => {
       }
     }
   }, [queryObj])
+
   const generateColumnDefs = (data: OrderWithMetaData[]) => {
     if (!data) return
     if (data.length === 0) return

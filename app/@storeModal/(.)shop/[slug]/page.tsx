@@ -174,29 +174,6 @@ export default function Page({ params }: { params: { slug: string } }) {
       title={event.title}
     >
       <Center className={styles.modalContent}>
-        <Flex
-          direction="row"
-          align={'center'}
-          justify="space-evenly"
-          wrap={'wrap'}
-          w={'100%'}
-          style={{
-            zIndex: 100,
-            margin: '10px',
-          }}
-        >
-          <Button
-            onClick={openTotalBreakdown}
-            color={'dark'}
-            variant={'filled'}
-            p={'xs'}
-            w={'100px'}
-          >
-            <Text fz={'md'} p={'xs'} ta={'center'} m={0}>
-              ${totalPrice.toFixed(2)}
-            </Text>
-          </Button>
-        </Flex>
         <Drawer
           opened={totalBreakdown}
           onClose={closeTotalBreakdown}
@@ -418,6 +395,17 @@ export default function Page({ params }: { params: { slug: string } }) {
             </Container>
           </Flex>
           <AddToCartButton />
+          <Button
+            onClick={openTotalBreakdown}
+            color={'dark'}
+            variant={'filled'}
+            p={'xs'}
+            w={'100px'}
+          >
+            <Text fz={'md'} p={'xs'} ta={'center'} m={0}>
+              ${totalPrice.toFixed(2)}
+            </Text>
+          </Button>
         </Flex>
       </Center>
     </Modal>

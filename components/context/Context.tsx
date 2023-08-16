@@ -10,14 +10,17 @@ import {
   createContext,
 } from 'react'
 import { useRouter } from 'next/navigation'
-import { auth } from '../../firebase/firebaseClient'
+import { auth, db } from '../../firebase/firebaseClient'
 import { useForm } from 'react-hook-form'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { notifications } from '@mantine/notifications'
 import { usePathname } from 'next/navigation'
 import { useDisclosure } from '@mantine/hooks'
 import { Event } from '@api/sanity/getEvents'
-import type { CartItem } from 'app/@modal/(.)shop/[slug]/page'
+import type { CartItem } from 'app/@storeModal/(.)shop/[slug]/page'
+import type { Stripe } from '@stripe/stripe-js'
+import { Timestamp, collection, getDocs } from 'firebase/firestore'
+import initializeStripe from 'stripe/initializeStripe'
 type FormData = {
   firstName: string
   lastName: string
@@ -26,8 +29,9 @@ type FormData = {
 
 export type NewPurchase = {
   cart: Cart[]
-  uid: string
+  createdAt: Timestamp
   total: number
+  uid: string
 }
 
 export type newPurchaseResponse = {
@@ -68,12 +72,14 @@ interface ContextScope {
   HandleOpeningCart: () => void
   error: any
   cartOpened: boolean
-  salesData: any
+  salesData: Event[]
   sanityMember: any
   myUserData: MyUserData
-  dashboardActiveComponents: string[]
-  HandleDashboardViews: (activeComponent: string) => void
-  HandleUserPurchase: (newPurchase: NewPurchase) => Promise<newPurchaseResponse>
+  HandleUserPurchase: (data: NewPurchase) => Promise<newPurchaseResponse>
+  clientSecret: string
+  clientStripe: Stripe | null
+  purchases: NewPurchase[]
+  HandleIveBoughtThatBefore: () => void
 }
 
 export type Cart = {
@@ -119,15 +125,17 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const [notified, setNotified] = useState(false) //does this execute twice in prod
   const [cart, setCart] = useState<Cart[]>([])
   const [cartOpened, { open, close }] = useDisclosure(false)
-  const [salesData, setSalesData] = useState([])
+  const [salesData, setSalesData] = useState<Event[]>([])
   const [sanityMember, setSanityMember] = useState<any | null>(null)
   const [myUserData, setMyUserData] = useState<MyUserData | null>(null)
   const [cartTotal, setCartTotal] = useState(0)
   const [cartHash, setCartHash] = useState(0)
   const [checkoutFees, setCheckoutFees] = useState(0)
-  const [dashboardActiveComponents, setDashboardActiveComponents] = useState<
-    string[]
-  >(['proShop'])
+  const [clientSecret, setClientSecret] = useState('')
+  const [paymentIntent, setPaymentIntent] = useState('')
+  const [clientStripe, setClientStripe] = useState<Stripe | null>(null)
+  const [purchases, setPurchases] = useState<NewPurchase[]>([])
+
   const UpdateStripeDB = async (event: Event) => {
     const res = await fetch('/api/stripe/new/sanityEvent', {
       method: 'POST',
@@ -249,28 +257,51 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     })
 
     if (response.success) {
-      router.push('/dashboard')
+      gotoDashboard()
     }
 
     return response
   }
 
-  const HandleDashboardViews = (activeComponent: string) => {
-    if (dashboardActiveComponents.includes(activeComponent)) {
-      setDashboardActiveComponents(
-        dashboardActiveComponents.filter(
-          (component) => component !== activeComponent
-        )
-      )
-    } else {
-      setDashboardActiveComponents([...dashboardActiveComponents, activeComponent])
-    }
-
-    return
+  const HandleIveBoughtThatBefore = () => {
+    const goodData = salesData.map((event) => {
+      purchases.map((purchase) => {
+        purchase.cart.map((item) => {
+          if (event._id === item.item.event._id) {
+            event.userOwns = true
+          }
+        })
+      })
+      return event
+    })
+    setSalesData(goodData)
   }
 
   useEffect(() => {
-    if (notified || !user) return
+    if (!user) return
+    const unsubscribe = async () => {
+      await getDocs(collection(db, 'users', user.uid, 'purchases')).then(
+        (snapshot) => {
+          const purchases: NewPurchase[] = []
+          snapshot.forEach((doc) => {
+            purchases.push(doc.data() as NewPurchase)
+          })
+          setPurchases(purchases)
+        }
+      )
+    }
+
+    if (purchases.length === 0) {
+      unsubscribe()
+    }
+
+    async function clientStripeSetter() {
+      const stripe = await initializeStripe()
+      setClientStripe(stripe as Stripe | null)
+    }
+    if (!clientStripe) {
+      clientStripeSetter()
+    }
     async function getEvents() {
       const res = await fetch('/api/sanity/getEvents', {
         method: 'POST',
@@ -286,21 +317,23 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       return res.json()
     }
     const DataSetter = async () => {
-      const data = await getEvents()
-      if (!data) return
-      const goodData = data
-        .filter((event: any) => {
-          const eventDate = new Date(event.date)
-          const today = new Date()
-          if (eventDate > today) return event
-        })
-        .sort((a: any, b: any) => {
-          const aDate = new Date(a.date) as any
-          const bDate = new Date(b.date) as any
-          return aDate - bDate
-        })
+      if (salesData.length === 0) {
+        const data = await getEvents()
+        if (!data) return
+        const goodData = data
+          .filter((event: any) => {
+            const eventDate = new Date(event.date)
+            const today = new Date()
+            if (eventDate > today) return event
+          })
+          .sort((a: any, b: any) => {
+            const aDate = new Date(a.date) as any
+            const bDate = new Date(b.date) as any
+            return aDate - bDate
+          })
 
-      setSalesData(goodData)
+        setSalesData(goodData)
+      }
     }
     DataSetter()
 
@@ -332,9 +365,12 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       }
       const sanitydata = await getSanityMembership(data.membership.plan)
       setSanityMember(sanitydata.membership)
+      return
     }
 
-    sanityMember()
+    if (!myUserData) {
+      sanityMember()
+    }
 
     const notify = async () => {
       setNotified(true)
@@ -350,7 +386,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
             withCloseButton: true,
             autoClose: 6000,
           })
-          router.push('/dashboard')
+          gotoDashboard()
         } else {
           notifications.show({
             title: `Welcome ${user?.displayName}`,
@@ -364,18 +400,42 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
         }
       }
     }
-    notify()
+    if (!notified) {
+      notify()
+    }
   }, [user])
 
   useEffect(() => {
+    if (cart.length === 0) {
+      setCartTotal(0)
+      return
+    }
     let total = 0
     cart.forEach((item) => {
       total += item.quantity * item.item.totalPrice
     })
-    // const fees = total * 0.029 + 0.3
-    // total += fees
     setCartTotal(total)
   }, [cart])
+
+  useEffect(() => {
+    if (!myUserData) return
+    if (cartTotal === 0) return
+    const PaymentSetter = async () => {
+      await fetch('api/stripe/stripe_intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: cartTotal * 100,
+          customer: myUserData.stripeId,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setClientSecret(data.client_secret), setPaymentIntent(data.id)
+        })
+    }
+    PaymentSetter()
+  }, [myUserData, cartTotal])
 
   const contextValue = useMemo(
     () => ({
@@ -384,12 +444,12 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       focus,
       setFocus,
       navbarRef,
+      clientStripe,
       cartTotal,
       router,
       gotoShop,
       gotoDashboard,
       logout,
-      dashboardActiveComponents,
       loginMain,
       register,
       setValue,
@@ -407,23 +467,26 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       cartOpened,
       sanityMember,
       salesData,
+      purchases,
       error,
       myUserData,
       HandleUserPurchase,
-      HandleDashboardViews,
+      HandleIveBoughtThatBefore,
+      clientSecret,
     }),
     [
       myUserData,
       salesData,
       showSignupMenu,
       HandleClosingCart,
+      HandleIveBoughtThatBefore,
       HandleOpeningCart,
       focus,
-      dashboardActiveComponents,
       checkoutFees,
       user,
       sanityMember,
       HandleUserPurchase,
+      clientStripe,
       router,
       errors,
       cartOpened,
@@ -436,13 +499,14 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       logout,
       navbarRef,
       register,
+      purchases,
       setValue,
       gotoDashboard,
       gotoShop,
       AddItemToCart,
       cartTotal,
       RemoveItemFromCart,
-      HandleDashboardViews,
+      clientSecret,
     ]
   )
 

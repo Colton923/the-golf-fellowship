@@ -123,7 +123,7 @@ export default function CheckoutForm(props: CheckoutFormProps) {
           })
           .catch((error) => {
             alert('Sign in Failed')
-            router.replace('/')
+            router.replace('/membership')
           })
       })
       .catch((error) => {
@@ -132,7 +132,7 @@ export default function CheckoutForm(props: CheckoutFormProps) {
         } else {
           alert('Error validating phone. Payment processed. Please login.')
         }
-        router.replace('/')
+        router.replace('/membership')
       })
   }
 
