@@ -79,7 +79,9 @@ interface ContextScope {
   clientSecret: string
   clientStripe: Stripe | null
   purchases: NewPurchase[]
-  HandleIveBoughtThatBefore: () => void
+  HandleIveBoughtThatBefore: () => Event[]
+  openDashboardNavigation: boolean
+  dashboardToggle: () => void
 }
 
 export type Cart = {
@@ -124,7 +126,6 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const [isAdmin, setIsAdmin] = useState(false)
   const [notified, setNotified] = useState(false) //does this execute twice in prod
   const [cart, setCart] = useState<Cart[]>([])
-  const [cartOpened, { open, close }] = useDisclosure(false)
   const [salesData, setSalesData] = useState<Event[]>([])
   const [sanityMember, setSanityMember] = useState<any | null>(null)
   const [myUserData, setMyUserData] = useState<MyUserData | null>(null)
@@ -135,6 +136,8 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const [paymentIntent, setPaymentIntent] = useState('')
   const [clientStripe, setClientStripe] = useState<Stripe | null>(null)
   const [purchases, setPurchases] = useState<NewPurchase[]>([])
+  const [openDashboardNavigation, { toggle: dashboardToggle }] = useDisclosure(false)
+  const [cartOpened, { open, close }] = useDisclosure(false)
 
   const UpdateStripeDB = async (event: Event) => {
     const res = await fetch('/api/stripe/new/sanityEvent', {
@@ -274,7 +277,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       })
       return event
     })
-    setSalesData(goodData)
+    return goodData
   }
 
   useEffect(() => {
@@ -471,11 +474,15 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       error,
       myUserData,
       HandleUserPurchase,
+      openDashboardNavigation,
+      dashboardToggle,
       HandleIveBoughtThatBefore,
       clientSecret,
     }),
     [
       myUserData,
+      openDashboardNavigation,
+      dashboardToggle,
       salesData,
       showSignupMenu,
       HandleClosingCart,

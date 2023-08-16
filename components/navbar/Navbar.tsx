@@ -6,17 +6,8 @@ import styles from './Navbar.module.css'
 import { useDisclosure } from '@mantine/hooks'
 import { useSiteContext } from '@components/context/Context'
 import ShoppingCart from './shoppingCart/ShoppingCart'
-import { Burger, Flex, Stack, Text, Drawer, ThemeIcon, Space } from '@mantine/core'
-import {
-  IconHome,
-  IconList,
-  IconSettings,
-  IconShoppingCart,
-  IconUser,
-} from '@tabler/icons-react'
-import { usePathname } from 'next/navigation'
-
-type dashboardSubRoutes = 'proshop' | 'purchases' | 'account' | 'receipts' | ''
+import { Burger, Flex, Text } from '@mantine/core'
+import { Suspense } from 'react'
 
 export const ShopSVG = () => {
   return (
@@ -50,31 +41,22 @@ export const ShopSVG = () => {
 
 export default function Navbar() {
   const [opened, { open, close }] = useDisclosure(false)
-  const [openDashboardNavigation, { toggle: dashboardToggle }] = useDisclosure(false)
-  const { router, user, HandleOpeningCart, cartOpened, HandleClosingCart, isAdmin } =
-    useSiteContext()
-  const pathname = usePathname()
+  const {
+    user,
+    HandleOpeningCart,
+    cartOpened,
+    HandleClosingCart,
+    openDashboardNavigation,
+    dashboardToggle,
+  } = useSiteContext()
+
   const HandleLogin = () => {
     if (opened) return
     open()
   }
-  const HandleDashboard = (dashboardComponent: dashboardSubRoutes) => {
-    if (dashboardComponent === '') {
-      router.push('/dashboard')
-      dashboardToggle()
-      return
-    }
-    if (!pathname) return
-    if (pathname.includes(dashboardComponent)) {
-      router.push('/dashboard')
-    } else {
-      router.push(`/dashboard?component=${dashboardComponent}`)
-    }
-    dashboardToggle()
-  }
 
   return (
-    <>
+    <Suspense fallback={<div>Loading...</div>}>
       {opened && <Login close={close} opened={opened} />}
       <div className={styles.navbarMain}>
         <div className={styles.navbarContainer}>
@@ -118,7 +100,7 @@ export default function Navbar() {
               w={'100%'}
             >
               <Burger
-                opened={openDashboardNavigation}
+                opened={openDashboardNavigation || false}
                 onClick={dashboardToggle}
                 ml={'xs'}
                 p={'xs'}
@@ -141,128 +123,6 @@ export default function Navbar() {
           )}
         </nav>
       </div>
-      <Drawer
-        opened={openDashboardNavigation}
-        position="left"
-        size={'300px'}
-        onClose={dashboardToggle}
-        transitionProps={{ duration: 1000 }}
-        keepMounted
-      >
-        <Flex align={'center'} w={'100%'} p={'xl'}>
-          <Space h={'300px'} />
-          <Stack spacing={'xl'} align="stretch">
-            <Flex
-              justify={'space-evenly'}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                HandleDashboard('')
-              }}
-            >
-              <ThemeIcon size={'md'} color="dark" variant={'outline'}>
-                <IconHome />
-              </ThemeIcon>
-              <Text
-                style={{
-                  padding: '0 10px',
-                  margin: '0 10px',
-                }}
-                miw={'200px'}
-                ta={'left'}
-              >
-                Home
-              </Text>
-            </Flex>
-
-            <Flex
-              justify={'space-evenly'}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                HandleDashboard('proshop')
-              }}
-            >
-              <ThemeIcon size={'md'} color="dark" variant="outline">
-                <IconShoppingCart />
-              </ThemeIcon>
-              <Text
-                style={{
-                  padding: '0 10px',
-                  margin: '0 10px',
-                }}
-                miw={'200px'}
-                ta={'left'}
-              >
-                Pro Shop
-              </Text>
-            </Flex>
-            <Flex
-              justify={'space-evenly'}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                HandleDashboard('purchases')
-              }}
-            >
-              <ThemeIcon size={'md'} color="dark" variant={'outline'}>
-                <IconList />
-              </ThemeIcon>
-              <Text
-                style={{
-                  padding: '0 10px',
-                  margin: '0 10px',
-                }}
-                miw={'200px'}
-                ta={'left'}
-              >
-                Purchases
-              </Text>
-            </Flex>
-            <Flex
-              justify={'space-evenly'}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                HandleDashboard('account')
-              }}
-            >
-              <ThemeIcon size={'md'} color="dark" variant={'outline'}>
-                <IconUser />
-              </ThemeIcon>
-              <Text
-                style={{
-                  padding: '0 10px',
-                  margin: '0 10px',
-                }}
-                miw={'200px'}
-                ta={'left'}
-              >
-                Account
-              </Text>
-            </Flex>
-            {isAdmin && (
-              <Flex
-                justify={'space-evenly'}
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  HandleDashboard('receipts')
-                }}
-              >
-                <ThemeIcon size={'md'} color="dark" variant={'outline'}>
-                  <IconSettings />
-                </ThemeIcon>
-                <Text
-                  style={{
-                    padding: '0 10px',
-                    margin: '0 10px',
-                  }}
-                  miw={'200px'}
-                  ta={'left'}
-                >
-                  Admin
-                </Text>
-              </Flex>
-            )}
-          </Stack>
-        </Flex>
-      </Drawer>
-    </>
+    </Suspense>
   )
 }

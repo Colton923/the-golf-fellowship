@@ -9,6 +9,7 @@ import Sales from '@components/sales/Sales'
 import PlayerCard from '@components/playerCard/PlayerCard'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+
 export default function Page() {
   const { isAdmin, myUserData } = useSiteContext()
   const [accountPath, setAccountPath] = useState(false)

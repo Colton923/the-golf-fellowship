@@ -7,33 +7,21 @@ import {
   Stack,
   Text,
   Title,
-  Space,
   Card,
   ThemeIcon,
 } from '@mantine/core'
 import Link from 'next/link'
 import CalendarIcon from './calendarIcon/CalendarIcon'
 import { useSiteContext } from '@components/context/Context'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Event } from '@api/sanity/getEvents'
-import {
-  IconCheck,
-  IconCheckbox,
-  IconGolf,
-  IconGolfOff,
-  IconNumber1,
-  IconNumber8,
-  IconNumber9,
-} from '@tabler/icons-react'
+import { IconCheck } from '@tabler/icons-react'
 
 export default function Sales() {
   const [selectedSale, setSelectedSale] = useState<number | null>(null)
-  const { salesData, HandleIveBoughtThatBefore } = useSiteContext()
-
-  useEffect(() => {
-    if (!HandleIveBoughtThatBefore) return
-    HandleIveBoughtThatBefore()
-  }, [HandleIveBoughtThatBefore])
+  const { HandleIveBoughtThatBefore } = useSiteContext()
+  if (!HandleIveBoughtThatBefore) return null
+  const salesData = HandleIveBoughtThatBefore()
 
   if (!salesData) {
     return (

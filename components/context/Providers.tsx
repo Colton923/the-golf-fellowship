@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core'
 import { ContextProvider } from './Context'
 import LayoutController from './LayoutController'
 import { Notifications } from '@mantine/notifications'
+
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ContextProvider>

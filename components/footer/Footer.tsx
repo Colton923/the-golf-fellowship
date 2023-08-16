@@ -1,13 +1,4 @@
-import {
-  Container,
-  Flex,
-  Space,
-  Text,
-  Footer,
-  Group,
-  Badge,
-  ActionIcon,
-} from '@mantine/core'
+import { Text, Footer, Group, Badge, ActionIcon } from '@mantine/core'
 import Link from 'next/link'
 const FooterTSX = () => {
   return (
