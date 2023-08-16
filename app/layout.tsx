@@ -1,5 +1,4 @@
 import Providers from '@components/context/Providers'
-import CalendarIcon from '@components/sales/calendarIcon/CalendarIcon'
 
 import '@styles/global.css'
 

@@ -55,7 +55,6 @@ export default function Navbar() {
     HandleClosingCart,
     isAdmin,
     HandleDashboardViews,
-    router,
   } = useSiteContext()
   const [openProShop, { toggle: ProshopToggle }] = useDisclosure(true)
   const [openAdmin, { toggle: AdminToggle }] = useDisclosure(false)
@@ -88,11 +87,6 @@ export default function Navbar() {
     PurchasesToggle()
     if (!HandleDashboardViews) return
     HandleDashboardViews('purchases')
-  }
-
-  const HandleHome = () => {
-    router.push('/dashboard')
-    toggle()
   }
 
   return (
@@ -162,12 +156,11 @@ export default function Navbar() {
         position="left"
         size={'300px'}
         onClose={toggle}
-        keepMounted
       >
         <Flex align={'center'} w={'100%'} p={'xl'}>
           <Space h={'300px'} />
           <Stack spacing={'xl'} align="stretch">
-            <Flex justify={'space-evenly'} onClick={HandleHome}>
+            <Flex justify={'space-evenly'} onClick={toggle}>
               <ThemeIcon size={'md'} color="dark" variant={'outline'}>
                 <IconHome />
               </ThemeIcon>

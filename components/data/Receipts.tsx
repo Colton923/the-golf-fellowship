@@ -23,12 +23,7 @@ import FormQuery from './Query'
 import type { FormData } from './Query'
 import { ColDef } from 'ag-grid-community'
 import { Button, Text } from '@mantine/core'
-import {
-  IconCsv,
-  IconDatabase,
-  IconFileSpreadsheet,
-  IconTable,
-} from '@tabler/icons-react'
+import { IconFileSpreadsheet } from '@tabler/icons-react'
 
 type GoDaddyProduct = Record<string, string>
 export type GoDaddyDoc = {
