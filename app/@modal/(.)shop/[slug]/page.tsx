@@ -205,19 +205,6 @@ export default function Page({ params }: { params: { slug: string } }) {
             }}
           >
             <Button
-              onClick={() => {
-                router.back()
-              }}
-              color={'dark'}
-              variant={'filled'}
-              p={'xs'}
-              w={'100px'}
-            >
-              <Text fz={'md'} p={'xs'} ta={'center'} m={0}>
-                Back
-              </Text>
-            </Button>
-            <Button
               onClick={open}
               color={'dark'}
               variant={'filled'}
@@ -437,7 +424,6 @@ export default function Page({ params }: { params: { slug: string } }) {
                                 setPlayingPartner('')
                                 return
                               }
-
                               setPlayingPartner(e.target.value)
                             }}
                           />

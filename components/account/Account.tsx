@@ -1,57 +1,28 @@
 'use client'
-import styles from './Account.module.css'
-import { useState, useEffect } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth, db } from '../../firebase/firebaseClient'
-import {
-  collection,
-  getDocs,
-  getDoc,
-  where,
-  query,
-  CollectionReference,
-  DocumentReference,
-} from 'firebase/firestore'
+import { useSiteContext } from '@components/context/Context'
+import { Card, Flex, Text, Badge, TextInput, Space } from '@mantine/core'
 
-export const Account = () => {
-  const [user] = useAuthState(auth)
-  const [purchases, setPurchases] = useState<string[]>([])
+const Account = () => {
+  const { myUserData } = useSiteContext()
 
-  const MyPurchasedEvents = async () => {
-    if (!user) return
-    const paymentRef = collection(db, 'users', user.uid, 'payments')
-    const q = query(paymentRef, where('status', '==', 'succeeded'))
-
-    await getDocs(q)
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const prices = doc.data().prices
-          prices.forEach((purchase: DocumentReference) => {
-            getDoc(purchase)
-              .then((doc) => {
-                return doc.data()
-              })
-              .then((data) => {
-                setPurchases((prev) => [...prev, data?.product])
-              })
-              .catch((error) => {
-                console.log(error)
-              })
-          })
-        })
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-  useEffect(() => {
-    MyPurchasedEvents()
-  }, [user])
-
+  if (!myUserData) return null
   return (
-    <div className={styles.main}>
-      <h1>My Account</h1>
-      <h2>My Purchases</h2>
-    </div>
+    <Card shadow="sm" padding="sm" radius="md">
+      <Text>My Account Settings</Text>
+      <Space h={'10px'} />
+      <Flex direction="column" h={'100%'} align="center">
+        <TextInput label={'First Name'} defaultValue={myUserData.firstName} />
+        <TextInput label={'Last Name'} defaultValue={myUserData.lastName} />
+        <TextInput label={'Email'} defaultValue={myUserData.email} />
+        <TextInput label={'Phone Number'} defaultValue={myUserData.phone} />
+        <TextInput label={'City'} defaultValue={myUserData.address.city} />
+        <TextInput label={'State'} defaultValue={myUserData.address.state} />
+        <TextInput label={'Country'} defaultValue={myUserData.address.country} />
+        <TextInput label={'Zip'} defaultValue={myUserData.address.postalCode} />
+        <TextInput label={'Address'} defaultValue={myUserData.address.street} />
+      </Flex>
+    </Card>
   )
 }
+
+export default Account

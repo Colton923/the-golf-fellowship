@@ -24,6 +24,17 @@ type FormData = {
   email: string
 }
 
+export type NewPurchase = {
+  cart: Cart[]
+  uid: string
+  total: number
+}
+
+export type newPurchaseResponse = {
+  success: boolean
+  message: string
+}
+
 const validName = RegExp(/^[A-Za-z]+$/i)
 
 const validEmail = RegExp(
@@ -35,6 +46,7 @@ interface ContextScope {
   setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>
   focus: boolean
   setFocus: React.Dispatch<React.SetStateAction<boolean>>
+  checkoutFees: number
   navbarRef: React.MutableRefObject<null>
   router: any
   gotoShop: () => void
@@ -59,6 +71,9 @@ interface ContextScope {
   salesData: any
   sanityMember: any
   myUserData: MyUserData
+  dashboardActiveComponents: string[]
+  HandleDashboardViews: (activeComponent: string) => void
+  HandleUserPurchase: (newPurchase: NewPurchase) => Promise<newPurchaseResponse>
 }
 
 export type Cart = {
@@ -66,6 +81,7 @@ export type Cart = {
   quantity: number
   id: string
 }
+
 export type MyUserData = {
   address: {
     city: string
@@ -108,6 +124,10 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const [myUserData, setMyUserData] = useState<MyUserData | null>(null)
   const [cartTotal, setCartTotal] = useState(0)
   const [cartHash, setCartHash] = useState(0)
+  const [checkoutFees, setCheckoutFees] = useState(0)
+  const [dashboardActiveComponents, setDashboardActiveComponents] = useState<
+    string[]
+  >(['proShop'])
   const UpdateStripeDB = async (event: Event) => {
     const res = await fetch('/api/stripe/new/sanityEvent', {
       method: 'POST',
@@ -205,6 +225,48 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 
   const HandleClosingCart = () => {
     close()
+  }
+
+  const HandleUserPurchase = async (data: NewPurchase) => {
+    const res = await fetch('/api/firebase/newPurchase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ data }),
+    })
+    if (!res.ok) {
+      throw new Error(res.statusText)
+    }
+    const response: newPurchaseResponse = await res.json()
+
+    notifications.show({
+      title: response.success ? `Success!` : `Error`,
+      message: response.message,
+      color: 'white',
+      withCloseButton: true,
+      autoClose: 6000,
+    })
+
+    if (response.success) {
+      router.push('/dashboard')
+    }
+
+    return response
+  }
+
+  const HandleDashboardViews = (activeComponent: string) => {
+    if (dashboardActiveComponents.includes(activeComponent)) {
+      setDashboardActiveComponents(
+        dashboardActiveComponents.filter(
+          (component) => component !== activeComponent
+        )
+      )
+    } else {
+      setDashboardActiveComponents([...dashboardActiveComponents, activeComponent])
+    }
+
+    return
   }
 
   useEffect(() => {
@@ -310,7 +372,8 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     cart.forEach((item) => {
       total += item.quantity * item.item.totalPrice
     })
-
+    // const fees = total * 0.029 + 0.3
+    // total += fees
     setCartTotal(total)
   }, [cart])
 
@@ -326,6 +389,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       gotoShop,
       gotoDashboard,
       logout,
+      dashboardActiveComponents,
       loginMain,
       register,
       setValue,
@@ -338,12 +402,15 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       RemoveItemFromCart,
       cart,
       HandleClosingCart,
+      checkoutFees,
       HandleOpeningCart,
       cartOpened,
       sanityMember,
       salesData,
       error,
       myUserData,
+      HandleUserPurchase,
+      HandleDashboardViews,
     }),
     [
       myUserData,
@@ -352,8 +419,11 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       HandleClosingCart,
       HandleOpeningCart,
       focus,
+      dashboardActiveComponents,
+      checkoutFees,
       user,
       sanityMember,
+      HandleUserPurchase,
       router,
       errors,
       cartOpened,
@@ -372,6 +442,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       AddItemToCart,
       cartTotal,
       RemoveItemFromCart,
+      HandleDashboardViews,
     ]
   )
 

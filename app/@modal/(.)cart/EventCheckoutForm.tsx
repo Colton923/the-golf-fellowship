@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from 'react'
 import { Button, Card, Group, Text, Title } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'
+import { notifications } from '@mantine/notifications'
 
 type Props = {
   user: User
@@ -18,8 +19,8 @@ type Props = {
 }
 
 const EventCheckoutForm = (props: Props) => {
-  const { user } = props
-  const { router, myUserData } = useSiteContext()
+  const { user, cartTotal } = props
+  const { router, myUserData, HandleUserPurchase, cart } = useSiteContext()
   const stripe = useStripe()
   const elements = useElements()
   const [isLoading, setIsLoading] = useState(false)
@@ -50,8 +51,21 @@ const EventCheckoutForm = (props: Props) => {
       console.log(error)
       router.back()
     } else {
-      setMessage('Payment succeeded!')
+      setMessage('Success')
+      notifications.show({
+        title: 'Thank you for your purchase!',
+        message: 'You will receive an email confirmation shortly.',
+      })
       router.back()
+      if (!cart) return
+      if (!HandleUserPurchase) return
+      const dataObj = {
+        cart: cart,
+        uid: user.uid,
+        total: cartTotal,
+      }
+      const response = await HandleUserPurchase(dataObj as any)
+      console.log(response)
     }
 
     setIsLoading(false)

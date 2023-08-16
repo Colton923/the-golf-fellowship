@@ -7,15 +7,16 @@ import {
   Stack,
   Text,
   Title,
-  Center,
-  MultiSelect,
   Space,
+  Card,
 } from '@mantine/core'
 import Link from 'next/link'
 import CalendarIcon from './calendarIcon/CalendarIcon'
 import { useSiteContext } from '@components/context/Context'
+import { useState } from 'react'
 
 export default function Sales() {
+  const [selectedSale, setSelectedSale] = useState<number | null>(null)
   const { salesData } = useSiteContext()
 
   if (salesData.length === 0) {
@@ -38,48 +39,58 @@ export default function Sales() {
 
   return (
     <Container w={'100%'} p={'xs'}>
-      <Center>
-        <MultiSelect
-          data={salesData.map((sale: any) => {
-            return sale.location.description
-          })}
-          label="Tags"
-          w={'200px'}
-        />
-      </Center>
-      <Space h={'sm'} />
-      <Stack justify="flex-start" spacing={'xs'}>
+      <Text>Pro Shop</Text>
+      <Stack justify="flex-start" spacing={'xs'} w={'100%'}>
         {salesData.map((sale: any, index: number) => {
           return (
             <Link
               href={`/shop/${sale._id}`}
               key={index}
-              style={{
-                textDecoration: 'none',
-                color: 'inherit',
+              onClick={() => {
+                setSelectedSale(index)
+                setTimeout(() => {
+                  setSelectedSale(null)
+                }, 1000)
               }}
+              style={
+                selectedSale === index
+                  ? {
+                      textDecoration: 'none',
+                      color: 'rgba(0,0,0,0.5)',
+                    }
+                  : {
+                      textDecoration: 'none',
+                      color: 'inherit',
+                    }
+              }
             >
-              <Flex direction="row" align="center" p={0} bg={'#f3f3f3'} h={'60px'}>
-                <Flex w={'60px'} h={'100%'}>
-                  <CalendarIcon date={sale.date} />
+              <Card shadow="sm" padding={0} radius="md" withBorder>
+                <Flex w={'100%'} direction="row" align="center" p={0} h={'60px'}>
+                  <Flex w={'60px'} h={'100%'}>
+                    <CalendarIcon date={sale.date} />
+                  </Flex>
+                  <Flex
+                    direction="column"
+                    align="flex-start"
+                    justify="center"
+                    ml={'sm'}
+                    h={'100%'}
+                    w={'100%'}
+                  >
+                    <Title order={3} size="md">
+                      {sale.title}
+                    </Title>
+                    <Text size="sm">{sale.location.description.toUpperCase()}</Text>
+                  </Flex>
+                  <Flex w={'100%'} direction="column" justify="center">
+                    <Text ta={'center'} ml={'xs'} mr={'xs'}>
+                      {militaryTimeToStandardTime(
+                        sale.date.split('T')[1].slice(0, 5)
+                      )}
+                    </Text>
+                  </Flex>
                 </Flex>
-                <Flex
-                  direction="column"
-                  align="flex-start"
-                  justify="center"
-                  ml={'sm'}
-                >
-                  <Title order={3} size="md">
-                    {sale.title}
-                  </Title>
-                  <Text size="sm">{sale.location.description.toUpperCase()}</Text>
-                </Flex>
-                <Flex direction="column" justify="center">
-                  <Text ta={'center'} ml={'xs'} mr={'xs'}>
-                    {militaryTimeToStandardTime(sale.date.split('T')[1].slice(0, 5))}
-                  </Text>
-                </Flex>
-              </Flex>
+              </Card>
             </Link>
           )
         })}

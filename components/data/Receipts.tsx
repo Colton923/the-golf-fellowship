@@ -22,6 +22,13 @@ import 'ag-grid-community/styles/ag-theme-alpine.css'
 import FormQuery from './Query'
 import type { FormData } from './Query'
 import { ColDef } from 'ag-grid-community'
+import { Button, Text } from '@mantine/core'
+import {
+  IconCsv,
+  IconDatabase,
+  IconFileSpreadsheet,
+  IconTable,
+} from '@tabler/icons-react'
 
 type GoDaddyProduct = Record<string, string>
 export type GoDaddyDoc = {
@@ -631,27 +638,17 @@ export const Receipts = () => {
     <div className={styles.container}>
       <FormQuery submitHandler={QuerySubmit} />
       <div className={styles.totalsGridWrapper}>
-        <input
-          type="button"
-          value="Export to CSV"
+        <Button
+          color="dark"
+          variant="outline"
           onClick={() => {
             gridApi ? gridApi.exportDataAsCsv() : null
           }}
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            height: '50px',
-            margin: '0 auto',
-            fontSize: '20px',
-            backgroundColor: '#ffffff',
-            color: '#000000',
-            border: '1px solid #fefefe',
-            borderRadius: '10px',
-            cursor: 'pointer',
-          }}
-        />
+          m={'xl'}
+        >
+          <IconFileSpreadsheet />
+          <Text ml={'xs'}>Export to CSV</Text>
+        </Button>
       </div>
       <div
         className={styles.gridWrapper}

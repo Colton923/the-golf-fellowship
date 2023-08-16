@@ -5,10 +5,15 @@ import Login from '@components/login/Login'
 import styles from './Navbar.module.css'
 import { useDisclosure } from '@mantine/hooks'
 import { useSiteContext } from '@components/context/Context'
-import GolferSVG from '@components/svgs/golfer'
 import ShoppingCart from './shoppingCart/ShoppingCart'
-import { Flex, Text } from '@mantine/core'
-import Cart from '@components/cart/Cart'
+import { Burger, Flex, Stack, Text, Drawer, ThemeIcon, Space } from '@mantine/core'
+import {
+  IconHome,
+  IconList,
+  IconSettings,
+  IconShoppingBag,
+  IconUser,
+} from '@tabler/icons-react'
 
 export const ShopSVG = () => {
   return (
@@ -42,114 +47,52 @@ export const ShopSVG = () => {
 
 export default function Navbar() {
   const [opened, { open, close }] = useDisclosure(false)
-  const { user, logout, HandleOpeningCart, cartOpened, HandleClosingCart } =
-    useSiteContext()
-
+  const [openDashboardNavigation, { toggle }] = useDisclosure(false)
+  const {
+    user,
+    HandleOpeningCart,
+    cartOpened,
+    HandleClosingCart,
+    isAdmin,
+    HandleDashboardViews,
+    router,
+  } = useSiteContext()
+  const [openProShop, { toggle: ProshopToggle }] = useDisclosure(true)
+  const [openAdmin, { toggle: AdminToggle }] = useDisclosure(false)
+  const [openAccount, { toggle: AccountToggle }] = useDisclosure(false)
+  const [openPurchases, { toggle: PurchasesToggle }] = useDisclosure(false)
   const HandleLogin = () => {
     if (opened) return
     open()
   }
 
-  const UserSVG = () => {
-    return (
-      <svg
-        onClick={() => {
-          HandleLogin()
-        }}
-        key={'nav2'}
-        style={{
-          cursor: 'pointer',
-          border: 'none',
-          background: 'none',
-          outline: 'none',
-        }}
-        width="55px"
-        height="55px"
-        viewBox="0 0 24 24"
-        id="Layer_1"
-        data-name="Layer 1"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <filter id="f1" x="-0.1" y="-0.1" width="1.5" height="1.5">
-            <feDropShadow
-              dx="0"
-              dy="1"
-              stdDeviation=".5"
-              floodColor="rgba(255,255,255,0.1)"
-            />
-          </filter>
-        </defs>
-        <circle
-          stroke="#000"
-          fill="none"
-          className="cls-1"
-          cx="12"
-          cy="7.25"
-          r="5.73"
-          filter="url(#f1)"
-        />
-        <path
-          stroke="#000"
-          fill="none"
-          className="cls-1"
-          d="M1.5,23.48l.37-2.05A10.3,10.3,0,0,1,12,13h0a10.3,10.3,0,0,1,10.13,8.45l.37,2.05"
-          filter="url(#f1)"
-        />
-        <text x="5" y="23" fill="white" fontSize={'4px'}>
-          Login
-        </text>
-      </svg>
-    )
+  const HandleOpenProShop = () => {
+    ProshopToggle()
+    if (!HandleDashboardViews) return
+    HandleDashboardViews('proShop')
   }
-  const UserSignOutSVG = () => {
-    return (
-      <svg
-        key={'nav2'}
-        style={{
-          cursor: 'pointer',
-          border: 'none',
-          background: 'none',
-          outline: 'none',
-        }}
-        width="55px"
-        height="55px"
-        viewBox="0 0 24 24"
-        id="Layer_1"
-        data-name="Layer 1"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <filter id="f1" x="-0.1" y="-0.1" width="1.5" height="1.5">
-            <feDropShadow
-              dx="0"
-              dy="1"
-              stdDeviation=".5"
-              floodColor="rgba(255,255,255,0.1)"
-            />
-          </filter>
-        </defs>
-        <circle
-          stroke="#000"
-          fill="none"
-          className="cls-1"
-          cx="12"
-          cy="7.25"
-          r="5.73"
-          filter="url(#f1)"
-        />
-        <path
-          stroke="#000"
-          fill="none"
-          className="cls-1"
-          d="M1.5,23.48l.37-2.05A10.3,10.3,0,0,1,12,13h0a10.3,10.3,0,0,1,10.13,8.45l.37,2.05"
-          filter="url(#f1)"
-        />
-        <text x="3" y="23" fill="white" fontSize={'4px'}>
-          Logout
-        </text>
-      </svg>
-    )
+
+  const HandleOpenAdmin = () => {
+    AdminToggle()
+    if (!HandleDashboardViews) return
+    HandleDashboardViews('admin')
+  }
+
+  const HandleOpenAccount = () => {
+    AccountToggle()
+    if (!HandleDashboardViews) return
+    HandleDashboardViews('account')
+  }
+
+  const HandleOpenPurchases = () => {
+    PurchasesToggle()
+    if (!HandleDashboardViews) return
+    HandleDashboardViews('purchases')
+  }
+
+  const HandleHome = () => {
+    router.push('/dashboard')
+    toggle()
   }
 
   return (
@@ -188,6 +131,12 @@ export default function Navbar() {
             </>
           ) : (
             <>
+              <Burger
+                opened={openDashboardNavigation}
+                onClick={toggle}
+                ml={'xs'}
+                p={'xs'}
+              />
               <Flex
                 justify={'flex-end'}
                 w={'100%'}
@@ -208,6 +157,112 @@ export default function Navbar() {
           )}
         </nav>
       </div>
+      <Drawer
+        opened={openDashboardNavigation}
+        position="left"
+        size={'300px'}
+        onClose={toggle}
+      >
+        <Flex align={'center'} w={'100%'} p={'xl'}>
+          <Space h={'300px'} />
+          <Stack spacing={'xl'} align="stretch">
+            <Flex justify={'space-evenly'} onClick={HandleHome}>
+              <ThemeIcon size={'md'} color="dark" variant={'outline'}>
+                <IconHome />
+              </ThemeIcon>
+              <Text
+                style={{
+                  padding: '0 10px',
+                  margin: '0 10px',
+                }}
+                miw={'200px'}
+                ta={'left'}
+              >
+                Home
+              </Text>
+            </Flex>
+
+            <Flex justify={'space-evenly'} onClick={HandleOpenProShop}>
+              <ThemeIcon
+                size={'md'}
+                color="dark"
+                variant={openProShop ? 'filled' : 'outline'}
+              >
+                <IconShoppingBag />
+              </ThemeIcon>
+              <Text
+                style={{
+                  padding: '0 10px',
+                  margin: '0 10px',
+                }}
+                miw={'200px'}
+                ta={'left'}
+              >
+                Pro Shop
+              </Text>
+            </Flex>
+            <Flex justify={'space-evenly'} onClick={HandleOpenPurchases}>
+              <ThemeIcon
+                size={'md'}
+                color="dark"
+                variant={openPurchases ? 'filled' : 'outline'}
+              >
+                <IconList />
+              </ThemeIcon>
+              <Text
+                style={{
+                  padding: '0 10px',
+                  margin: '0 10px',
+                }}
+                miw={'200px'}
+                ta={'left'}
+              >
+                Purchases
+              </Text>
+            </Flex>
+            <Flex justify={'space-evenly'} onClick={HandleOpenAccount}>
+              <ThemeIcon
+                size={'md'}
+                color="dark"
+                variant={openAccount ? 'filled' : 'outline'}
+              >
+                <IconUser />
+              </ThemeIcon>
+              <Text
+                style={{
+                  padding: '0 10px',
+                  margin: '0 10px',
+                }}
+                miw={'200px'}
+                ta={'left'}
+              >
+                Account
+              </Text>
+            </Flex>
+            {isAdmin && (
+              <Flex justify={'space-evenly'} onClick={HandleOpenAdmin}>
+                <ThemeIcon
+                  size={'md'}
+                  color="dark"
+                  variant={openAdmin ? 'filled' : 'outline'}
+                >
+                  <IconSettings />
+                </ThemeIcon>
+                <Text
+                  style={{
+                    padding: '0 10px',
+                    margin: '0 10px',
+                  }}
+                  miw={'200px'}
+                  ta={'left'}
+                >
+                  Admin
+                </Text>
+              </Flex>
+            )}
+          </Stack>
+        </Flex>
+      </Drawer>
     </>
   )
 }

@@ -1,3 +1,9 @@
-export default function Default() {
-  return null
+import Cart from '@components/cart/Cart'
+
+export default function Page() {
+  return (
+    <>
+      <Cart />
+    </>
+  )
 }
