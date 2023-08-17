@@ -7,7 +7,7 @@ import {
   IconShoppingCart,
   IconUser,
 } from '@tabler/icons-react'
-import { Flex, Stack, Text, Drawer, ThemeIcon, Space } from '@mantine/core'
+import { Flex, Stack, Text, ThemeIcon, Space, Modal } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'
 
 const DashboardNav = () => {
@@ -17,14 +17,7 @@ const DashboardNav = () => {
   if (!isAdmin || !dashboardToggle || !openDashboardNavigation || !HandleDashboard)
     return null
   return (
-    <Drawer
-      opened={openDashboardNavigation}
-      position="left"
-      size={'300px'}
-      onClose={dashboardToggle}
-      transitionProps={{ duration: 1000 }}
-      keepMounted
-    >
+    <Modal opened={openDashboardNavigation} size={'100%'} onClose={dashboardToggle}>
       <Flex align={'center'} w={'100%'} p={'xl'}>
         <Space h={'300px'} />
         <Stack spacing={'xl'} align="stretch">
@@ -138,7 +131,7 @@ const DashboardNav = () => {
           )}
         </Stack>
       </Flex>
-    </Drawer>
+    </Modal>
   )
 }
 
