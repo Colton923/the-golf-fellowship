@@ -17,7 +17,12 @@ const DashboardNav = () => {
   if (!isAdmin || !dashboardToggle || !openDashboardNavigation || !HandleDashboard)
     return null
   return (
-    <Modal opened={openDashboardNavigation} size={'100%'} onClose={dashboardToggle}>
+    <Modal
+      opened={openDashboardNavigation}
+      size={'100%'}
+      onClose={dashboardToggle}
+      fullScreen
+    >
       <Flex align={'center'} w={'100%'} p={'xl'}>
         <Space h={'300px'} />
         <Stack spacing={'xl'} align="stretch">

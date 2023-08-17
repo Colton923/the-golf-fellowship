@@ -195,7 +195,12 @@ export default function Page({ params }: { params: { slug: string } }) {
             </Text>
           </Button>
         </Flex>
-        <Modal opened={totalBreakdown} onClose={closeTotalBreakdown} size={'md'}>
+        <Modal
+          opened={totalBreakdown}
+          onClose={closeTotalBreakdown}
+          size={'sm'}
+          centered
+        >
           <Flex
             direction="column"
             align={'center'}

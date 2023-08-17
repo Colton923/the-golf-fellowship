@@ -172,7 +172,12 @@ export default function Page({ params }: { params: { slug: string } }) {
       title={event.title}
     >
       <Center className={styles.modalContent}>
-        <Modal opened={totalBreakdown} onClose={closeTotalBreakdown} fullScreen>
+        <Modal
+          opened={totalBreakdown}
+          onClose={closeTotalBreakdown}
+          size={'sm'}
+          centered
+        >
           <Flex
             direction="column"
             align={'center'}

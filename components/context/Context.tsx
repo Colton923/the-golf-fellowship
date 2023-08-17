@@ -402,16 +402,15 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       if (pathname === '/') {
         if (admin) {
           notifications.show({
-            title: `Welcome Admin ${user?.displayName}`,
+            title: `Welcome Admin ${myUserData?.firstName || ''}`,
             message: `Redirecting you to dashboard.`,
             color: 'white',
             withCloseButton: true,
             autoClose: 6000,
           })
-          gotoDashboard()
         } else {
           notifications.show({
-            title: `Welcome ${user?.displayName}`,
+            title: `Welcome ${myUserData?.firstName || ''}`,
             message: `Thank you for being a member since ${user?.metadata.creationTime}. Your last
               login was ${user?.metadata.lastSignInTime}. Redirecting you to your dashboard.
               `,
@@ -424,6 +423,9 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     }
     if (!notified) {
       notify()
+      if (pathname !== '/dashboard') {
+        gotoDashboard()
+      }
     }
   }, [user])
 
