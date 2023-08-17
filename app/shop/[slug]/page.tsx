@@ -4,14 +4,12 @@ import type { Event } from '@api/sanity/getEvents'
 import {
   Flex,
   Grid,
-  Space,
   Text,
   Center,
   Container,
   Skeleton,
   Spoiler,
   Button,
-  Drawer,
   ScrollArea,
   Modal,
   TextInput,
@@ -197,11 +195,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             </Text>
           </Button>
         </Flex>
-        <Drawer
-          opened={totalBreakdown}
-          onClose={closeTotalBreakdown}
-          position={'bottom'}
-        >
+        <Modal opened={totalBreakdown} onClose={closeTotalBreakdown} size={'md'}>
           <Flex
             direction="column"
             align={'center'}
@@ -282,7 +276,7 @@ export default function Page({ params }: { params: { slug: string } }) {
               <AddToCartButton />
             </Flex>
           </Flex>
-        </Drawer>
+        </Modal>
         <Flex direction="row" align="center" justify="center" wrap={'wrap'}>
           <Center>
             {event.image ? (
