@@ -33,6 +33,7 @@ export type NewPurchase = {
   total: number
   uid: string
 }
+type dashboardSubRoutes = 'proshop' | 'purchases' | 'account' | 'receipts' | ''
 
 export type newPurchaseResponse = {
   success: boolean
@@ -48,6 +49,7 @@ const validEmail = RegExp(
 interface ContextScope {
   showSignUp: boolean
   setShowSignUp: React.Dispatch<React.SetStateAction<boolean>>
+  pathname: string
   focus: boolean
   setFocus: React.Dispatch<React.SetStateAction<boolean>>
   checkoutFees: number
@@ -63,6 +65,7 @@ interface ContextScope {
   errors: any
   isAdmin: boolean
   user: any
+  HandleDashboard: (dashboardComponent: dashboardSubRoutes) => void
   loading: boolean
   AddItemToCart: (newItem: CartItem) => void
   RemoveItemFromCart: (id: string) => void
@@ -280,6 +283,22 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
     return goodData
   }
 
+  const HandleDashboard = (dashboardComponent: dashboardSubRoutes) => {
+    if (!dashboardToggle) return
+    if (dashboardComponent === '') {
+      router.push('/dashboard')
+      dashboardToggle()
+      return
+    }
+    if (!pathname) return
+    if (pathname.includes(dashboardComponent)) {
+      router.push('/dashboard')
+    } else {
+      router.push(`/dashboard?component=${dashboardComponent}`)
+    }
+    dashboardToggle()
+  }
+
   useEffect(() => {
     if (!user) return
     const unsubscribe = async () => {
@@ -463,6 +482,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       loading,
       AddItemToCart,
       RemoveItemFromCart,
+      pathname,
       cart,
       HandleClosingCart,
       checkoutFees,
@@ -475,6 +495,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       myUserData,
       HandleUserPurchase,
       openDashboardNavigation,
+      HandleDashboard,
       dashboardToggle,
       HandleIveBoughtThatBefore,
       clientSecret,
@@ -485,6 +506,8 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       dashboardToggle,
       salesData,
       showSignupMenu,
+      pathname,
+      HandleDashboard,
       HandleClosingCart,
       HandleIveBoughtThatBefore,
       HandleOpeningCart,
