@@ -7,7 +7,6 @@ import { useDisclosure } from '@mantine/hooks'
 import { useSiteContext } from '@components/context/Context'
 import ShoppingCart from './shoppingCart/ShoppingCart'
 import { Burger, Flex, Text } from '@mantine/core'
-import { Suspense } from 'react'
 
 export const ShopSVG = () => {
   return (
@@ -56,7 +55,7 @@ export default function Navbar() {
   }
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <>
       {opened && <Login close={close} opened={opened} />}
       <div className={styles.navbarMain}>
         <div className={styles.navbarContainer}>
@@ -77,9 +76,10 @@ export default function Navbar() {
                 <Text
                   ta={'center'}
                   style={{
-                    color: 'white',
+                    color: 'black',
                     fontSize: '11px',
                     fontWeight: 'lighter',
+                    cursor: 'pointer',
                   }}
                 >
                   Login
@@ -101,7 +101,9 @@ export default function Navbar() {
             >
               <Burger
                 opened={openDashboardNavigation || false}
-                onClick={dashboardToggle}
+                onClick={() => {
+                  dashboardToggle
+                }}
                 ml={'xs'}
                 p={'xs'}
               />
@@ -111,9 +113,9 @@ export default function Navbar() {
                 p={'md'}
                 onClick={() => {
                   if (!cartOpened) {
-                    if (HandleOpeningCart) HandleOpeningCart()
+                    HandleOpeningCart
                   } else {
-                    if (HandleClosingCart) HandleClosingCart()
+                    HandleClosingCart
                   }
                 }}
               >
@@ -123,6 +125,6 @@ export default function Navbar() {
           )}
         </nav>
       </div>
-    </Suspense>
+    </>
   )
 }

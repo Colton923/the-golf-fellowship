@@ -47,7 +47,6 @@ const stripe = loadStripe(
 )
 
 export default function Membership() {
-  const [user] = useAuthState(auth)
   const [membershipOptions, setMembershipOptions] = useState({} as DefaultMembership)
   const [showCardTwo, setShowCardTwo] = useState(false)
   const [showSubTerm, setShowSubTerm] = useState(false)

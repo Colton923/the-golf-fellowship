@@ -176,7 +176,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
   const logout = () => {
     auth.signOut()
     setShowSignupMenu(false)
-    router.refresh()
+    router.push('/shop')
   }
 
   const {

@@ -14,7 +14,7 @@ const Video = () => {
   }, [])
 
   if (!videoLoaded) {
-    return <div></div>
+    return null
   }
   return (
     <>

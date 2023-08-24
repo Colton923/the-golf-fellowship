@@ -5,19 +5,13 @@ import imgCompete from '@public/static/images/tgf_default_pic_7.jpg'
 import imgGolf from '@public/static/images/tgf_default_pic_6.jpg'
 import { Carousel, Embla } from '@mantine/carousel'
 import styles from './Carousel.module.scss'
-import {
-  BackgroundImage,
-  Center,
-  Container,
-  Space,
-  Text,
-  Flex,
-  Button,
-} from '@mantine/core'
+import { BackgroundImage, Container, Space, Text, Flex, Button } from '@mantine/core'
 import carouselStyles from '@styles/CarouselTransition.module.scss'
 import Link from 'next/link'
+import { useSiteContext } from '@components/context/Context'
 
 export default function CarouselComponent() {
+  const { router } = useSiteContext()
   const [embla, setEmbla] = useState<Embla | null>(null)
   const [scrollIndex, setScrollIndex] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -60,7 +54,7 @@ export default function CarouselComponent() {
   }, [embla, scrollIndex])
 
   if (loading) {
-    return <Center>Loading...</Center>
+    return null
   }
 
   return (
@@ -96,8 +90,11 @@ export default function CarouselComponent() {
                 Earn points and compete to win the TGF Championship.
               </Text>
               <Space h={'10%'} />
-              <Link href="/shop">
+              <Flex w={'100%'}>
                 <Button
+                  onClick={() => {
+                    router.push('/membership')
+                  }}
                   size={'xl'}
                   type={'button'}
                   variant={'gradient'}
@@ -111,7 +108,7 @@ export default function CarouselComponent() {
                 >
                   BECOME A MEMBER
                 </Button>
-              </Link>
+              </Flex>
             </Flex>
           </Container>
         </BackgroundImage>
@@ -132,8 +129,11 @@ export default function CarouselComponent() {
                 Weeknight 9s and Weekend 18s. Qualify and represent your TGF League.
               </Text>
               <Space h={'10%'} />
-              <Link href="/shop">
+              <Flex w={'100%'}>
                 <Button
+                  onClick={() => {
+                    router.push('/membership')
+                  }}
                   size={'xl'}
                   type={'button'}
                   variant={'gradient'}
@@ -147,7 +147,7 @@ export default function CarouselComponent() {
                 >
                   JOIN THE COMMUNITY
                 </Button>
-              </Link>
+              </Flex>
             </Flex>
           </Container>
         </BackgroundImage>

@@ -22,7 +22,7 @@ type body = {
 }
 
 const handler = async (req: any, res: any) => {
-  const newProduct: body = req.body
+  const newProduct = req.body as body
 
   if (req.method === 'POST') {
     try {
@@ -41,7 +41,11 @@ const handler = async (req: any, res: any) => {
           },
         })
         res.status(200).json(updated_sub)
-
+      } else {
+        res.status(500).json({
+          statusCode: 500,
+          message: 'POST method failed',
+        })
         return
       }
     } catch (e) {
@@ -59,7 +63,5 @@ const handler = async (req: any, res: any) => {
     })
     return
   }
-
-  return res
 }
 export default handler

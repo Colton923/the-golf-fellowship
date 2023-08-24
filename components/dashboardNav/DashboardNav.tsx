@@ -6,15 +6,27 @@ import {
   IconSettings,
   IconShoppingCart,
   IconUser,
+  IconUserCancel,
 } from '@tabler/icons-react'
 import { Flex, Stack, Text, ThemeIcon, Space, Modal } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'
 
 const DashboardNav = () => {
-  const { isAdmin, dashboardToggle, openDashboardNavigation, HandleDashboard } =
-    useSiteContext()
+  const {
+    isAdmin,
+    dashboardToggle,
+    openDashboardNavigation,
+    HandleDashboard,
+    logout,
+  } = useSiteContext()
 
-  if (!isAdmin || !dashboardToggle || !openDashboardNavigation || !HandleDashboard)
+  if (
+    !isAdmin ||
+    !dashboardToggle ||
+    !openDashboardNavigation ||
+    !HandleDashboard ||
+    !logout
+  )
     return null
   return (
     <Modal
@@ -23,9 +35,9 @@ const DashboardNav = () => {
       onClose={dashboardToggle}
       fullScreen
     >
-      <Flex align={'center'} w={'100%'} p={'xl'}>
-        <Space h={'300px'} />
-        <Stack spacing={'xl'} align="stretch">
+      <Flex align={'stretch'} w={'100%'} p={'xl'} direction={'column'}>
+        <Space h={'100px'} />
+        <Stack spacing={'xl'} align="stretch" h={'65vh'}>
           <Flex
             justify={'space-evenly'}
             style={{ cursor: 'pointer' }}
@@ -135,6 +147,27 @@ const DashboardNav = () => {
             </Flex>
           )}
         </Stack>
+        <Flex
+          justify={'space-evenly'}
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            logout()
+          }}
+        >
+          <ThemeIcon size={'md'} color="dark" variant={'outline'}>
+            <IconUserCancel />
+          </ThemeIcon>
+          <Text
+            style={{
+              padding: '0 10px',
+              margin: '0 10px',
+            }}
+            miw={'200px'}
+            ta={'left'}
+          >
+            Logout
+          </Text>
+        </Flex>
       </Flex>
     </Modal>
   )

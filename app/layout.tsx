@@ -7,6 +7,7 @@ interface Props {
   cartModal: React.ReactNode
   storeModal: React.ReactNode
 }
+
 export default async function RootLayout({
   children,
   cartModal,
@@ -23,9 +24,9 @@ export default async function RootLayout({
         <meta name="description" content="The Golf Fellowship" />
         <meta name="author" content="Colton McClintock" />f
         <meta name="theme-color" content="#000000" />
-        <link rel="icon" href="public/static/images/favicon.ico" />
-        <title>The Golf Fellowship</title>
+        <link rel="icon" href="/favicon.ico" />
       </head>
+      <title>The Golf Fellowship</title>
       <body>
         <main>
           <Providers>

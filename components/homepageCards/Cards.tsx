@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, Text, Space, BackgroundImage } from '@mantine/core'
 
 const renderCard = (card: { image: string; title: string; text: string }) => (

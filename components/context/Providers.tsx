@@ -7,19 +7,19 @@ import { Notifications } from '@mantine/notifications'
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ContextProvider>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{
-          fontFamily: 'Open Sans, sans-serif',
-          lineHeight: '1.5',
-        }}
-      >
+    <MantineProvider
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{
+        fontFamily: 'Open Sans, sans-serif',
+        lineHeight: '1.5',
+      }}
+    >
+      <ContextProvider>
         <Notifications />
         <LayoutController>{children}</LayoutController>
-      </MantineProvider>
-    </ContextProvider>
+      </ContextProvider>
+    </MantineProvider>
   )
 }
 

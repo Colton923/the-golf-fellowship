@@ -32,6 +32,7 @@
       "@styles/*": ["./styles/*"],
       "@utils/*": ["./utils/*"],
       "@types/*": ["./types/*"],
+      "@lib/*": ["./lib/*"]
     }
   },
   "include": [

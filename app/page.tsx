@@ -64,8 +64,8 @@ export default function Index() {
               m={0}
               p={'xs'}
             >
-              <Video />
-              <Locations />
+              {/* <Video /> */}
+              {/* <Locations /> */}
               <Space h={'10px'} />
             </Flex>
           </Card>

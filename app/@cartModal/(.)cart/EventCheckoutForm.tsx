@@ -2,12 +2,7 @@
 
 import { User } from 'firebase/auth'
 import styles from '@components/membership/Membership.module.css'
-import {
-  useElements,
-  useStripe,
-  PaymentElement,
-  Elements,
-} from '@stripe/react-stripe-js'
+import { useElements, useStripe, PaymentElement } from '@stripe/react-stripe-js'
 import { useState, useEffect } from 'react'
 import { Button, Card, Group, Text, Title } from '@mantine/core'
 import { useSiteContext } from '@components/context/Context'

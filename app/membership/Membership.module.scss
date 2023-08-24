@@ -1,0 +1,41 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+  animation: SlideInFromLeft 0.15s ease-in-out;
+
+  @keyframes SlideInFromLeft {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .selectable {
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    &:hover {
+      transform: scale(1.05);
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    &:active {
+      transform: scale(0.95);
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+  }
+
+}
+
+.info {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  display: flex;
+  cursor: pointer;
+}
