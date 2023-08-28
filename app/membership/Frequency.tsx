@@ -1,7 +1,7 @@
 'use client'
 
 import { Text, Flex, Card, Chip, Modal, Image } from '@mantine/core'
-import pricingGuide from 'public/static/images/pricingGuide.webp'
+import pricingGuide from 'public/static/images/pricingGuide.jpg'
 import InfoInput from './InfoInput'
 import { useState } from 'react'
 import { IconX } from '@tabler/icons-react'
