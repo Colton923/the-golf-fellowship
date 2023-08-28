@@ -58,11 +58,11 @@ const Frequency = (props: Props) => {
             <Chip
               m={'xs'}
               onClick={() => {
-                setSelectedFrequency('player+')
+                setSelectedFrequency('plus')
                 next()
               }}
               color={'dark'}
-              variant={selectedFrequency === 'player+' ? 'filled' : 'outline'}
+              variant={selectedFrequency === 'plus' ? 'filled' : 'outline'}
             >
               {`3x's/mo. or more`}
             </Chip>{' '}

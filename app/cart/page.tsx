@@ -25,13 +25,13 @@ export default function Page() {
     },
   }
 
-  if (!HandleClosingCart || !cartOpened) return null
-
   return (
     <Modal
       yOffset={'20vh'}
       opened={cartOpened}
-      onClose={HandleClosingCart}
+      onClose={() => {
+        HandleClosingCart()
+      }}
       title={`Total: $${cartTotal}`}
       mih={'100vh'}
     >

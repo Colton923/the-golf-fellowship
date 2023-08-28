@@ -7,6 +7,7 @@ type Props = {
 
 const Term = (props: Props) => {
   const { next, terms } = props
+
   if (!terms) {
     return (
       <Card shadow="md" radius="md" p="md" m="md">
@@ -17,14 +18,21 @@ const Term = (props: Props) => {
       </Card>
     )
   }
+
+  const termNames = terms.map((term: any) => {
+    return term.title
+  })
+
+  const uniqueTermNames = [...new Set(termNames)]
+
   return (
     <Card shadow="md" radius="md" p="md" m="md">
       <Text ta={'center'}>How long do you want to be a member?</Text>
-      {terms.map((term: any) => {
+      {uniqueTermNames.map((term: any) => {
         return (
           <Button
             onClick={() => {
-              next(term.title)
+              next(term)
             }}
             key={term}
             variant={'light'}
@@ -32,7 +40,7 @@ const Term = (props: Props) => {
             fullWidth
             style={{ margin: '10px 0 10px 0' }}
           >
-            {term.title}
+            {term}
           </Button>
         )
       })}

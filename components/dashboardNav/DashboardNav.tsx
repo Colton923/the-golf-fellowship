@@ -20,19 +20,13 @@ const DashboardNav = () => {
     logout,
   } = useSiteContext()
 
-  if (
-    !isAdmin ||
-    !dashboardToggle ||
-    !openDashboardNavigation ||
-    !HandleDashboard ||
-    !logout
-  )
-    return null
   return (
     <Modal
       opened={openDashboardNavigation}
       size={'100%'}
-      onClose={dashboardToggle}
+      onClose={() => {
+        dashboardToggle()
+      }}
       fullScreen
     >
       <Flex align={'stretch'} w={'100%'} p={'xl'} direction={'column'}>

@@ -100,9 +100,9 @@ export default function Navbar() {
               w={'100%'}
             >
               <Burger
-                opened={openDashboardNavigation || false}
+                opened={openDashboardNavigation}
                 onClick={() => {
-                  dashboardToggle
+                  dashboardToggle()
                 }}
                 ml={'xs'}
                 p={'xs'}
@@ -113,10 +113,13 @@ export default function Navbar() {
                 p={'md'}
                 onClick={() => {
                   if (!cartOpened) {
-                    HandleOpeningCart
+                    HandleOpeningCart()
                   } else {
-                    HandleClosingCart
+                    HandleClosingCart()
                   }
+                }}
+                style={{
+                  cursor: 'pointer',
                 }}
               >
                 <ShoppingCart />

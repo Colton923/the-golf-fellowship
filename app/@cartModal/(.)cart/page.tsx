@@ -25,8 +25,6 @@ export default function Page() {
     },
   }
 
-  if (!HandleClosingCart || !cartOpened) return null
-
   return (
     <Modal
       yOffset={'20vh'}

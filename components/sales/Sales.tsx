@@ -20,7 +20,6 @@ import { IconCheck } from '@tabler/icons-react'
 export default function Sales() {
   const [selectedSale, setSelectedSale] = useState<number | null>(null)
   const { HandleIveBoughtThatBefore } = useSiteContext()
-  if (!HandleIveBoughtThatBefore) return null
   const salesData = HandleIveBoughtThatBefore()
 
   if (!salesData) {

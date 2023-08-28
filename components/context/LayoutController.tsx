@@ -1,32 +1,20 @@
+'use client'
+
 import { AppShell } from '@mantine/core'
-import { Suspense, lazy } from 'react'
+import Footer from '@components/footer/Footer'
+import Navbar from '@components/navbar/Navbar'
+import DashboardNav from '@components/dashboardNav/DashboardNav'
 
 interface LayoutControllerProps {
   children: React.ReactNode
 }
 
 const LayoutController = (props: LayoutControllerProps) => {
-  const Navbar = lazy(() => import('@components/navbar/Navbar'))
-  const Footer = lazy(() => import('@components/footer/Footer'))
-  const DashboardNav = lazy(() => import('@components/dashboardNav/DashboardNav'))
-
   return (
     <AppShell
-      navbar={
-        <Suspense fallback={<div>Loading...</div>}>
-          <Navbar />
-        </Suspense>
-      }
-      footer={
-        <Suspense fallback={<div>Loading...</div>}>
-          <Footer />
-        </Suspense>
-      }
-      aside={
-        <Suspense fallback={<div>Loading...</div>}>
-          <DashboardNav />
-        </Suspense>
-      }
+      navbar={<Navbar />}
+      footer={<Footer />}
+      aside={<DashboardNav />}
       padding={0}
       fixed={false}
     >

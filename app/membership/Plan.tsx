@@ -18,8 +18,6 @@ type termType = {
 
 const Plan = (props: Props) => {
   const { next, frequency, selectedTerm, terms } = props
-  const isFrequent = !(frequency === 'notsure')
-  const isTerm = !(selectedTerm === 'notsure')
   const uniqueMembershipTitles = Array.from(
     new Set(
       terms.flatMap((term: termType) =>
@@ -29,12 +27,12 @@ const Plan = (props: Props) => {
   )
   return (
     <Card shadow="md" radius="md" p="md" m="md">
-      <Text ta={'center'}>
-        Here are the options
-        {frequency !== 'notsure' &&
-          selectedTerm !== 'notsure' &&
-          ` and our recommended membership.`}
-      </Text>
+      <Text ta={'center'}>Here are the options</Text>
+      {frequency !== 'notsure' && selectedTerm !== 'notsure' && (
+        <Text ta={'center'} fw={'bold'} color="yellow">
+          and our recommended membership.
+        </Text>
+      )}
       <Text ta={'center'}>Select the Membership Plan that works best for you</Text>
       <table style={{ width: '100%', textAlign: 'center' }}>
         <thead>
@@ -53,20 +51,16 @@ const Plan = (props: Props) => {
                 const detail = term.membershipFeeDetails.find(
                   (d) => d.membershipTitle === membershipTitle
                 )
+
                 const isHighlighted =
-                  frequency === membershipTitle && term.title === selectedTerm
+                  frequency.toLowerCase() === membershipTitle.toLowerCase() &&
+                  term.title.toLowerCase() === selectedTerm.toLowerCase()
+
                 return (
-                  <td
-                    key={membershipTitle}
-                    style={{
-                      backgroundColor: isHighlighted ? '#f0f0f0' : 'transparent',
-                    }}
-                  >
+                  <td key={membershipTitle}>
                     {detail ? (
                       <Chip
-                        style={{
-                          backgroundColor: isHighlighted ? '#ddd' : 'transparent',
-                        }}
+                        variant="filled"
                         onClick={() => {
                           next({
                             title: term.title,
@@ -76,7 +70,12 @@ const Plan = (props: Props) => {
                           })
                         }}
                       >
-                        ${detail.fee}
+                        <Text
+                          color={isHighlighted ? 'yellow' : 'black'}
+                          fw={isHighlighted ? 'bold' : 'lighter'}
+                        >
+                          ${detail.fee}
+                        </Text>
                       </Chip>
                     ) : (
                       '-'

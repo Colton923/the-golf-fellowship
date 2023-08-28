@@ -27,7 +27,6 @@ const DateHelper = (date: number) => {
 
 const Purchases = () => {
   const { purchases } = useSiteContext()
-  if (!purchases) return null
   return (
     <Flex direction={'column'} justify={'center'} p={'xs'}>
       <Text>Purchases</Text>

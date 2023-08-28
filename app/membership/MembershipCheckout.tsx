@@ -1,21 +1,26 @@
 'use client'
-import { Button, Card } from '@mantine/core'
+import { Button, Card, Text } from '@mantine/core'
 import { useElements, useStripe, PaymentElement } from '@stripe/react-stripe-js'
 import { useEffect, useState } from 'react'
 import { getAuth } from 'firebase/auth'
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
 import router from 'next/router'
 
+import type { body } from '@api/stripe/stripe_newSubscription'
+
 type Props = {
-  city: string
-  frequency: string
-  term: string
+  interval: 'day' | 'week' | 'month' | 'year'
+  intervalCount: number
+  membershipType: string
+  chapter: string
   firstName: string
   lastName: string
   phoneNumber: string
   email: string
   paymentIntentId: string
+  fee: number
 }
+
 type SubscriptionPostBody = {
   sub: {
     name: string
@@ -69,14 +74,16 @@ const standardizePhone = (phone: string) => {
 }
 const MembershipCheckout = (props: Props) => {
   const {
-    city,
-    frequency,
-    term,
+    interval,
+    intervalCount,
+    chapter,
+    membershipType,
     firstName,
     lastName,
     phoneNumber,
     email,
     paymentIntentId,
+    fee,
   } = props
   const [stripeSubId, setStripeSubId] = useState('')
   const stripe = useStripe()
@@ -121,17 +128,29 @@ const MembershipCheckout = (props: Props) => {
 
     const phone = standardizePhone(phoneNumber)
     if (!phone) return
-    const data = {
-      city: city,
-      frequency: frequency,
-      term: term,
-      firstName: firstName,
-      lastName: lastName,
-      phone: phone,
-      email: email,
+    const data: body = {
+      sub: {
+        name: chapter + ' ' + membershipType + ' ' + interval + ' ' + intervalCount,
+        description:
+          'TGF ' +
+          chapter +
+          ' ' +
+          membershipType +
+          ' ' +
+          interval +
+          ' ' +
+          intervalCount,
+        unit_amount: fee * 100,
+        currency: 'usd',
+        recurring: {
+          interval: interval,
+          interval_count: intervalCount,
+        },
+      },
     }
+
     const handlePostSubscription = async (data: SubscriptionPostBody) => {
-      return await fetch('/api/stripe/createSubscription', {
+      return await fetch('/api/stripe/stripe_newSubscription', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,18 +166,7 @@ const MembershipCheckout = (props: Props) => {
           return false
         })
     }
-    handlePostSubscription({
-      sub: {
-        name: city + ' ' + frequency + ' ' + term,
-        description: 'TGF ' + city + ' ' + frequency + ' ' + term,
-        unit_amount: 1000,
-        currency: 'usd',
-        recurring: {
-          interval: frequency === 'frequent' ? 'month' : 'year',
-          interval_count: term === 'Monthly-6' ? 6 : term === 'Monthly-12' ? 12 : 1,
-        },
-      },
-    }).then((data) => {
+    handlePostSubscription(data).then((data) => {
       if (!data) return
       const updatedSubscription = data
       console.log('updatedSubscription', updatedSubscription)
@@ -201,9 +209,10 @@ const MembershipCheckout = (props: Props) => {
         uid: uid ? uid : '',
         address: '',
         membership: {
-          city: city ? city : '',
-          term: term ? term : '',
-          frequency: frequency ? frequency : '',
+          chapter: chapter ? chapter : '',
+          membershipType: membershipType ? membershipType : '',
+          interval: interval ? interval : '',
+          intervalCount: intervalCount ? intervalCount : '',
         },
         priceID: priceID ? priceID : '',
         success_url: window.location.origin,
@@ -224,7 +233,6 @@ const MembershipCheckout = (props: Props) => {
         console.log(error)
       })
   }
-
   const NewUserSignIn = () => {
     const auth = getAuth()
     const reCaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
@@ -296,7 +304,7 @@ const MembershipCheckout = (props: Props) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        amount: 1000,
+        amount: fee,
         payment_intent_id: paymentIntentId,
         metadata: {
           id: stripeSubId,
@@ -307,6 +315,11 @@ const MembershipCheckout = (props: Props) => {
 
   return (
     <Card shadow="sm" padding="sm" radius="sm">
+      <Text ta={'center'}>{`Thanks, ${firstName}!`}</Text>
+      <Text ta={'left'}>
+        You will receive a text message to verify your phone number.
+      </Text>
+      <Text ta={'center'} fw={'bold'}>{`Total: $${fee.toFixed(2)}`}</Text>
       <div id="recaptcha-container"></div>
       <form id="payment-form" onSubmit={HandleSubmit}>
         <PaymentElement id="payment-element" />

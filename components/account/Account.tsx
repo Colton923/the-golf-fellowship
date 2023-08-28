@@ -5,7 +5,6 @@ import { Card, Flex, Text, Badge, TextInput, Space } from '@mantine/core'
 const Account = () => {
   const { myUserData } = useSiteContext()
 
-  if (!myUserData) return null
   return (
     <Card shadow="sm" padding="sm" radius="md">
       <Text>My Account Settings</Text>

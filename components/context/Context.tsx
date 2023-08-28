@@ -120,10 +120,10 @@ export type MyUserData = {
   stripeLink: string
   uid: string
 }
-export const Context = createContext<Partial<ContextScope>>({})
+export const Context = createContext<ContextScope>({} as ContextScope)
 
 export const ContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [showSignupMenu, setShowSignupMenu] = useState(false)
+  const [showSignUp, setShowSignUp] = useState(false)
   const [focus, setFocus] = useState(false)
   const [user, loading, error] = useAuthState(auth)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -175,7 +175,7 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 
   const logout = () => {
     auth.signOut()
-    setShowSignupMenu(false)
+    setShowSignUp(false)
     router.push('/shop')
   }
 
@@ -463,13 +463,13 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
 
   const contextValue = useMemo(
     () => ({
-      showSignUp: showSignupMenu,
-      setShowSignUp: setShowSignupMenu,
+      showSignUp,
+      setShowSignUp,
+      pathname,
       focus,
       setFocus,
+      checkoutFees,
       navbarRef,
-      clientStripe,
-      cartTotal,
       router,
       gotoShop,
       gotoDashboard,
@@ -481,64 +481,66 @@ export const ContextProvider = ({ children }: { children: React.ReactNode }) => 
       errors,
       isAdmin,
       user,
+      HandleDashboard,
       loading,
       AddItemToCart,
       RemoveItemFromCart,
-      pathname,
       cart,
       HandleClosingCart,
-      checkoutFees,
+      cartTotal,
       HandleOpeningCart,
-      cartOpened,
-      sanityMember,
-      salesData,
-      purchases,
       error,
+      cartOpened,
+      salesData,
+      sanityMember,
       myUserData,
       HandleUserPurchase,
-      openDashboardNavigation,
-      HandleDashboard,
-      dashboardToggle,
-      HandleIveBoughtThatBefore,
       clientSecret,
+      clientStripe,
+      purchases,
+      HandleIveBoughtThatBefore,
+      openDashboardNavigation,
+      dashboardToggle,
     }),
     [
+      showSignUp,
+      setShowSignUp,
+      pathname,
+      focus,
+      setFocus,
+      checkoutFees,
+      navbarRef,
+      router,
+      gotoShop,
+      gotoDashboard,
+      logout,
+      loginMain,
+      register,
+      setValue,
+      handleSubmit,
+      errors,
+      isAdmin,
+      user,
+      HandleDashboard,
+      loading,
+      AddItemToCart,
+      RemoveItemFromCart,
+      cart,
+      HandleClosingCart,
+      cartTotal,
+      HandleOpeningCart,
+      error,
+      cartOpened,
+      salesData,
+      sanityMember,
       myUserData,
+      HandleUserPurchase,
+      clientSecret,
+      clientStripe,
+      purchases,
+      HandleIveBoughtThatBefore,
       openDashboardNavigation,
       dashboardToggle,
-      salesData,
-      showSignupMenu,
-      pathname,
-      HandleDashboard,
-      HandleClosingCart,
-      HandleIveBoughtThatBefore,
-      HandleOpeningCart,
-      focus,
-      checkoutFees,
-      user,
-      sanityMember,
-      HandleUserPurchase,
-      clientStripe,
-      router,
-      errors,
-      cartOpened,
-      loading,
-      isAdmin,
-      cart,
-      error,
-      handleSubmit,
-      loginMain,
-      logout,
-      navbarRef,
-      register,
-      purchases,
-      setValue,
-      gotoDashboard,
-      gotoShop,
-      AddItemToCart,
-      cartTotal,
-      RemoveItemFromCart,
-      clientSecret,
     ]
   )
 
